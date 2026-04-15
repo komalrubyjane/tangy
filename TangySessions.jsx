@@ -525,10 +525,8 @@ function Tickets({ toast, selectedEvent }) {
     }
     setLoading(true);
     try {
-      // Simulate async payment gateway call
       await new Promise((_, reject) => {
         setTimeout(() => {
-          // Simulated: randomly succeed for demo
           if (Math.random() > 0.2) {
             toast(`🎉 Booking initiated for ${selectedEv.name}! Redirecting to payment...`, "success");
             _.call();
@@ -552,11 +550,17 @@ function Tickets({ toast, selectedEvent }) {
   });
 
   return (
-    <section id="tickets" style={{ background: "#060606", padding: "100px 5vw" }}>
+    <section id="tickets" style={{ background: "#060606", padding: "100px 5vw", perspective: "1000px" }}>
       <SectionHeader label="Reserve" title="Book Tickets" />
-      <div style={{ maxWidth: "520px", margin: "60px auto 0", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "16px", padding: "40px" }}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
+        whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
+        viewport={{ once: true }} transition={{ type: "spring", bounce: 0.4 }}
+        whileHover={{ boxShadow: "0 40px 80px rgba(124,58,237,0.15)" }}
+        style={{ maxWidth: "520px", margin: "60px auto 0", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "16px", padding: "40px", transformStyle: "preserve-3d" }}>
+        
         <div style={{ marginBottom: "24px" }}>
-          <label style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "8px" }}>
+          <label style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "8px", transform: "translateZ(20px)" }}>
             Select Event
           </label>
           <select value={form.event} onChange={e => { setForm(f => ({ ...f, event: e.target.value })); setErrors(er => ({ ...er, event: null })); }}
@@ -568,7 +572,7 @@ function Tickets({ toast, selectedEvent }) {
         </div>
 
         <div style={{ marginBottom: "24px" }}>
-          <label style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "8px" }}>
+          <label style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "8px", transform: "translateZ(20px)" }}>
             Quantity (max 10)
           </label>
           <input type="number" min="1" max="10" value={form.qty}
@@ -577,7 +581,9 @@ function Tickets({ toast, selectedEvent }) {
           {errors.qty && <div style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: "6px" }}>⚠ {errors.qty}</div>}
         </div>
 
-        <div style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "10px", padding: "20px", marginBottom: "28px" }}>
+        <motion.div 
+          whileHover={{ translateY: -5, boxShadow: "0 10px 30px rgba(124,58,237,0.15)" }}
+          style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "10px", padding: "20px", marginBottom: "28px", transform: "translateZ(30px)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", color: "rgba(255,255,255,0.5)", fontSize: "0.85rem", marginBottom: "8px" }}>
             <span>Price per ticket</span>
             <span>₹{selectedEv?.price ?? "—"}</span>
@@ -586,20 +592,23 @@ function Tickets({ toast, selectedEvent }) {
             <span>Total</span>
             <span style={{ color: "#7c3aed" }}>₹{total || "—"}</span>
           </div>
-        </div>
+        </motion.div>
 
-        <button onClick={handleSubmit} disabled={loading}
+        <motion.button onClick={handleSubmit} disabled={loading}
+          whileHover={!loading ? { scale: 1.02, backgroundColor: "#6d28d9" } : {}}
+          whileTap={!loading ? { scale: 0.98 } : {}}
           style={{
             width: "100%", padding: "16px", background: loading ? "#4c1d95" : "#7c3aed",
             color: "#fff", border: "none", borderRadius: "8px", cursor: loading ? "not-allowed" : "pointer",
             fontFamily: "inherit", letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.9rem",
-            fontWeight: 600, transition: "all 0.3s", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px"
+            fontWeight: 600, transition: "background 0.3s", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
+            transform: "translateZ(40px)"
           }}>
           {loading ? (
             <><span style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} /> Processing...</>
           ) : "Proceed to Payment"}
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </section>
   );
 }
@@ -607,27 +616,37 @@ function Tickets({ toast, selectedEvent }) {
 // ─── ABOUT ────────────────────────────────────────────────────────────────────
 function About() {
   return (
-    <section id="about" style={{ background: "#0a0a0a", padding: "100px 5vw" }}>
+    <section id="about" style={{ background: "#0a0a0a", padding: "100px 5vw", perspective: "1000px" }}>
       <div style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
-        <div style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#7c3aed", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "16px" }}>Our Story</div>
-        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 4.5rem)", color: "#fff", margin: "0 0 32px", letterSpacing: "0.05em" }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once:true }} style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#7c3aed", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "16px" }}>Our Story</motion.div>
+        
+        <motion.h2 initial={{ opacity: 0, rotateX: -30 }} whileInView={{ opacity: 1, rotateX: 0 }} transition={{ delay: 0.1, type: "spring" }} viewport={{ once:true }} style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 4.5rem)", color: "#fff", margin: "0 0 32px", letterSpacing: "0.05em" }}>
           About Tangy Sessions
-        </h2>
-        <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "1.05rem", lineHeight: 1.8, marginBottom: "20px" }}>
+        </motion.h2>
+        
+        <motion.p initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} viewport={{ once:true }} style={{ color: "rgba(255,255,255,0.6)", fontSize: "1.05rem", lineHeight: 1.8, marginBottom: "20px" }}>
           Tangy Sessions was born from a single belief: that music hits differently when the walls around you have centuries of stories to tell.
-        </p>
-        <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.95rem", lineHeight: 1.8, marginBottom: "20px" }}>
+        </motion.p>
+        
+        <motion.p initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} viewport={{ once:true }} style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.95rem", lineHeight: 1.8, marginBottom: "20px" }}>
           We host underground electronic music events deep inside the Bansilal Stepwell — a monument where geometry, water, and silence converge. The result is something you can't recreate in a nightclub: a resonance that is both ancient and electric.
-        </p>
-        <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.95rem", lineHeight: 1.8 }}>
+        </motion.p>
+        
+        <motion.p initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} viewport={{ once:true }} style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.95rem", lineHeight: 1.8 }}>
           Each edition is curated with obsessive care — the right artists, the right frequencies, the right hour of night. No VIP egos. Just you, the music, and five hundred years of stone.
-        </p>
-        <div style={{ display: "flex", gap: "40px", justifyContent: "center", marginTop: "60px", flexWrap: "wrap" }}>
-          {[["3", "Sessions"], ["1200+", "Attendees"], ["12", "Artists"], ["1", "Stepwell"]].map(([n, l]) => (
-            <div key={l} style={{ textAlign: "center" }}>
+        </motion.p>
+        
+        <div style={{ display: "flex", gap: "40px", justifyContent: "center", marginTop: "60px", flexWrap: "wrap", transformStyle: "preserve-3d" }}>
+          {[["3", "Sessions"], ["1200+", "Attendees"], ["12", "Artists"], ["1", "Stepwell"]].map(([n, l], i) => (
+            <motion.div key={l} 
+              initial={{ opacity: 0, scale: 0.5, rotateY: 90 }} 
+              whileInView={{ opacity: 1, scale: 1, rotateY: 0 }} 
+              viewport={{ once:true }} transition={{ delay: 0.5 + i * 0.1, type: "spring" }}
+              whileHover={{ scale: 1.1, translateY: -10 }}
+              style={{ textAlign: "center" }}>
               <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3rem", color: "#7c3aed", lineHeight: 1 }}>{n}</div>
               <div style={{ fontSize: "0.72rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginTop: "6px" }}>{l}</div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -664,76 +683,103 @@ function Contact({ toast }) {
     width: "100%", padding: "14px 16px", background: "rgba(255,255,255,0.04)",
     border: `1px solid ${errors[field] ? "#ef4444" : "rgba(255,255,255,0.1)"}`,
     borderRadius: "8px", color: "#fff", fontSize: "0.9rem", fontFamily: "inherit",
-    outline: "none", boxSizing: "border-box", marginBottom: "4px"
+    outline: "none", boxSizing: "border-box", marginBottom: "4px",
+    transition: "all 0.3s"
   });
 
   return (
-    <section id="contact" style={{ background: "#060606", padding: "100px 5vw" }}>
+    <section id="contact" style={{ background: "#060606", padding: "100px 5vw", perspective: "1000px" }}>
       <SectionHeader label="Connect" title="Get In Touch" />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", marginTop: "60px", maxWidth: "1000px", margin: "60px auto 0" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", marginTop: "60px", maxWidth: "1000px", margin: "60px auto 0" }}>
+        
         {/* Left */}
-        <div>
-          <div style={{ marginBottom: "32px" }}>
+        <motion.div 
+          initial={{ opacity: 0, x: -50, rotateY: 20 }}
+          whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.6 }}
+          style={{ transformStyle: "preserve-3d" }}>
+          <div style={{ marginBottom: "32px", transform: "translateZ(20px)" }}>
             <div style={{ color: "#7c3aed", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "8px" }}>Location</div>
             <div style={{ color: "#fff", fontSize: "1.05rem" }}>Bansilal Stepwell</div>
             <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.9rem" }}>Hyderabad, Telangana, India</div>
           </div>
-          <div style={{ marginBottom: "32px" }}>
+          <div style={{ marginBottom: "32px", transform: "translateZ(20px)" }}>
             <div style={{ color: "#7c3aed", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "8px" }}>Contact</div>
             <div style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem" }}>hello@tangysessions.in</div>
           </div>
-          <div style={{ display: "flex", gap: "16px", marginTop: "32px" }}>
-            {["Instagram", "Spotify", "SoundCloud"].map(s => (
-              <button key={s} onClick={() => toast(`Opening ${s}...`, "info")}
-                style={{ padding: "10px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.6)", borderRadius: "6px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em", transition: "all 0.2s" }}
-                onMouseEnter={e => { e.target.style.borderColor = "#7c3aed"; e.target.style.color = "#7c3aed"; }}
-                onMouseLeave={e => { e.target.style.borderColor = "rgba(255,255,255,0.12)"; e.target.style.color = "rgba(255,255,255,0.6)"; }}>
+          <div style={{ display: "flex", gap: "16px", marginTop: "32px", transform: "translateZ(30px)" }}>
+            {["Instagram", "Spotify", "SoundCloud"].map((s, i) => (
+              <motion.button key={s} onClick={() => toast(`Opening ${s}...`, "info")}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }} transition={{ delay: 0.2 + i * 0.1 }}
+                whileHover={{ scale: 1.1, borderColor: "#7c3aed", color: "#7c3aed" }}
+                whileTap={{ scale: 0.95 }}
+                style={{ padding: "10px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.6)", borderRadius: "6px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em" }}>
                 {s}
-              </button>
+              </motion.button>
             ))}
           </div>
-          {/* Map placeholder */}
-          <div style={{ marginTop: "32px", borderRadius: "10px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)", height: "160px", display: "flex", alignItems: "center", justifyContent: "center", color: "#444", flexDirection: "column", gap: "8px" }}>
-            <div style={{ fontSize: "2rem" }}>🗺️</div>
+          
+          <motion.div 
+            whileHover={{ rotateX: 5, rotateY: -5, boxShadow: "0 20px 40px rgba(124,58,237,0.15)" }}
+            style={{ marginTop: "32px", borderRadius: "10px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)", height: "160px", display: "flex", alignItems: "center", justifyContent: "center", color: "#444", flexDirection: "column", gap: "8px", transform: "translateZ(40px)" }}>
+            <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ delay: 0.5, type: "spring" }} style={{ fontSize: "2rem" }}>🗺️</motion.div>
             <div style={{ fontSize: "0.75rem", fontFamily: "monospace" }}>Bansilal Stepwell · Hyderabad</div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
+
         {/* Right — form */}
-        <div>
-          {sent ? (
-            <div style={{ textAlign: "center", padding: "60px 20px" }}>
-              <div style={{ fontSize: "3rem", marginBottom: "16px" }}>✅</div>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#fff" }}>Message Sent</div>
-              <div style={{ color: "rgba(255,255,255,0.5)", marginTop: "8px" }}>We'll get back to you shortly.</div>
-            </div>
-          ) : (
-            <>
-              {["name", "email"].map(f => (
-                <div key={f} style={{ marginBottom: "16px" }}>
-                  <input placeholder={f.charAt(0).toUpperCase() + f.slice(1)} value={form[f]}
-                    onChange={e => { setForm(x => ({ ...x, [f]: e.target.value })); setErrors(er => ({ ...er, [f]: null })); }}
-                    style={inp(f)} />
-                  {errors[f] && <div style={{ color: "#ef4444", fontSize: "0.73rem" }}>⚠ {errors[f]}</div>}
+        <motion.div 
+          initial={{ opacity: 0, x: 50, rotateY: -20 }}
+          whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.6 }}
+          style={{ transformStyle: "preserve-3d" }}>
+          
+          <AnimatePresence mode="wait">
+            {sent ? (
+              <motion.div 
+                key="success"
+                initial={{ opacity: 0, rotateY: -90 }} animate={{ opacity: 1, rotateY: 0 }} exit={{ opacity: 0, rotateY: 90 }}
+                style={{ textAlign: "center", padding: "60px 20px", background: "rgba(16,185,129,0.05)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: "16px" }}>
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} style={{ fontSize: "3rem", marginBottom: "16px" }}>✅</motion.div>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#fff" }}>Message Sent</div>
+                <div style={{ color: "rgba(255,255,255,0.5)", marginTop: "8px" }}>We'll get back to you shortly.</div>
+              </motion.div>
+            ) : (
+              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                {["name", "email"].map(f => (
+                  <div key={f} style={{ marginBottom: "16px" }}>
+                    <input placeholder={f.charAt(0).toUpperCase() + f.slice(1)} value={form[f]}
+                      onChange={e => { setForm(x => ({ ...x, [f]: e.target.value })); setErrors(er => ({ ...er, [f]: null })); }}
+                      style={inp(f)} 
+                      onFocus={(e) => { e.target.style.borderColor = "#7c3aed"; e.target.style.background="rgba(255,255,255,0.08)"; }}
+                      onBlur={(e) => { e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(255,255,255,0.1)"; e.target.style.background="rgba(255,255,255,0.04)"; }}/>
+                    {errors[f] && <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: "4px" }}>⚠ {errors[f]}</motion.div>}
+                  </div>
+                ))}
+                <div style={{ marginBottom: "20px" }}>
+                  <textarea placeholder="Your message" value={form.message} rows={5}
+                    onChange={e => { setForm(x => ({ ...x, message: e.target.value })); setErrors(er => ({ ...er, message: null })); }}
+                    style={{ ...inp("message"), resize: "vertical" }} 
+                    onFocus={(e) => { e.target.style.borderColor = "#7c3aed"; e.target.style.background="rgba(255,255,255,0.08)"; }}
+                    onBlur={(e) => { e.target.style.borderColor = errors.message ? "#ef4444" : "rgba(255,255,255,0.1)"; e.target.style.background="rgba(255,255,255,0.04)"; }}/>
+                  {errors.message && <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: "4px" }}>⚠ {errors.message}</motion.div>}
                 </div>
-              ))}
-              <div style={{ marginBottom: "20px" }}>
-                <textarea placeholder="Your message" value={form.message} rows={5}
-                  onChange={e => { setForm(x => ({ ...x, message: e.target.value })); setErrors(er => ({ ...er, message: null })); }}
-                  style={{ ...inp("message"), resize: "vertical" }} />
-                {errors.message && <div style={{ color: "#ef4444", fontSize: "0.73rem" }}>⚠ {errors.message}</div>}
-              </div>
-              <button onClick={handleSend} style={{
-                width: "100%", padding: "14px", background: "#7c3aed", color: "#fff", border: "none",
-                borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em",
-                textTransform: "uppercase", fontSize: "0.85rem", transition: "background 0.2s"
-              }}
-                onMouseEnter={e => e.target.style.background = "#6d28d9"}
-                onMouseLeave={e => e.target.style.background = "#7c3aed"}>
-                Send Message
-              </button>
-            </>
-          )}
-        </div>
+                <motion.button onClick={handleSend}
+                  whileHover={{ scale: 1.02, backgroundColor: "#6d28d9", boxShadow: "0 10px 20px rgba(124,58,237,0.3)" }}
+                  whileTap={{ scale: 0.98 }}
+                  style={{
+                    width: "100%", padding: "14px", background: "#7c3aed", color: "#fff", border: "none",
+                    borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em",
+                    textTransform: "uppercase", fontSize: "0.85rem", transform: "translateZ(20px)"
+                  }}>
+                  Send Message
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );
