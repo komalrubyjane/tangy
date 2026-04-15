@@ -443,6 +443,7 @@ function Gallery() {
               exit={{ scale: 0.5, rotateY: -90, opacity: 0 }}
               transition={{ type: "spring", damping: 20 }}
               onClick={(e) => e.stopPropagation()}
+              className="lightbox-inner"
               style={{
                 background: "#111", border: "1px solid rgba(124,58,237,0.3)", borderRadius: "16px",
                 padding: "60px 80px", textAlign: "center",
@@ -707,7 +708,7 @@ function Contact({ toast }) {
             <div style={{ color: "#7c3aed", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "8px" }}>Contact</div>
             <div style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem" }}>hello@tangysessions.in</div>
           </div>
-          <div style={{ display: "flex", gap: "16px", marginTop: "32px", transform: "translateZ(30px)" }}>
+          <div className="social-btns" style={{ display: "flex", gap: "16px", marginTop: "32px", transform: "translateZ(30px)" }}>
             {["Instagram", "Spotify", "SoundCloud"].map((s, i) => (
               <motion.button key={s} onClick={() => toast(`Opening ${s}...`, "info")}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -862,13 +863,79 @@ export default function App() {
         @keyframes spin { to { transform:rotate(360deg); } }
         @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
         * { box-sizing: border-box; margin:0; padding:0; }
+        html { scroll-behavior: smooth; }
+        body { -webkit-tap-highlight-color: transparent; }
+        img, video { max-width: 100%; }
+        input, select, textarea, button { font-family: inherit; }
         ::selection { background: rgba(124,58,237,0.35); }
         ::-webkit-scrollbar { width:4px; }
         ::-webkit-scrollbar-track { background:#0a0a0a; }
         ::-webkit-scrollbar-thumb { background:#7c3aed; border-radius:2px; }
+
+        /* ─── MOBILE BREAKPOINT ─── */
         @media (max-width: 700px) {
           .nav-links { display: none !important; }
           .hamburger { display: block !important; }
+
+          /* Sections */
+          #home { min-height: 100svh; }
+          #events, #artists, #gallery, #tickets, #about, #contact { padding: 70px 5vw !important; }
+
+          /* Hero buttons stacked */
+          #home > div > div > div {
+            flex-direction: column !important;
+            align-items: center !important;
+          }
+          #home button { width: 100% !important; max-width: 320px; }
+
+          /* Events: single column */
+          #events > div:last-child {
+            grid-template-columns: 1fr !important;
+          }
+
+          /* Artists: 2 columns on mobile */
+          #artists > div:last-child {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 14px !important;
+          }
+
+          /* Gallery: 2 columns */
+          #gallery > div:nth-child(2) {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+          }
+
+          /* Tickets form: full width */
+          #tickets > div { padding: 24px 16px !important; margin: 30px 0 0 !important; max-width: 100% !important; }
+
+          /* About stats: wrap tight */
+          #about div[style*='gap: 40px'] { gap: 24px !important; }
+
+          /* Contact grid: single column */
+          #contact > div:last-child {
+            grid-template-columns: 1fr !important;
+            gap: 36px !important;
+          }
+
+          /* Footer flex-col */
+          footer > div:first-child { flex-direction: column !important; gap: 24px !important; }
+          footer > div:first-child > div:last-child { flex-direction: column !important; gap: 24px !important; }
+
+          /* Gallery lightbox */
+          .lightbox-inner { padding: 36px 24px !important; }
+
+          /* Social buttons wrap */
+          .social-btns { flex-wrap: wrap !important; }
+        }
+
+        /* ─── SMALL MOBILE ─── */
+        @media (max-width: 400px) {
+          #artists > div:last-child {
+            grid-template-columns: 1fr !important;
+          }
+          #gallery > div:nth-child(2) {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
       <Navbar />
