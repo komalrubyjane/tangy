@@ -723,10 +723,18 @@ function Contact({ toast }) {
           </div>
           
           <motion.div 
-            whileHover={{ rotateX: 5, rotateY: -5, boxShadow: "0 20px 40px rgba(124,58,237,0.15)" }}
-            style={{ marginTop: "32px", borderRadius: "10px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)", height: "160px", display: "flex", alignItems: "center", justifyContent: "center", color: "#444", flexDirection: "column", gap: "8px", transform: "translateZ(40px)" }}>
-            <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ delay: 0.5, type: "spring" }} style={{ fontSize: "2rem" }}>🗺️</motion.div>
-            <div style={{ fontSize: "0.75rem", fontFamily: "monospace" }}>Bansilal Stepwell · Hyderabad</div>
+            whileHover={{ boxShadow: "0 20px 40px rgba(124,58,237,0.25)", borderColor: "rgba(124,58,237,0.4)" }}
+            style={{ marginTop: "32px", borderRadius: "10px", overflow: "hidden", border: "1px solid rgba(124,58,237,0.2)", height: "220px", transform: "translateZ(40px)", position: "relative" }}>
+            <iframe
+              title="Bansilal Stepwell Location"
+              src="https://maps.google.com/maps?q=Bansilal+Baoli+Stepwell+Hyderabad+Telangana&t=&z=16&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) saturate(0.8) contrast(0.9)" }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </motion.div>
         </motion.div>
 
