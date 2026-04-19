@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import UnicornBackground from "./src/components/UnicornBackground";
+import PaymentModal from "./src/components/PaymentModal";
+import Volunteer from "./src/components/Volunteer";
+import AdminDashboard from "./src/components/AdminDashboard";
 
 // ─── ERROR BOUNDARY ────────────────────────────────────────────────────────
 class ErrorBoundary extends React.Component {
@@ -133,13 +138,25 @@ const GALLERY = [
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
-  const links = ["Home", "Events", "Artists", "Gallery", "Tickets", "Contact"];
+  const links = ["Home", "Events", "Artists", "Gallery", "Tickets", "Volunteer", "Contact"];
   const scrollTo = (id) => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        const el = document.getElementById(id.toLowerCase());
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+      setMenuOpen(false);
+      return;
+    }
     try {
       const el = document.getElementById(id.toLowerCase());
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -303,7 +320,7 @@ function Hero({ onBook }) {
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 function Events({ onBook }) {
   return (
-    <section id="events" style={{ background: "#0a0a0a", padding: "100px 5vw", perspective: "1000px" }}>
+    <section id="events" style={{ background: "transparent", padding: "100px 5vw", perspective: "1000px" }}>
       <SectionHeader label="Calendar" title="Upcoming Events" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px", marginTop: "60px" }}>
         {EVENTS.map((ev, i) => (
@@ -363,7 +380,7 @@ function EventCard({ ev, delay, onBook }) {
 // ─── ARTISTS ─────────────────────────────────────────────────────────────────
 function Artists() {
   return (
-    <section id="artists" style={{ background: "#060606", padding: "100px 5vw", perspective: "800px" }}>
+    <section id="artists" style={{ background: "transparent", padding: "100px 5vw", perspective: "800px" }}>
       <SectionHeader label="Lineup" title="Artist Roster" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "24px", marginTop: "60px" }}>
         {ARTISTS.map((a, i) => <ArtistCard key={a.id} a={a} delay={i * 0.15} />)}
@@ -421,7 +438,7 @@ function Gallery() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
   return (
-    <section id="gallery" style={{ background: "#0a0a0a", padding: "100px 5vw", perspective: "1200px" }}>
+    <section id="gallery" style={{ background: "transparent", padding: "100px 5vw", perspective: "1200px" }}>
       <SectionHeader label="Memories" title="Gallery" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "16px", marginTop: "60px" }}>
         {GALLERY.map((item, i) => (
@@ -517,6 +534,8 @@ function Tickets({ toast, selectedEvent }) {
     return errs;
   };
 
+  const [showModal, setShowModal] = useState(false);
+
   const handleSubmit = async () => {
     const errs = validate();
     setErrors(errs);
@@ -524,23 +543,7 @@ function Tickets({ toast, selectedEvent }) {
       toast("Please fix the errors above", "error");
       return;
     }
-    setLoading(true);
-    try {
-      await new Promise((_, reject) => {
-        setTimeout(() => {
-          if (Math.random() > 0.2) {
-            toast(`🎉 Booking initiated for ${selectedEv.name}! Redirecting to payment...`, "success");
-            _.call();
-          } else {
-            reject(new Error("Payment gateway timeout"));
-          }
-        }, 1800);
-      });
-    } catch (e) {
-      toast(`Payment failed: ${e.message}. Please try again.`, "error");
-    } finally {
-      setLoading(false);
-    }
+    setShowModal(true);
   };
 
   const fieldStyle = (field) => ({
@@ -551,7 +554,7 @@ function Tickets({ toast, selectedEvent }) {
   });
 
   return (
-    <section id="tickets" style={{ background: "#060606", padding: "100px 5vw", perspective: "1000px" }}>
+    <section id="tickets" style={{ background: "transparent", padding: "100px 5vw", perspective: "1000px" }}>
       <SectionHeader label="Reserve" title="Book Tickets" />
       <motion.div 
         initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
@@ -610,6 +613,9 @@ function Tickets({ toast, selectedEvent }) {
           ) : "Proceed to Payment"}
         </motion.button>
       </motion.div>
+      <AnimatePresence>
+        {showModal && <PaymentModal amount={total} event={selectedEv} onClose={() => setShowModal(false)} onSuccess={() => { toast("Tickets Booked! See you at the Stepwell.", "success"); setForm({event: "", qty: 1}); }} />}
+      </AnimatePresence>
     </section>
   );
 }
@@ -617,7 +623,7 @@ function Tickets({ toast, selectedEvent }) {
 // ─── ABOUT ────────────────────────────────────────────────────────────────────
 function About() {
   return (
-    <section id="about" style={{ background: "#0a0a0a", padding: "100px 5vw", perspective: "1000px" }}>
+    <section id="about" style={{ background: "transparent", padding: "100px 5vw", perspective: "1000px" }}>
       <div style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once:true }} style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#7c3aed", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "16px" }}>Our Story</motion.div>
         
@@ -689,7 +695,7 @@ function Contact({ toast }) {
   });
 
   return (
-    <section id="contact" style={{ background: "#060606", padding: "100px 5vw", perspective: "1000px" }}>
+    <section id="contact" style={{ background: "transparent", padding: "100px 5vw", perspective: "1000px" }}>
       <SectionHeader label="Connect" title="Get In Touch" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", marginTop: "60px", maxWidth: "1000px", margin: "60px auto 0" }}>
         
@@ -797,7 +803,7 @@ function Contact({ toast }) {
 // ─── FOOTER ──────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer style={{ background: "#050505", borderTop: "1px solid rgba(124,58,237,0.15)", padding: "60px 5vw 32px" }}>
+    <footer style={{ background: "transparent", borderTop: "1px solid rgba(124,58,237,0.15)", padding: "60px 5vw 32px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "40px", marginBottom: "48px" }}>
         <div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", letterSpacing: "0.12em", color: "#fff", marginBottom: "8px" }}>
@@ -852,7 +858,7 @@ function SectionHeader({ label, title }) {
 
 // ─── ROOT APP ─────────────────────────────────────────────────────────────────
 
-export default function App() {
+function LandingPage() {
   const { toasts, show: toast } = useToast();
   const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -864,7 +870,8 @@ export default function App() {
   };
 
   return (
-    <div style={{ background: "#0a0a0a", minHeight: "100vh", fontFamily: "'DM Sans', system-ui, sans-serif", color: "#fff" }}>
+    <div style={{ background: "transparent", minHeight: "100vh", fontFamily: "'DM Sans', system-ui, sans-serif", color: "#fff", position: "relative" }}>
+      <UnicornBackground />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
         @keyframes fadeSlideUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
@@ -965,11 +972,23 @@ export default function App() {
       <ErrorBoundary name="About">
         <About />
       </ErrorBoundary>
+      <ErrorBoundary name="Volunteer">
+        <Volunteer toast={toast} />
+      </ErrorBoundary>
       <ErrorBoundary name="Contact">
         <Contact toast={toast} />
       </ErrorBoundary>
       <Footer />
       <ToastContainer toasts={toasts} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+    </Routes>
   );
 }
