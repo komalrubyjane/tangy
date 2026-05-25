@@ -632,7 +632,7 @@ function About() {
     <section id="about" style={{ background: "transparent", padding: "100px 5vw" }}>
       <SectionHeader label="Our Story" title="About Tangy Sessions" />
 
-      <div style={{ maxWidth: 1200, margin: "60px auto 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
+      <div id="about-grid" style={{ maxWidth: 1200, margin: "60px auto 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
 
         {/* LEFT — Story + Stats */}
         <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
@@ -680,6 +680,7 @@ function About() {
 
         {/* RIGHT — Hover accordion portrait cards (2 cards) */}
         <motion.div
+          id="about-founders"
           initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
           style={{ display: "flex", gap: 14, height: 500 }}>
           {founders.map((f, i) => (
@@ -781,9 +782,10 @@ function About() {
 
       <style>{`
         @media (max-width: 768px) {
-          #about > div:last-child { grid-template-columns: 1fr !important; }
-          #about > div:last-child > div:last-child { flex-direction: column !important; height: auto !important; gap: 12px !important; }
-          #about > div:last-child > div:last-child > div { height: 260px !important; flex: none !important; min-width: 0 !important; }
+          #about-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+          #about-grid > * { width: 100% !important; }
+          #about-founders { flex-direction: column !important; height: auto !important; gap: 12px !important; }
+          #about-founders > * { height: 280px !important; flex: none !important; min-width: 0 !important; width: 100% !important; }
         }
       `}</style>
     </section>
@@ -913,7 +915,7 @@ function Contact({ toast }) {
 // ─── FOOTER ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer style={{ background: "transparent", borderTop: "1px solid rgba(124,58,237,0.1)", padding: "60px 5vw 32px" }}>
+    <footer style={{ background: "#090909", borderTop: "1px solid rgba(124,58,237,0.15)", padding: "60px 5vw 32px", position: "relative", zIndex: 1 }}>
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 40, marginBottom: 48 }}>
         <div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", letterSpacing: "0.1em", color: "#fff", marginBottom: 8 }}>
