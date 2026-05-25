@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSharedStore, MOCK_INITIAL_ARTISTS } from "../store";
 
 // ─── MOCK DATA ────────────────────────────────────────────────────────────────
 const MOCK_BOOKINGS = [
@@ -64,21 +65,25 @@ function Sparkline({ data, color = "#7c3aed", width = 120, height = 40 }) {
 // ─── STATUS BADGE ─────────────────────────────────────────────────────────────
 function Badge({ status }) {
   const colors = {
-    confirmed: { bg: "rgba(16,185,129,0.12)", border: "#10b981", text: "#10b981" },
-    pending: { bg: "rgba(245,158,11,0.12)", border: "#f59e0b", text: "#f59e0b" },
-    refunded: { bg: "rgba(239,68,68,0.12)", border: "#ef4444", text: "#ef4444" },
-    approved: { bg: "rgba(16,185,129,0.12)", border: "#10b981", text: "#10b981" },
-    rejected: { bg: "rgba(239,68,68,0.12)", border: "#ef4444", text: "#ef4444" },
-    "on-sale": { bg: "rgba(6,182,212,0.12)", border: "#06b6d4", text: "#06b6d4" },
+    confirmed: { bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)", text: "#10b981" },
+    pending: { bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", text: "#f59e0b" },
+    refunded: { bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)", text: "#ef4444" },
+    approved: { bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)", text: "#10b981" },
+    rejected: { bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)", text: "#ef4444" },
+    "on-sale": { bg: "rgba(6,182,212,0.1)", border: "rgba(6,182,212,0.25)", text: "#06b6d4" },
+    "sold-out": { bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)", text: "#ef4444" },
+    cancelled: { bg: "rgba(120,113,108,0.1)", border: "rgba(120,113,108,0.25)", text: "#78716c" },
   };
-  const c = colors[status] || colors.pending;
+  const c = colors[status] || { bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", text: "#f59e0b" };
   return (
     <span style={{
-      padding: "3px 10px", borderRadius: 20, fontSize: "0.68rem",
-      background: c.bg, border: `1px solid ${c.border}40`,
+      padding: "7px 16px", borderRadius: 6, fontSize: "0.78rem",
+      background: c.bg, border: `1px solid ${c.border}`,
       color: c.text, textTransform: "capitalize", letterSpacing: "0.05em", whiteSpace: "nowrap",
+      display: "inline-flex", alignItems: "center", justifyContent: "center",
+      fontWeight: 500, fontFamily: "inherit",
     }}>
-      {status}
+      {status === "on-sale" ? "On-Sale" : status}
     </span>
   );
 }
@@ -185,9 +190,14 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState("overview");
   const [bookingFilter, setBookingFilter] = useState("all");
   const [volunteerFilter, setVolunteerFilter] = useState("all");
+  const [artistFilter, setArtistFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [volunteers, setVolunteers] = useState(MOCK_VOLUNTEERS);
   const [bookings, setBookings] = useState(MOCK_BOOKINGS);
+  const [events, setEvents] = useState(EVENTS_DATA);
+  const [artists, setArtists] = useSharedStore("artists", MOCK_INITIAL_ARTISTS);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [editForm, setEditForm] = useState({ name: "", date: "", capacity: 0, sold: 0, revenue: 0, status: "" });
   const [notification, setNotification] = useState(null);
 
   const showNote = (msg, type = "success") => {
@@ -201,6 +211,7 @@ export default function AdminDashboard() {
   const totalRevenue = bookings.filter(b => b.status === "confirmed").reduce((s, b) => s + b.amount, 0);
   const totalTickets = bookings.filter(b => b.status === "confirmed").reduce((s, b) => s + b.tickets, 0);
   const pendingVols = volunteers.filter(v => v.status === "pending").length;
+  const pendingArtists = artists.filter(a => a.appStatus === "pending").length;
 
   const filteredBookings = bookings.filter(b => {
     const matchFilter = bookingFilter === "all" || b.status === bookingFilter;
@@ -214,9 +225,20 @@ export default function AdminDashboard() {
     return matchFilter && matchSearch;
   });
 
+  const filteredArtists = artists.filter(a => {
+    const matchFilter = artistFilter === "all" || a.appStatus === artistFilter || a.status === artistFilter;
+    const matchSearch = !search || a.name.toLowerCase().includes(search.toLowerCase()) || a.genre.toLowerCase().includes(search.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+
   const updateVolunteer = (id, status) => {
     setVolunteers(vs => vs.map(v => v.id === id ? { ...v, status } : v));
     showNote(`Volunteer ${status === "approved" ? "approved ✓" : "rejected"}`);
+  };
+
+  const updateArtistAppStatus = (id, appStatus) => {
+    setArtists(prev => prev.map(a => a.id === id ? { ...a, appStatus } : a));
+    showNote(`Artist ${appStatus === "approved" ? "approved ✓" : "rejected"}`);
   };
 
   const TABS = [
@@ -224,6 +246,7 @@ export default function AdminDashboard() {
     { id: "bookings", label: "Bookings", icon: "🎟️" },
     { id: "volunteers", label: "Volunteers", icon: "🤝" },
     { id: "events", label: "Events", icon: "📅" },
+    { id: "artists", label: "Artists", icon: "🎵" },
   ];
 
   const FILTER_BTN = (active, label, val, setter) => (
@@ -293,6 +316,9 @@ export default function AdminDashboard() {
                 <span>{t.icon}</span> {t.label}
                 {t.id === "volunteers" && pendingVols > 0 && (
                   <span style={{ marginLeft: "auto", background: "#f59e0b", color: "#000", borderRadius: 10, padding: "1px 7px", fontSize: "0.65rem", fontWeight: 700 }}>{pendingVols}</span>
+                )}
+                {t.id === "artists" && pendingArtists > 0 && (
+                  <span style={{ marginLeft: "auto", background: "#7c3aed", color: "#fff", borderRadius: 10, padding: "1px 7px", fontSize: "0.65rem", fontWeight: 700 }}>{pendingArtists}</span>
                 )}
               </button>
             ))}
@@ -376,8 +402,8 @@ export default function AdminDashboard() {
                 {/* Event capacity bars */}
                 <div style={{ marginTop: 24, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "20px 24px" }}>
                   <div style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 20 }}>Event Capacity</div>
-                  {EVENTS_DATA.map((ev, i) => (
-                    <div key={ev.name} style={{ marginBottom: i < EVENTS_DATA.length - 1 ? 20 : 0 }}>
+                  {events.map((ev, i) => (
+                    <div key={ev.name} style={{ marginBottom: i < events.length - 1 ? 20 : 0 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", marginBottom: 8 }}>
                         <span style={{ color: "#fff" }}>{ev.name}</span>
                         <span style={{ color: "rgba(255,255,255,0.4)" }}>{ev.sold}/{ev.capacity} sold</span>
@@ -516,7 +542,7 @@ export default function AdminDashboard() {
             {tab === "events" && (
               <motion.div key="events" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  {EVENTS_DATA.map((ev, i) => (
+                  {events.map((ev, i) => (
                     <motion.div key={ev.name} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
                       style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "24px 28px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, marginBottom: 20 }}>
@@ -526,8 +552,10 @@ export default function AdminDashboard() {
                         </div>
                         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                           <Badge status={ev.status} />
-                          <button style={{ padding: "7px 16px", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", borderRadius: 6, color: "#7c3aed", cursor: "pointer", fontSize: "0.78rem", fontFamily: "inherit" }}
-                            onClick={() => showNote("Event settings coming soon")}>
+                          <button style={{ padding: "7px 16px", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", borderRadius: 6, color: "#7c3aed", cursor: "pointer", fontSize: "0.78rem", fontFamily: "inherit", transition: "all 0.2s" }}
+                            onClick={() => { setEditingEvent(i); setEditForm({ ...ev }); }}
+                            onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.2)"; e.currentTarget.style.borderColor = "rgba(124,58,237,0.4)"; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = "rgba(124,58,237,0.1)"; e.currentTarget.style.borderColor = "rgba(124,58,237,0.25)"; }}>
                             Edit Event
                           </button>
                         </div>
@@ -565,9 +593,336 @@ export default function AdminDashboard() {
                 </div>
               </motion.div>
             )}
+
+            {/* ── ARTISTS ── */}
+            {tab === "artists" && (
+              <motion.div key="artists" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, gap: 16, flexWrap: "wrap" }}>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    {FILTER_BTN(artistFilter, "All Artists", "all", setArtistFilter)}
+                    {FILTER_BTN(artistFilter, "Approved", "approved", setArtistFilter)}
+                    {FILTER_BTN(artistFilter, "Pending Approval", "pending", setArtistFilter)}
+                    {FILTER_BTN(artistFilter, "Booked", "booked", setArtistFilter)}
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <AnimatePresence mode="popLayout">
+                    {filteredArtists.map((a, i) => (
+                      <motion.div key={a.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ delay: i * 0.05 }}
+                        style={{
+                          background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+                          borderRadius: 12, padding: "18px 22px",
+                          display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
+                        }}>
+                        
+                        {/* Avatar */}
+                        <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", border: `2px solid ${a.color || "#7c3aed"}`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.03)" }}>
+                          {a.avatar ? (
+                            <img src={a.avatar} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
+                          ) : null}
+                          <span style={{ display: a.avatar ? "none" : "flex", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2rem", color: a.color || "#7c3aed" }}>
+                            {a.name.split(" ").map(n => n[0]).join("")}
+                          </span>
+                        </div>
+
+                        {/* Name & Genre */}
+                        <div style={{ flex: 1, minWidth: 160 }}>
+                          <div style={{ fontWeight: 600, fontSize: "0.95rem", color: "#fff", display: "flex", alignItems: "center", gap: 8 }}>
+                            {a.name}
+                            <span style={{ fontSize: "0.7rem", padding: "2px 6px", background: `${a.color}15`, border: `1px solid ${a.color}35`, color: a.color, borderRadius: 4, textTransform: "uppercase" }}>{a.tags?.[0] || 'DJ'}</span>
+                          </div>
+                          <div style={{ fontSize: "0.76rem", color: "rgba(255,255,255,0.4)", marginTop: 2 }}>{a.genre}</div>
+                        </div>
+
+                        {/* Booking Status */}
+                        <div style={{ minWidth: 110 }}>
+                          <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", marginBottom: 3 }}>BOOKING STATUS</div>
+                          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                            <select
+                              value={a.status}
+                              onChange={(e) => {
+                                setArtists(prev => prev.map(art => art.id === a.id ? { ...art, status: e.target.value } : art));
+                                showNote(`${a.name}'s booking status updated to ${e.target.value}`);
+                              }}
+                              style={{
+                                background: "rgba(20,20,28,1)",
+                                border: "1px solid rgba(255,255,255,0.08)",
+                                borderRadius: 6,
+                                color: a.status === "booked" ? "#06b6d4" : a.status === "available" ? "#10b981" : "#f59e0b",
+                                fontSize: "0.76rem",
+                                padding: "4px 8px",
+                                outline: "none",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <option value="available" style={{ color: "#10b981" }}>Available</option>
+                              <option value="booked" style={{ color: "#06b6d4" }}>Booked</option>
+                              <option value="tentative" style={{ color: "#f59e0b" }}>Tentative</option>
+                              <option value="unavailable" style={{ color: "#ef4444" }}>Unavailable</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Bio teaser */}
+                        <div style={{ flex: "1 1 200px", minWidth: 200 }}>
+                          <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", marginBottom: 3 }}>BIO</div>
+                          <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.55)", fontStyle: "italic", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 260 }}>
+                            "{a.bio}"
+                          </div>
+                        </div>
+
+                        {/* Approval Status & Actions */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <Badge status={a.appStatus || "pending"} />
+                          {a.appStatus === "pending" && (
+                            <>
+                              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                                onClick={() => updateArtistAppStatus(a.id, "approved")}
+                                style={{ padding: "6px 14px", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 6, color: "#10b981", cursor: "pointer", fontSize: "0.75rem", fontFamily: "inherit" }}>
+                                ✓ Approve
+                              </motion.button>
+                              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                                onClick={() => updateArtistAppStatus(a.id, "rejected")}
+                                style={{ padding: "6px 14px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 6, color: "#ef4444", cursor: "pointer", fontSize: "0.75rem", fontFamily: "inherit" }}>
+                                ✕ Reject
+                              </motion.button>
+                            </>
+                          )}
+                          {a.appStatus === "approved" && (
+                            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                              onClick={() => updateArtistAppStatus(a.id, "pending")}
+                              style={{ padding: "6px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6, color: "rgba(255,255,255,0.6)", cursor: "pointer", fontSize: "0.75rem", fontFamily: "inherit" }}>
+                              Revoke
+                            </motion.button>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                  {filteredArtists.length === 0 && (
+                    <div style={{ textAlign: "center", padding: "60px", color: "rgba(255,255,255,0.25)", fontSize: "0.9rem" }}>No artists found</div>
+                  )}
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
         </main>
       </div>
+
+      {/* ── EDIT EVENT LIQUID GLASS MODAL ── */}
+      <AnimatePresence>
+        {editingEvent !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0, 0, 0, 0.75)",
+              backdropFilter: "blur(12px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 99999,
+              padding: 20,
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 250 }}
+              style={{
+                background: "linear-gradient(135deg, rgba(16,16,24,0.9) 0%, rgba(10,10,14,0.95) 100%)",
+                backdropFilter: "blur(30px)",
+                border: "1px solid rgba(124, 58, 237, 0.25)",
+                boxShadow: "0 30px 70px rgba(0,0,0,0.8), 0 0 50px rgba(124, 58, 237, 0.15), inset 0 1px 1px rgba(255,255,255,0.05)",
+                borderRadius: 24,
+                width: "100%",
+                maxWidth: 480,
+                padding: "36px 40px",
+                position: "relative",
+                color: "#fff",
+              }}
+            >
+              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", letterSpacing: "0.06em", marginBottom: 24, color: "#fff" }}>
+                Edit Event
+              </h2>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div>
+                  <label style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Event Name</label>
+                  <input
+                    type="text"
+                    value={editForm.name}
+                    onChange={e => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                    style={{
+                      width: "100%",
+                      padding: "11px 14px",
+                      background: "rgba(255,255,255,0.03)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 8,
+                      color: "#fff",
+                      fontSize: "0.88rem",
+                      outline: "none",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Date</label>
+                  <input
+                    type="text"
+                    value={editForm.date}
+                    onChange={e => setEditForm(prev => ({ ...prev, date: e.target.value }))}
+                    style={{
+                      width: "100%",
+                      padding: "11px 14px",
+                      background: "rgba(255,255,255,0.03)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 8,
+                      color: "#fff",
+                      fontSize: "0.88rem",
+                      outline: "none",
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                  <div>
+                    <label style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Capacity</label>
+                    <input
+                      type="number"
+                      value={editForm.capacity}
+                      onChange={e => setEditForm(prev => ({ ...prev, capacity: parseInt(e.target.value) || 0 }))}
+                      style={{
+                        width: "100%",
+                        padding: "11px 14px",
+                        background: "rgba(255,255,255,0.03)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: 8,
+                        color: "#fff",
+                        fontSize: "0.88rem",
+                        outline: "none",
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Sold</label>
+                    <input
+                      type="number"
+                      value={editForm.sold}
+                      onChange={e => setEditForm(prev => ({ ...prev, sold: parseInt(e.target.value) || 0 }))}
+                      style={{
+                        width: "100%",
+                        padding: "11px 14px",
+                        background: "rgba(255,255,255,0.03)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: 8,
+                        color: "#fff",
+                        fontSize: "0.88rem",
+                        outline: "none",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                  <div>
+                    <label style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Revenue (₹)</label>
+                    <input
+                      type="number"
+                      value={editForm.revenue}
+                      onChange={e => setEditForm(prev => ({ ...prev, revenue: parseInt(e.target.value) || 0 }))}
+                      style={{
+                        width: "100%",
+                        padding: "11px 14px",
+                        background: "rgba(255,255,255,0.03)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: 8,
+                        color: "#fff",
+                        fontSize: "0.88rem",
+                        outline: "none",
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Status</label>
+                    <select
+                      value={editForm.status}
+                      onChange={e => setEditForm(prev => ({ ...prev, status: e.target.value }))}
+                      style={{
+                        width: "100%",
+                        padding: "11px 14px",
+                        background: "rgba(20,20,28,1)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: 8,
+                        color: "#fff",
+                        fontSize: "0.88rem",
+                        outline: "none",
+                        height: "43px",
+                      }}
+                    >
+                      <option value="on-sale">On Sale</option>
+                      <option value="sold-out">Sold Out</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: 12, marginTop: 14 }}>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setEditingEvent(null)}
+                    style={{
+                      flex: 1,
+                      padding: "12px",
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 8,
+                      color: "#fff",
+                      cursor: "pointer",
+                      fontSize: "0.85rem",
+                      fontFamily: "inherit",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Cancel
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(124, 58, 237, 0.4)" }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setEvents(prev => prev.map((ev, i) => i === editingEvent ? editForm : ev));
+                      setEditingEvent(null);
+                      showNote("Event updated successfully!");
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: "12px",
+                      background: "#7c3aed",
+                      border: "none",
+                      borderRadius: 8,
+                      color: "#fff",
+                      cursor: "pointer",
+                      fontSize: "0.85rem",
+                      fontFamily: "inherit",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Save Changes
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

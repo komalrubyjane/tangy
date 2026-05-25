@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useModal } from "./ModalProvider";
 
 const PAYMENT_METHODS = [
   { id: "upi", label: "UPI", icon: "⚡", desc: "Pay via any UPI app instantly" },
@@ -47,6 +48,7 @@ function Stepper({ step }) {
 }
 
 export default function PaymentModal({ amount, event, onClose, onSuccess }) {
+  const modal = useModal();
   const [step, setStep] = useState(0);
   const [method, setMethod] = useState(null);
   const [upiId, setUpiId] = useState("");
@@ -391,7 +393,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                    onClick={() => alert("Download ticket (connect to backend)")}
+                    onClick={() => modal.toast({ message: "Download ticket (connect to backend)" })}
                     style={{
                       flex: 1, padding: "14px", background: "transparent", color: "#fff",
                       border: "1px solid rgba(255,255,255,0.15)", borderRadius: 10,

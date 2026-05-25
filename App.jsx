@@ -13,6 +13,8 @@ import UnicornBackground from "./src/components/UnicornBackground";
 import PaymentModal from "./src/components/PaymentModal";
 import Volunteer from "./src/components/Volunteer";
 import AdminDashboard from "./src/components/AdminDashboard";
+import ArtistPortal from "./TangyArtistPortal";
+import { ModalProvider, useModal } from "./src/components/ModalProvider";
 
 // ─── ERROR BOUNDARY ───────────────────────────────────────────────────────────
 class ErrorBoundary extends React.Component {
@@ -31,39 +33,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-// ─── TOAST ────────────────────────────────────────────────────────────────────
-function useToast() {
-  const [toasts, setToasts] = useState([]);
-  const show = useCallback((msg, type = "info") => {
-    const id = Date.now();
-    setToasts(t => [...t, { id, msg, type }]);
-    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 4200);
-  }, []);
-  return { toasts, show };
-}
 
-function ToastContainer({ toasts }) {
-  const colors = { info: "#7c3aed", success: "#10b981", error: "#ef4444", warning: "#f59e0b" };
-  return (
-    <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 9999, display: "flex", flexDirection: "column", gap: 10 }}>
-      <AnimatePresence>
-        {toasts.map(t => (
-          <motion.div key={t.id}
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            style={{
-              background: "#111", border: `1px solid ${colors[t.type] || colors.info}`,
-              color: "#fff", padding: "12px 20px", borderRadius: 10, fontSize: "0.87rem",
-              boxShadow: `0 0 20px ${colors[t.type]}44`, maxWidth: 320, fontFamily: "inherit",
-            }}>
-            {t.msg}
-          </motion.div>
-        ))}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const EVENTS = [
@@ -150,13 +120,6 @@ function Navbar() {
         ))}
       </div>
 
-      {/* Admin link */}
-      <button onClick={() => navigate("/admin")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", borderRadius: 6, color: "rgba(255,255,255,0.5)", textDecoration: "none", fontSize: "0.72rem", letterSpacing: "0.1em", transition: "all 0.2s", cursor: "pointer", fontFamily: "inherit" }}
-        className="nav-admin"
-        onMouseEnter={e => { e.currentTarget.style.borderColor = "#7c3aed"; e.currentTarget.style.color = "#fff"; }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(124,58,237,0.25)"; e.currentTarget.style.color = "rgba(255,255,255,0.5)"; }}>
-        ⚙ Admin
-      </button>
 
       {/* Hamburger */}
       <button onClick={() => setMenuOpen(!menuOpen)}
@@ -175,7 +138,7 @@ function Navbar() {
                 {l}
               </button>
             ))}
-            <button onClick={() => { navigate("/admin"); setMenuOpen(false); }} style={{ background: "none", border: "none", color: "#7c3aed", textDecoration: "none", fontSize: "0.85rem", padding: "14px 0", letterSpacing: "0.1em", cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>⚙ Admin Dashboard</button>
+
           </motion.div>
         )}
       </AnimatePresence>
@@ -187,6 +150,11 @@ function Navbar() {
 function Hero({ onBook }) {
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef(null);
+  const sectionRef = useRef(null);
+  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+  const targetOffset = useRef({ x: 0, y: 0 });
+  const currentOffset = useRef({ x: 0, y: 0 });
+  const rafId = useRef(null);
 
   useEffect(() => {
     const v = videoRef.current;
@@ -194,22 +162,74 @@ function Hero({ onBook }) {
     v.play().catch(() => { v.muted = true; v.play().catch(() => setVideoError(true)); });
   }, []);
 
+  // Smooth cursor parallax loop
+  useEffect(() => {
+    const onMouseMove = (e) => {
+      const { innerWidth: W, innerHeight: H } = window;
+      // Normalize -1 to 1
+      targetOffset.current = {
+        x: (e.clientX / W - 0.5) * 2,
+        y: (e.clientY / H - 0.5) * 2,
+      };
+    };
+    window.addEventListener("mousemove", onMouseMove);
+
+    const tick = () => {
+      // Lerp toward target (ease factor 0.06 = silky smooth)
+      currentOffset.current.x += (targetOffset.current.x - currentOffset.current.x) * 0.06;
+      currentOffset.current.y += (targetOffset.current.y - currentOffset.current.y) * 0.06;
+
+      const STRENGTH = 18; // px of max shift
+      const tx = currentOffset.current.x * STRENGTH;
+      const ty = currentOffset.current.y * STRENGTH;
+
+      if (videoRef.current) {
+        videoRef.current.style.transform = `scale(1.08) translate(${tx}px, ${ty}px)`;
+      }
+      setMouseOffset({ x: currentOffset.current.x, y: currentOffset.current.y });
+      rafId.current = requestAnimationFrame(tick);
+    };
+    rafId.current = requestAnimationFrame(tick);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      cancelAnimationFrame(rafId.current);
+    };
+  }, []);
+
   return (
-    <section id="home" style={{ position: "relative", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: "#090909" }}>
-      {!videoError ? (
-        <video ref={videoRef} autoPlay loop muted playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
-          onError={() => setVideoError(true)}>
-          <source src="https://res.cloudinary.com/dfonotyfb/video/upload/v1775585556/dds3_1_rqhg7x.mp4" type="video/mp4" />
-        </video>
-      ) : (
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "radial-gradient(ellipse at 30% 50%, #7c3aed1a, transparent 60%), radial-gradient(ellipse at 70% 50%, #06b6d41a, transparent 60%), #090909" }} />
-      )}
+    <section ref={sectionRef} id="home" style={{ position: "relative", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: "#090909" }}>
+      {/* Localized Pinterest Background Video (Watermark-Free, Fully Loopable, High Performance) */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src="/pinterest-bg.mp4" type="video/mp4" />
+      </video>
+
       {/* Layered overlays */}
       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.58)", zIndex: 1 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 60%, #090909)", zIndex: 2 }} />
-      {/* Grain */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 3, opacity: 0.035, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: 128 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 55%, #090909 100%)", zIndex: 2 }} />
+
+      {/* Subtle cursor-driven light flare that tracks mouse */}
+      <div style={{
+        position: "absolute", zIndex: 3, pointerEvents: "none",
+        width: "40vw", height: "40vw", borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
+        transform: `translate(calc(-50% + ${mouseOffset.x * 60}px), calc(-50% + ${mouseOffset.y * 60}px))`,
+        top: "50%", left: "50%",
+        transition: "transform 0.1s linear",
+      }} />
 
       {/* Content */}
       <div style={{ position: "relative", zIndex: 4, textAlign: "center", padding: "0 24px", maxWidth: 800, margin: "0 auto" }}>
@@ -294,11 +314,18 @@ function EventCard({ ev, delay, onBook }) {
       viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay, type: "spring", bounce: 0.3 }}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       style={{
-        background: hovered ? "rgba(124,58,237,0.06)" : "rgba(255,255,255,0.025)",
-        border: `1px solid ${hovered ? "rgba(124,58,237,0.5)" : "rgba(255,255,255,0.07)"}`,
-        borderRadius: 14, padding: 32, cursor: "pointer",
-        boxShadow: hovered ? "0 24px 60px rgba(124,58,237,0.18)" : "none",
-        transition: "all 0.35s ease",
+        background: hovered
+          ? "linear-gradient(135deg, rgba(8,8,12,0.88) 0%, rgba(124,58,237,0.10) 100%)"
+          : "linear-gradient(135deg, rgba(8,8,12,0.80) 0%, rgba(8,8,12,0.58) 100%)",
+        backdropFilter: "blur(22px)",
+        WebkitBackdropFilter: "blur(22px)",
+        border: `1px solid ${hovered ? "rgba(124,58,237,0.50)" : "rgba(124,58,237,0.22)"}`,
+        borderRadius: 16, padding: 32, cursor: "pointer",
+        boxShadow: hovered
+          ? "0 24px 60px rgba(0,0,0,0.75), 0 0 40px rgba(124,58,237,0.18), inset 0 1px 0 rgba(255,255,255,0.07)"
+          : "0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(124,58,237,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
+        transform: hovered ? "translateY(-5px)" : "translateY(0)",
+        transition: "all 0.35s cubic-bezier(0.16,1,0.3,1)",
         display: "flex", flexDirection: "column", gap: 0,
       }}>
       {/* Date + time */}
@@ -372,15 +399,22 @@ function ArtistCard({ a, delay }) {
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
         textAlign: "center", padding: "40px 24px 32px",
-        background: hov ? `${a.color}0d` : "rgba(255,255,255,0.02)",
-        border: `1px solid ${hov ? a.color + "44" : "rgba(255,255,255,0.06)"}`,
-        borderRadius: 14, cursor: "pointer",
-        boxShadow: hov ? `0 20px 50px ${a.color}18` : "none",
-        transition: "all 0.35s ease",
+        background: hov
+          ? `linear-gradient(135deg, rgba(8,8,12,0.85) 0%, ${a.color}18 100%)`
+          : "linear-gradient(135deg, rgba(8,8,12,0.78) 0%, rgba(8,8,12,0.55) 100%)",
+        backdropFilter: "blur(22px)",
+        WebkitBackdropFilter: "blur(22px)",
+        border: `1px solid ${hov ? a.color + "55" : "rgba(124,58,237,0.22)"}`,
+        borderRadius: 16, cursor: "pointer",
+        boxShadow: hov
+          ? `0 24px 60px rgba(0,0,0,0.75), 0 0 40px ${a.color}25, inset 0 1px 0 rgba(255,255,255,0.07)`
+          : "0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(124,58,237,0.07), inset 0 1px 0 rgba(255,255,255,0.04)",
+        transform: hov ? "translateY(-6px)" : "translateY(0)",
+        transition: "all 0.35s cubic-bezier(0.16,1,0.3,1)",
       }}>
       <motion.div
         animate={{ boxShadow: hov ? `0 0 40px ${a.color}55` : "none" }}
-        style={{ width: 100, height: 100, borderRadius: "50%", margin: "0 auto 20px", border: `2px solid ${hov ? a.color : "rgba(255,255,255,0.08)"}`, overflow: "hidden", transition: "border-color 0.3s", flexShrink: 0 }}>
+        style={{ width: 100, height: 100, borderRadius: "50%", margin: "0 auto 20px", border: `2px solid ${hov ? a.color : "rgba(124,58,237,0.3)"}`, overflow: "hidden", transition: "border-color 0.3s", flexShrink: 0 }}>
         <img src={a.img} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover", filter: hov ? "brightness(1.1)" : "brightness(0.85) saturate(0.9)", transition: "filter 0.35s" }} />
       </motion.div>
       <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.65rem", color: "#fff", margin: "0 0 6px", letterSpacing: "0.08em" }}>{a.name}</h3>
@@ -388,7 +422,7 @@ function ArtistCard({ a, delay }) {
       <AnimatePresence>
         {hov && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-            style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}>
+            style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
             {a.bio}
           </motion.div>
         )}
@@ -477,23 +511,31 @@ function Tickets({ toast, selectedEvent }) {
   const handleSubmit = () => {
     const errs = validate();
     setErrors(errs);
-    if (Object.keys(errs).length) { toast("Please fix the errors above", "error"); return; }
+    if (Object.keys(errs).length) { toast({ message: "Please fix the errors above", type: "error" }); return; }
     setShowModal(true);
   };
 
   const inp = field => ({
-    width: "100%", padding: "12px 14px", background: "rgba(255,255,255,0.04)",
-    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(255,255,255,0.1)"}`,
+    width: "100%", padding: "12px 14px", background: "rgba(0,0,0,0.4)",
+    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(124,58,237,0.2)"}`,
     borderRadius: 8, color: "#fff", fontSize: "0.88rem", fontFamily: "inherit",
-    outline: "none", boxSizing: "border-box", transition: "border-color 0.2s",
+    outline: "none", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s",
   });
 
   return (
-    <section id="tickets" style={{ background: "transparent", padding: "100px 5vw" }}>
+    <section id="tickets" style={{ background: "transparent", padding: "100px 5vw", position: "relative", zIndex: 10 }}>
       <SectionHeader label="Reserve" title="Book Tickets" />
       <motion.div
         initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", bounce: 0.3 }}
-        style={{ maxWidth: 520, margin: "60px auto 0", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(124,58,237,0.18)", borderRadius: 18, padding: "40px 36px" }}>
+        style={{
+          maxWidth: 520, margin: "60px auto 0",
+          background: "linear-gradient(135deg, rgba(8,8,12,0.85) 0%, rgba(8,8,12,0.65) 100%)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          border: "1px solid rgba(124,58,237,0.3)",
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.8), 0 0 40px rgba(124,58,237,0.15), inset 0 1px 1px rgba(255,255,255,0.05)",
+          borderRadius: 18, padding: "40px 36px"
+        }}>
 
         {/* Event */}
         <div style={{ marginBottom: 20 }}>
@@ -557,7 +599,7 @@ function Tickets({ toast, selectedEvent }) {
 
       <AnimatePresence>
         {showModal && <PaymentModal amount={total} event={selectedEv} onClose={() => setShowModal(false)}
-          onSuccess={() => { toast("Tickets confirmed! See you at the Stepwell. 🎵", "success"); setForm({ event: "", qty: 1, name: "", email: "" }); }} />}
+          onSuccess={() => { toast({ message: "Tickets confirmed! See you at the Stepwell. 🎵", type: "success" }); setForm({ event: "", qty: 1, name: "", email: "" }); }} />}
       </AnimatePresence>
     </section>
   );
@@ -565,40 +607,189 @@ function Tickets({ toast, selectedEvent }) {
 
 // ─── ABOUT ────────────────────────────────────────────────────────────────────
 function About() {
+  const [active, setActive] = useState(0);
+
+  const founders = [
+    {
+      role: "Founder",
+      name: "Arjun\nVisionary & Creator",
+      image: "/arjun.png",
+      bio: "Born from an obsession with underground sound and ancient spaces. Tangy Sessions exists because Arjun refused to let music stay ordinary.",
+      color: "#7c3aed",
+    },
+    {
+      role: "Co-Founder",
+      name: "Deepa\nCurator & Director",
+      image: "/deepa.jpg",
+      bio: "Every artist, every setlist, every moment of silence between drops — Deepa crafts with obsessive care to ensure each session is a masterpiece.",
+      color: "#06b6d4",
+    },
+  ];
+
   const stats = [["3", "Sessions"], ["1200+", "Attendees"], ["12", "Artists"], ["1", "Stepwell"]];
+
   return (
     <section id="about" style={{ background: "transparent", padding: "100px 5vw" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <div style={{ fontSize: "0.68rem", letterSpacing: "0.35em", color: "#7c3aed", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 16 }}>Our Story</div>
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 4.5rem)", color: "#fff", margin: "0 0 36px", letterSpacing: "0.04em" }}>About Tangy Sessions</h2>
+      <SectionHeader label="Our Story" title="About Tangy Sessions" />
+
+      <div style={{ maxWidth: 1200, margin: "60px auto 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
+
+        {/* LEFT — Story + Stats */}
+        <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
+          style={{
+            background: "linear-gradient(135deg, rgba(6,6,10,0.82) 0%, rgba(6,6,10,0.65) 100%)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1px solid rgba(124,58,237,0.15)",
+            borderRadius: 20,
+            padding: "40px 36px",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 6vw, 5.5rem)", lineHeight: 0.9, color: "#fff", margin: "0 0 32px", letterSpacing: "0.02em" }}>
+            Study.<br />
+            <span style={{ color: "#7c3aed" }}>Feel.</span><br />
+            Rise.
+          </motion.h2>
+
           {[
             "Tangy Sessions was born from a single belief: that music hits differently when the walls around you have centuries of stories to tell.",
-            "We host underground electronic music events deep inside the Bansilal Stepwell — a monument where geometry, water, and silence converge. The result is something you can't recreate in a nightclub: a resonance that is both ancient and electric.",
-            "Each edition is curated with obsessive care — the right artists, the right frequencies, the right hour of night. No VIP egos. Just you, the music, and five hundred years of stone.",
+            "We host underground electronic music events deep inside the Bansilal Stepwell — where geometry, water, and silence converge into something ancient and electric.",
           ].map((p, i) => (
-            <motion.p key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 * i }}
-              style={{ color: i === 0 ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.4)", fontSize: i === 0 ? "1.05rem" : "0.92rem", lineHeight: 1.85, marginBottom: 20 }}>
+            <motion.p key={i}
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 * i }}
+              style={{ color: i === 0 ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.65)", fontSize: i === 0 ? "1rem" : "0.88rem", lineHeight: 1.8, marginBottom: 18 }}>
               {p}
             </motion.p>
           ))}
+
+          {/* Stats */}
+          <div style={{ display: "flex", gap: 36, marginTop: 48, flexWrap: "wrap" }}>
+            {stats.map(([n, l], i) => (
+              <motion.div key={l}
+                initial={{ opacity: 0, scale: 0.6 }} whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
+                whileHover={{ scale: 1.08 }} style={{ textAlign: "left" }}>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3rem", color: "#7c3aed", lineHeight: 1 }}>{n}</div>
+                <div style={{ fontSize: "0.68rem", letterSpacing: "0.22em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase", marginTop: 4 }}>{l}</div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
-        <div style={{ display: "flex", gap: 48, justifyContent: "center", marginTop: 60, flexWrap: "wrap" }}>
-          {stats.map(([n, l], i) => (
-            <motion.div key={l}
-              initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }} transition={{ delay: 0.5 + i * 0.1, type: "spring" }}
-              whileHover={{ scale: 1.08 }} style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3.2rem", color: "#7c3aed", lineHeight: 1 }}>{n}</div>
-              <div style={{ fontSize: "0.7rem", letterSpacing: "0.22em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginTop: 6 }}>{l}</div>
+        {/* RIGHT — Hover accordion portrait cards (2 cards) */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
+          style={{ display: "flex", gap: 14, height: 500 }}>
+          {founders.map((f, i) => (
+            <motion.div
+              key={f.role + i}
+              onMouseEnter={() => setActive(i)}
+              animate={{ flex: active === i ? 3 : 1 }}
+              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                position: "relative", overflow: "hidden", borderRadius: 28,
+                cursor: "default", minWidth: 0,
+                border: `1px solid ${active === i ? f.color + "55" : "rgba(124,58,237,0.18)"}`,
+                boxShadow: active === i
+                  ? `0 20px 50px rgba(0,0,0,0.7), 0 0 40px ${f.color}25`
+                  : "0 8px 24px rgba(0,0,0,0.5)",
+                transition: "border-color 0.4s, box-shadow 0.4s",
+              }}>
+
+              {/* Photo */}
+              <img src={f.image} alt={f.role}
+                style={{
+                  position: "absolute", inset: 0, width: "100%", height: "100%",
+                  objectFit: "cover", objectPosition: "center top",
+                  filter: active === i ? "brightness(0.72) saturate(1.1)" : "brightness(0.40) saturate(0.6) grayscale(35%)",
+                  transform: active === i ? "scale(1.05)" : "scale(1)",
+                  transition: "filter 0.55s ease, transform 0.55s ease",
+                }} />
+
+              {/* Base gradient */}
+              <div style={{
+                position: "absolute", inset: 0,
+                background: "linear-gradient(to top, rgba(6,6,10,0.96) 0%, rgba(6,6,10,0.35) 55%, transparent 100%)",
+              }} />
+
+              {/* Colour tint overlay (active) */}
+              {active === i && (
+                <div style={{
+                  position: "absolute", inset: 0,
+                  background: `radial-gradient(circle at top right, ${f.color}20, transparent 65%)`,
+                  transition: "opacity 0.4s",
+                }} />
+              )}
+
+              {/* Role pill */}
+              <div style={{
+                position: "absolute", top: 16, left: 16,
+                padding: "5px 14px", borderRadius: 999,
+                background: "rgba(5,5,8,0.72)", backdropFilter: "blur(12px)",
+                border: `1px solid ${active === i ? f.color + "60" : "rgba(255,255,255,0.1)"}`,
+                fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase",
+                color: active === i ? f.color : "rgba(255,255,255,0.45)",
+                transition: "all 0.4s",
+              }}>
+                {f.role}
+              </div>
+
+              {/* Bottom content */}
+              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "22px 22px 26px", zIndex: 2 }}>
+
+                {/* Collapsed: vertical label */}
+                {active !== i && (
+                  <div style={{
+                    writingMode: "vertical-rl", textOrientation: "mixed",
+                    fontFamily: "'Bebas Neue', sans-serif", fontSize: "1rem",
+                    color: "rgba(255,255,255,0.25)", letterSpacing: "0.14em",
+                    transform: "rotate(180deg)", margin: "0 auto",
+                  }}>
+                    {f.role}
+                  </div>
+                )}
+
+                {/* Expanded: full info */}
+                {active === i && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.18 }}>
+                    <h3 style={{
+                      fontFamily: "'Bebas Neue', sans-serif",
+                      fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+                      color: "#fff", lineHeight: 1.05,
+                      letterSpacing: "0.04em", margin: "0 0 10px",
+                      whiteSpace: "pre-line",
+                    }}>{f.name}</h3>
+                    <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.65, margin: 0 }}>
+                      {f.bio}
+                    </p>
+                    <div style={{
+                      marginTop: 16, height: 2, width: 44,
+                      background: `linear-gradient(to right, ${f.color}, transparent)`,
+                      borderRadius: 2,
+                    }} />
+                  </motion.div>
+                )}
+              </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          #about > div:last-child { grid-template-columns: 1fr !important; }
+          #about > div:last-child > div:last-child { flex-direction: column !important; height: auto !important; gap: 12px !important; }
+          #about > div:last-child > div:last-child > div { height: 260px !important; flex: none !important; min-width: 0 !important; }
+        }
+      `}</style>
     </section>
   );
 }
+
 
 // ─── CONTACT ──────────────────────────────────────────────────────────────────
 function Contact({ toast }) {
@@ -617,16 +808,17 @@ function Contact({ toast }) {
   const handleSend = () => {
     const errs = validate();
     setErrors(errs);
-    if (Object.keys(errs).length) { toast("Check the form for errors", "error"); return; }
+    if (Object.keys(errs).length) { toast({ message: "Check the form for errors", type: "error" }); return; }
     setSent(true);
-    toast("Message sent! We'll be in touch. 🎵", "success");
+    toast({ message: "Message sent! We'll be in touch. 🎵", type: "success" });
     setForm({ name: "", email: "", message: "" });
     setTimeout(() => setSent(false), 5000);
   };
 
   const inp = field => ({
-    width: "100%", padding: "13px 16px", background: "rgba(255,255,255,0.04)",
-    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(255,255,255,0.09)"}`,
+    width: "100%", padding: "13px 16px",
+    background: "rgba(0,0,0,0.45)",
+    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(124,58,237,0.22)"}`,
     borderRadius: 8, color: "#fff", fontSize: "0.88rem", fontFamily: "inherit",
     outline: "none", boxSizing: "border-box", marginBottom: 4, transition: "all 0.25s",
   });
@@ -637,7 +829,14 @@ function Contact({ toast }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 60, marginTop: 60, maxWidth: 1000, margin: "60px auto 0" }}>
 
         {/* Left */}
-        <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+        <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+          style={{
+            background: "linear-gradient(135deg, rgba(8,8,12,0.78) 0%, rgba(8,8,12,0.55) 100%)",
+            backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(124,58,237,0.22)",
+            borderRadius: 16, padding: "32px",
+            boxShadow: "0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(124,58,237,0.07), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}>
           {[["Location", "Bansilal Stepwell", "Hyderabad, Telangana, India"], ["Contact", "hello@tangysessions.in", ""]].map(([title, line1, line2]) => (
             <div key={title} style={{ marginBottom: 30 }}>
               <div style={{ color: "#7c3aed", fontSize: "0.68rem", letterSpacing: "0.22em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8 }}>{title}</div>
@@ -647,7 +846,7 @@ function Contact({ toast }) {
           ))}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 28 }}>
             {["Instagram", "Spotify", "SoundCloud"].map(s => (
-              <motion.button key={s} onClick={() => toast(`Opening ${s}...`, "info")}
+              <motion.button key={s} onClick={() => toast({ message: `Opening ${s}...`, type: "info" })}
                 whileHover={{ scale: 1.05, borderColor: "#7c3aed", color: "#7c3aed" }} whileTap={{ scale: 0.95 }}
                 style={{ padding: "9px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em", transition: "all 0.2s" }}>
                 {s}
@@ -660,11 +859,18 @@ function Contact({ toast }) {
         </motion.div>
 
         {/* Right */}
-        <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+        <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+          style={{
+            background: "linear-gradient(135deg, rgba(8,8,12,0.78) 0%, rgba(8,8,12,0.55) 100%)",
+            backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(124,58,237,0.22)",
+            borderRadius: 16, padding: "32px",
+            boxShadow: "0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(124,58,237,0.07), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}>
           <AnimatePresence mode="wait">
             {sent ? (
               <motion.div key="sent" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
-                style={{ textAlign: "center", padding: "60px 20px", background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.18)", borderRadius: 16 }}>
+                style={{ textAlign: "center", padding: "60px 20px", background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 12 }}>
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} style={{ fontSize: "3rem", marginBottom: 16 }}>✅</motion.div>
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#fff" }}>Message Sent</div>
                 <div style={{ color: "rgba(255,255,255,0.45)", marginTop: 8 }}>We'll get back to you shortly.</div>
@@ -676,8 +882,8 @@ function Contact({ toast }) {
                     <input placeholder={f.charAt(0).toUpperCase() + f.slice(1)} value={form[f]}
                       onChange={e => { setForm(x => ({ ...x, [f]: e.target.value })); setErrors(er => ({ ...er, [f]: null })); }}
                       style={inp(f)}
-                      onFocus={e => { e.target.style.borderColor = "#7c3aed"; e.target.style.background = "rgba(255,255,255,0.07)"; }}
-                      onBlur={e => { e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(255,255,255,0.09)"; e.target.style.background = "rgba(255,255,255,0.04)"; }}
+                      onFocus={e => { e.target.style.borderColor = "#7c3aed"; e.target.style.background = "rgba(124,58,237,0.08)"; e.target.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.12)"; }}
+                      onBlur={e => { e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(124,58,237,0.22)"; e.target.style.background = "rgba(0,0,0,0.45)"; e.target.style.boxShadow = "none"; }}
                     />
                     {errors[f] && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>⚠ {errors[f]}</div>}
                   </div>
@@ -686,8 +892,8 @@ function Contact({ toast }) {
                   <textarea placeholder="Your message" value={form.message} rows={5}
                     onChange={e => { setForm(x => ({ ...x, message: e.target.value })); setErrors(er => ({ ...er, message: null })); }}
                     style={{ ...inp("message"), resize: "vertical" }}
-                    onFocus={e => { e.target.style.borderColor = "#7c3aed"; e.target.style.background = "rgba(255,255,255,0.07)"; }}
-                    onBlur={e => { e.target.style.borderColor = errors.message ? "#ef4444" : "rgba(255,255,255,0.09)"; e.target.style.background = "rgba(255,255,255,0.04)"; }}
+                    onFocus={e => { e.target.style.borderColor = "#7c3aed"; e.target.style.background = "rgba(124,58,237,0.08)"; e.target.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.12)"; }}
+                    onBlur={e => { e.target.style.borderColor = errors.message ? "#ef4444" : "rgba(124,58,237,0.22)"; e.target.style.background = "rgba(0,0,0,0.45)"; e.target.style.boxShadow = "none"; }}
                   />
                   {errors.message && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>⚠ {errors.message}</div>}
                 </div>
@@ -752,12 +958,18 @@ function SectionHeader({ label, title }) {
 
 // ─── LANDING PAGE ─────────────────────────────────────────────────────────────
 function LandingPage() {
-  const { toasts, show: toast } = useToast();
+  const modal = useModal();
+  const toast = modal.toast;
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const scrollToTickets = (ev) => {
     setSelectedEvent(ev || null);
-    setTimeout(() => document.getElementById("tickets")?.scrollIntoView({ behavior: "smooth" }), 80);
+    setTimeout(() => {
+      const el = document.getElementById("tickets");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
   };
 
   return (
@@ -769,6 +981,23 @@ function LandingPage() {
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        
+        /* Ensure smooth scrolling offsets for the fixed top navigation bar */
+        section {
+          scroll-margin-top: 80px;
+        }
+
+        /* Hide Unicorn Studio error boxes/overlays if loading fails, falling back to a clean background */
+        .unicorn-error-box,
+        [class*="unicorn-error"],
+        [id*="unicorn-error"] {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+        }
+
+        .unicorn-wrapper a, a[href*="unicorn.studio"] { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
         ::selection { background: rgba(124,58,237,0.35); }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #090909; }
@@ -804,17 +1033,34 @@ function LandingPage() {
       <ErrorBoundary name="Volunteer"><Volunteer toast={toast} /></ErrorBoundary>
       <ErrorBoundary name="Contact"><Contact toast={toast} /></ErrorBoundary>
       <Footer />
-      <ToastContainer toasts={toasts} />
     </div>
   );
 }
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function App() {
+  const host = window.location.hostname;
+  const isAdminSubdomain = host.startsWith('admin.') || host === 'admin.localhost';
+  const isArtistSubdomain = host.startsWith('artist.') || host === 'artist.localhost';
+
+  let content;
+  if (isAdminSubdomain) {
+    content = <AdminDashboard />;
+  } else if (isArtistSubdomain) {
+    content = <ArtistPortal />;
+  } else {
+    content = (
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/artist" element={<ArtistPortal />} />
+      </Routes>
+    );
+  }
+
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/admin" element={<AdminDashboard />} />
-    </Routes>
+    <ModalProvider>
+      {content}
+    </ModalProvider>
   );
 }

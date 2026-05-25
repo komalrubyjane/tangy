@@ -68,8 +68,8 @@ export default function Volunteer({ toast }) {
 
   const inp = (field) => ({
     width: "100%", padding: "12px 14px",
-    background: "rgba(255,255,255,0.04)",
-    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(255,255,255,0.1)"}`,
+    background: "rgba(0,0,0,0.45)",
+    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(124,58,237,0.22)"}`,
     borderRadius: 8, color: "#fff", fontSize: "0.88rem",
     outline: "none", boxSizing: "border-box", fontFamily: "inherit",
     transition: "all 0.2s",
@@ -84,9 +84,11 @@ export default function Volunteer({ toast }) {
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
           style={{
             maxWidth: 560, margin: "0 auto", textAlign: "center",
-            background: "rgba(255,255,255,0.02)", border: "1px solid rgba(16,185,129,0.25)",
+            background: "linear-gradient(135deg, rgba(8,8,12,0.82) 0%, rgba(8,8,12,0.60) 100%)",
+            backdropFilter: "blur(22px)", WebkitBackdropFilter: "blur(22px)",
+            border: "1px solid rgba(16,185,129,0.3)",
             borderRadius: 20, padding: "60px 40px",
-            boxShadow: "0 0 60px rgba(16,185,129,0.08)",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.7), 0 0 40px rgba(16,185,129,0.08), inset 0 1px 0 rgba(255,255,255,0.05)",
           }}>
           <motion.div
             initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring", bounce: 0.6 }}
@@ -127,8 +129,15 @@ export default function Volunteer({ toast }) {
       <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap", marginBottom: 60 }}>
         {[["🎟️", "Free Entry"], ["🎒", "Merch Kit"], ["🎭", "Backstage"], ["🤝", "Network"]].map(([icon, label]) => (
           <motion.div key={label}
-            whileHover={{ scale: 1.05, borderColor: "rgba(124,58,237,0.4)" }}
-            style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 40, fontSize: "0.82rem", color: "rgba(255,255,255,0.6)" }}>
+            whileHover={{ scale: 1.05, borderColor: "rgba(124,58,237,0.5)" }}
+            style={{
+              display: "flex", alignItems: "center", gap: 8, padding: "10px 20px",
+              background: "linear-gradient(135deg, rgba(8,8,12,0.75) 0%, rgba(8,8,12,0.50) 100%)",
+              backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)",
+              border: "1px solid rgba(124,58,237,0.22)",
+              borderRadius: 40, fontSize: "0.82rem", color: "rgba(255,255,255,0.7)",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+            }}>
             <span>{icon}</span><span>{label}</span>
           </motion.div>
         ))}
@@ -136,7 +145,14 @@ export default function Volunteer({ toast }) {
 
       <motion.div
         initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-        style={{ maxWidth: 580, margin: "0 auto", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: 20, overflow: "hidden" }}>
+        style={{
+          maxWidth: 580, margin: "0 auto",
+          background: "linear-gradient(135deg, rgba(8,8,12,0.82) 0%, rgba(8,8,12,0.60) 100%)",
+          backdropFilter: "blur(22px)", WebkitBackdropFilter: "blur(22px)",
+          border: "1px solid rgba(124,58,237,0.25)",
+          borderRadius: 20, overflow: "hidden",
+          boxShadow: "0 20px 50px rgba(0,0,0,0.7), 0 0 40px rgba(124,58,237,0.10), inset 0 1px 0 rgba(255,255,255,0.05)",
+        }}>
 
         {/* Step progress bar */}
         <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
@@ -165,8 +181,8 @@ export default function Volunteer({ toast }) {
                   <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 6 }}>Full Name</label>
                   <input placeholder="Your name" value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: null })); }}
                     style={inp("name")}
-                    onFocus={e => e.target.style.borderColor = "#7c3aed"}
-                    onBlur={e => e.target.style.borderColor = errors.name ? "#ef4444" : "rgba(255,255,255,0.1)"}
+                    onFocus={e => { e.target.style.borderColor = "#7c3aed"; e.target.style.background = "rgba(124,58,237,0.08)"; e.target.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.12)"; }}
+                    onBlur={e => { e.target.style.borderColor = errors.name ? "#ef4444" : "rgba(124,58,237,0.22)"; e.target.style.background = "rgba(0,0,0,0.45)"; e.target.style.boxShadow = "none"; }}
                   />
                   {errors.name && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.name}</div>}
                 </div>
