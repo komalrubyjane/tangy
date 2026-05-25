@@ -915,7 +915,15 @@ function Contact({ toast }) {
 // ─── FOOTER ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer style={{ background: "#090909", borderTop: "1px solid rgba(124,58,237,0.15)", padding: "60px 5vw 32px", position: "relative", zIndex: 1 }}>
+    <footer style={{
+        background: "linear-gradient(135deg, rgba(6,6,10,0.75) 0%, rgba(8,8,16,0.60) 100%)",
+        backdropFilter: "blur(28px)",
+        WebkitBackdropFilter: "blur(28px)",
+        borderTop: "1px solid rgba(124,58,237,0.18)",
+        padding: "60px 5vw 32px",
+        position: "relative",
+        zIndex: 1,
+      }}>
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 40, marginBottom: 48 }}>
         <div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", letterSpacing: "0.1em", color: "#fff", marginBottom: 8 }}>
