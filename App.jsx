@@ -6,7 +6,7 @@
 //   Volunteer.jsx          — NEW (replace with the Volunteer.jsx output)
 //   AdminDashboard.jsx     — NEW (replace with the AdminDashboard.jsx output)
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import UnicornBackground from "./src/components/UnicornBackground";
@@ -34,6 +34,21 @@ class ErrorBoundary extends React.Component {
 }
 
 
+// ─── PERFORMANCE UTILS ────────────────────────────────────────────────────────
+// Detect low-end devices once at module load (avoids repeated checks)
+const isLowEndDevice = (() => {
+  if (typeof window === "undefined") return false;
+  const mem = navigator.deviceMemory; // GB, undefined on Firefox/Safari
+  const cores = navigator.hardwareConcurrency || 4;
+  const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  // Flag as low-end: <2 GB RAM, single/dual core, or prefers-reduced-motion
+  return prefersReduced || cores <= 2 || (mem !== undefined && mem < 2) || (isMobile && cores <= 4);
+})();
+
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+  typeof navigator !== "undefined" ? navigator.userAgent : ""
+);
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const EVENTS = [
@@ -151,6 +166,8 @@ function Hero({ onBook }) {
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef(null);
   const sectionRef = useRef(null);
+  const flareRef = useRef(null);
+  // On mobile/low-end: skip mouse-tracking state entirely (no React re-renders)
   const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
   const targetOffset = useRef({ x: 0, y: 0 });
   const currentOffset = useRef({ x: 0, y: 0 });
@@ -159,34 +176,53 @@ function Hero({ onBook }) {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
+    // On mobile, reduce video quality by lowering resolution via CSS
+    if (isMobile) {
+      v.style.imageRendering = "auto";
+    }
     v.play().catch(() => { v.muted = true; v.play().catch(() => setVideoError(true)); });
+
+    // Pause video when tab is hidden to save battery
+    const onVisibilityChange = () => {
+      document.hidden ? v.pause() : v.play().catch(() => {});
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", onVisibilityChange);
   }, []);
 
-  // Smooth cursor parallax loop
+  // Mouse parallax — disabled entirely on mobile/low-end for performance
   useEffect(() => {
+    if (isMobile || isLowEndDevice) return; // Skip RAF loop on mobile
+
     const onMouseMove = (e) => {
       const { innerWidth: W, innerHeight: H } = window;
-      // Normalize -1 to 1
       targetOffset.current = {
         x: (e.clientX / W - 0.5) * 2,
         y: (e.clientY / H - 0.5) * 2,
       };
     };
-    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
 
-    const tick = () => {
-      // Lerp toward target (ease factor 0.06 = silky smooth)
+    let lastTime = 0;
+    const tick = (time) => {
+      // Throttle to 30fps on low-end, 60fps on capable devices
+      if (time - lastTime < (isLowEndDevice ? 33 : 16)) {
+        rafId.current = requestAnimationFrame(tick);
+        return;
+      }
+      lastTime = time;
+
       currentOffset.current.x += (targetOffset.current.x - currentOffset.current.x) * 0.06;
       currentOffset.current.y += (targetOffset.current.y - currentOffset.current.y) * 0.06;
 
-      const STRENGTH = 18; // px of max shift
+      const STRENGTH = 14;
       const tx = currentOffset.current.x * STRENGTH;
       const ty = currentOffset.current.y * STRENGTH;
 
-      if (videoRef.current) {
-        videoRef.current.style.transform = `scale(1.08) translate(${tx}px, ${ty}px)`;
+      // Direct DOM manipulation — zero React re-renders in the hot loop
+      if (flareRef.current) {
+        flareRef.current.style.transform = `translate(calc(-50% + ${tx * 4}px), calc(-50% + ${ty * 4}px))`;
       }
-      setMouseOffset({ x: currentOffset.current.x, y: currentOffset.current.y });
       rafId.current = requestAnimationFrame(tick);
     };
     rafId.current = requestAnimationFrame(tick);
@@ -221,15 +257,20 @@ function Hero({ onBook }) {
       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.58)", zIndex: 1 }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 55%, #090909 100%)", zIndex: 2 }} />
 
-      {/* Subtle cursor-driven light flare that tracks mouse */}
-      <div style={{
-        position: "absolute", zIndex: 3, pointerEvents: "none",
-        width: "40vw", height: "40vw", borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
-        transform: `translate(calc(-50% + ${mouseOffset.x * 60}px), calc(-50% + ${mouseOffset.y * 60}px))`,
-        top: "50%", left: "50%",
-        transition: "transform 0.1s linear",
-      }} />
+      {/* Cursor-driven light flare — hidden on mobile (zero overhead) */}
+      {!isMobile && (
+        <div
+          ref={flareRef}
+          style={{
+            position: "absolute", zIndex: 3, pointerEvents: "none",
+            width: "40vw", height: "40vw", borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
+            transform: "translate(-50%, -50%)",
+            top: "50%", left: "50%",
+            willChange: "transform",
+          }}
+        />
+      )}
 
       {/* Content */}
       <div style={{ position: "relative", zIndex: 4, textAlign: "center", padding: "0 24px", maxWidth: 800, margin: "0 auto" }}>
@@ -1030,6 +1071,36 @@ function LandingPage() {
         }
         @media (max-width: 400px) {
           #artists > div:last-child { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── Performance optimizations ───────────────────────────────── */
+        /* Defer rendering of below-fold sections until near viewport */
+        #events, #artists, #gallery, #tickets, #about, #volunteer, #contact {
+          content-visibility: auto;
+          contain-intrinsic-size: 0 600px;
+        }
+        /* Smooth momentum scrolling on iOS */
+        body { -webkit-overflow-scrolling: touch; }
+
+        /* GPU compositing layer for fixed background */
+        #unicorn-bg { transform: translateZ(0); }
+
+        /* Respect user's reduced-motion preference — disable all animations */
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+          video { display: none !important; }
+        }
+
+        /* On mobile: reduce blur intensity for better compositing performance */
+        @media (max-width: 768px) {
+          [style*="backdrop-filter"] {
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+          }
         }
       `}</style>
 
