@@ -735,8 +735,8 @@ export default function ArtistDetails() {
           inset: 0,
           background: `url(${artist.banner}) no-repeat center center`,
           backgroundSize: "cover",
-          filter: "brightness(0.18) saturate(0.6) blur(3px)",
-          transform: "scale(1.06)",
+          filter: "brightness(0.48) saturate(0.85)",
+          transform: "scale(1.05)",
           zIndex: 0
         }} />
 
@@ -744,7 +744,7 @@ export default function ArtistDetails() {
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(to top, #020203 10%, rgba(2,2,3,0.55) 50%, rgba(2,2,3,0.1) 100%)",
+          background: "linear-gradient(to top, #020203 15%, rgba(2,2,3,0.35) 60%, rgba(2,2,3,0) 100%)",
           zIndex: 1
         }} />
 
