@@ -1132,7 +1132,7 @@ function SectionHeader({ label, title }) {
 }
 
 // ─── LANDING PAGE ─────────────────────────────────────────────────────────────
-function LandingPage() {
+function LandingPage({ showArtistOverlay = false }) {
   const modal = useModal();
   const toast = modal.toast;
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -1238,6 +1238,12 @@ function LandingPage() {
       <ErrorBoundary name="Volunteer"><Volunteer toast={toast} /></ErrorBoundary>
       <ErrorBoundary name="Contact"><Contact toast={toast} /></ErrorBoundary>
       <Footer />
+
+      {showArtistOverlay && (
+        <ErrorBoundary name="ArtistDetails">
+          <ArtistDetails />
+        </ErrorBoundary>
+      )}
     </div>
   );
 }
@@ -1259,7 +1265,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/artist" element={<ArtistPortal />} />
-        <Route path="/artists/:id" element={<ArtistDetails />} />
+        <Route path="/artists/:id" element={<LandingPage showArtistOverlay={true} />} />
       </Routes>
     );
   }

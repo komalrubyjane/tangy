@@ -519,14 +519,17 @@ export default function ArtistDetails() {
   const normalizedId = (id || "").toLowerCase().replace(/[^a-z0-9]/g, "");
   const artist = ARTIST_DB[normalizedId] || ARTIST_DB.kryzen;
 
-  // Track keyboard navigation for lightbox
+  // Track keyboard navigation for lightbox & lock body scrolling
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") setLightbox(null);
     };
     window.addEventListener("keydown", handleKeyDown);
-    window.scrollTo({ top: 0, behavior: "instant" });
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
   }, [id]);
 
   const handleInquiry = (e) => {
@@ -561,16 +564,42 @@ export default function ArtistDetails() {
     }
   };
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+
   return (
-    <div style={{
-      background: "#020203",
-      minHeight: "100vh",
-      color: "#fff",
-      fontFamily: "'DM Sans', sans-serif",
-      position: "relative",
-      overflowX: "hidden",
-      paddingBottom: 100
-    }}>
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          handleBack();
+        }
+      }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 2000,
+        overflowY: "auto",
+        background: "rgba(2, 2, 3, 0.65)",
+        backdropFilter: "blur(32px)",
+        WebkitBackdropFilter: "blur(32px)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        padding: isMobile ? "0px" : "40px 20px"
+      }}
+    >
+      <div style={{
+        width: "100%",
+        maxWidth: "1220px",
+        background: "linear-gradient(180deg, rgba(8, 8, 12, 0.9) 0%, rgba(3, 3, 5, 0.98) 100%)",
+        borderRadius: isMobile ? "0px" : "32px",
+        border: isMobile ? "none" : `1px solid ${artist.color}33`,
+        boxShadow: "0 50px 120px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.05)",
+        position: "relative",
+        overflowX: "hidden",
+        paddingBottom: 100,
+        color: "#fff",
+        fontFamily: "'DM Sans', sans-serif"
+      }}>
       {/* ── Global Styles overrides ─────────────────────────────────────────── */}
       <style>{`
         .glass-panel {
@@ -1639,6 +1668,7 @@ export default function ArtistDetails() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }
