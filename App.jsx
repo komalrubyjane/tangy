@@ -422,12 +422,213 @@ function EventCard({ ev, delay, onBook }) {
 
 // ─── ARTISTS ──────────────────────────────────────────────────────────────────
 function Artists() {
+  const [search, setSearch] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("All");
+
+  const GENRES = ["All", "Deep House", "Ambient", "Live Electronic", "Classical Fusion", "Techno", "Dark Ambient", "Bass Music"];
+
+  const filteredArtists = ARTISTS.filter((a) => {
+    const matchesSearch =
+      a.name.toLowerCase().includes(search.toLowerCase()) ||
+      a.role.toLowerCase().includes(search.toLowerCase()) ||
+      a.bio.toLowerCase().includes(search.toLowerCase());
+    const matchesGenre =
+      selectedGenre === "All" ||
+      a.role.toLowerCase().includes(selectedGenre.toLowerCase()) ||
+      a.bio.toLowerCase().includes(selectedGenre.toLowerCase());
+    return matchesSearch && matchesGenre;
+  });
+
   return (
-    <section id="artists" style={{ background: "transparent", padding: "100px 5vw" }}>
+    <section id="artists" style={{ background: "transparent", padding: "100px 5vw", position: "relative" }}>
       <SectionHeader label="Lineup" title="Artist Roster" />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24, marginTop: 60 }}>
-        {ARTISTS.map((a, i) => <ArtistCard key={a.id} a={a} delay={i * 0.15} />)}
+
+      {/* Glassmorphic Search & Filter Console */}
+      <div style={{
+        marginTop: 40,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 24,
+        width: "100%",
+        maxWidth: 720,
+        margin: "40px auto 0"
+      }}>
+        {/* Search Input Container */}
+        <div style={{ position: "relative", width: "100%" }}>
+          <span style={{
+            position: "absolute",
+            left: 20,
+            top: "50%",
+            transform: "translateY(-50%)",
+            fontSize: "1.05rem",
+            color: "rgba(255,255,255,0.4)"
+          }}>
+            🔍
+          </span>
+          <input
+            type="text"
+            placeholder="Search artists by name or genre keywords..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "16px 20px 16px 52px",
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(124,58,237,0.18)",
+              borderRadius: 30,
+              color: "#fff",
+              fontSize: "0.9rem",
+              outline: "none",
+              fontFamily: "inherit",
+              backdropFilter: "blur(12px)",
+              transition: "all 0.35s ease",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "#7c3aed";
+              e.target.style.boxShadow = "0 10px 30px rgba(124,58,237,0.12), 0 0 20px rgba(124,58,237,0.2)";
+              e.target.style.background = "rgba(255,255,255,0.04)";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "rgba(124,58,237,0.18)";
+              e.target.style.boxShadow = "0 10px 30px rgba(0,0,0,0.5)";
+              e.target.style.background = "rgba(255,255,255,0.02)";
+            }}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              style={{
+                position: "absolute",
+                right: 20,
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "transparent",
+                border: "none",
+                color: "rgba(255,255,255,0.4)",
+                cursor: "pointer",
+                fontSize: "0.85rem",
+                fontFamily: "inherit",
+                transition: "color 0.2s"
+              }}
+              onMouseEnter={(e) => e.target.style.color = "#fff"}
+              onMouseLeave={(e) => e.target.style.color = "rgba(255,255,255,0.4)"}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* Quick Genre Chips */}
+        <div style={{
+          display: "flex",
+          gap: 10,
+          flexWrap: "wrap",
+          justifyContent: "center",
+          width: "100%"
+        }}>
+          {GENRES.map((g) => {
+            const active = selectedGenre === g;
+            return (
+              <button
+                key={g}
+                onClick={() => setSelectedGenre(g)}
+                style={{
+                  padding: "8px 18px",
+                  background: active ? "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)" : "rgba(255,255,255,0.03)",
+                  border: `1px solid ${active ? "#a855f7" : "rgba(255,255,255,0.08)"}`,
+                  borderRadius: 20,
+                  color: active ? "#fff" : "rgba(255,255,255,0.6)",
+                  fontSize: "0.75rem",
+                  fontWeight: "600",
+                  fontFamily: "inherit",
+                  cursor: "pointer",
+                  letterSpacing: "0.05em",
+                  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                  boxShadow: active ? "0 8px 20px rgba(124,58,237,0.3)" : "none"
+                }}
+                onMouseEnter={(e) => {
+                  if (!active) {
+                    e.target.style.background = "rgba(255,255,255,0.06)";
+                    e.target.style.borderColor = "rgba(124,58,237,0.3)";
+                    e.target.style.color = "#fff";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!active) {
+                    e.target.style.background = "rgba(255,255,255,0.03)";
+                    e.target.style.borderColor = "rgba(255,255,255,0.08)";
+                    e.target.style.color = "rgba(255,255,255,0.6)";
+                  }
+                }}
+              >
+                {g}
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Grid view */}
+      {filteredArtists.length > 0 ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24, marginTop: 60 }}>
+          {filteredArtists.map((a, i) => (
+            <ArtistCard key={a.id} a={a} delay={i * 0.1} />
+          ))}
+        </div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            textAlign: "center",
+            padding: "80px 20px",
+            background: "rgba(255,255,255,0.01)",
+            border: "1px solid rgba(255,255,255,0.05)",
+            borderRadius: 24,
+            marginTop: 60,
+            maxWidth: 600,
+            margin: "60px auto 0"
+          }}
+        >
+          <div style={{ fontSize: "2.5rem", marginBottom: 16 }}>🎵</div>
+          <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", letterSpacing: "0.08em", color: "#fff", margin: "0 0 8px" }}>
+            No Artists Found
+          </h3>
+          <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.45)", margin: "0 0 24px", lineHeight: 1.5 }}>
+            No match for "{search}" in {selectedGenre === "All" ? "any genre" : selectedGenre}. Try adjusting your keywords.
+          </p>
+          <button
+            onClick={() => {
+              setSearch("");
+              setSelectedGenre("All");
+            }}
+            style={{
+              padding: "10px 24px",
+              background: "transparent",
+              border: "1px solid #7c3aed",
+              borderRadius: 20,
+              color: "#fff",
+              fontSize: "0.8rem",
+              fontFamily: "inherit",
+              cursor: "pointer",
+              fontWeight: "600",
+              transition: "all 0.3s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = "#7c3aed";
+              e.target.style.boxShadow = "0 0 15px rgba(124,58,237,0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = "transparent";
+              e.target.style.boxShadow = "none";
+            }}
+          >
+            Reset Filters
+          </button>
+        </motion.div>
+      )}
     </section>
   );
 }
