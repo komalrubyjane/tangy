@@ -577,31 +577,46 @@ export default function ArtistDetails() {
         position: "fixed",
         inset: 0,
         zIndex: 2000,
-        overflowY: "auto",
-        background: "rgba(2, 2, 3, 0.65)",
-        backdropFilter: "blur(32px)",
-        WebkitBackdropFilter: "blur(32px)",
+        background: "rgba(2, 2, 3, 0.45)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
         display: "flex",
         justifyContent: "center",
-        alignItems: "flex-start",
-        padding: isMobile ? "0px" : "40px 20px"
+        alignItems: "center",
+        padding: isMobile ? "0px" : "30px 20px"
       }}
     >
-      <div style={{
-        width: "100%",
-        maxWidth: "1220px",
-        background: "linear-gradient(180deg, rgba(8, 8, 12, 0.9) 0%, rgba(3, 3, 5, 0.98) 100%)",
-        borderRadius: isMobile ? "0px" : "32px",
-        border: isMobile ? "none" : `1px solid ${artist.color}33`,
-        boxShadow: "0 50px 120px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.05)",
-        position: "relative",
-        overflowX: "hidden",
-        paddingBottom: 100,
-        color: "#fff",
-        fontFamily: "'DM Sans', sans-serif"
-      }}>
+      <div 
+        className="inner-overlay-card"
+        style={{
+          width: "100%",
+          maxWidth: "1220px",
+          maxHeight: isMobile ? "100vh" : "90vh",
+          overflowY: "auto",
+          background: "linear-gradient(180deg, rgba(8, 8, 12, 0.94) 0%, rgba(3, 3, 5, 0.98) 100%)",
+          borderRadius: isMobile ? "0px" : "24px",
+          border: isMobile ? "none" : `1px solid ${artist.color}33`,
+          boxShadow: "0 50px 120px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.05)",
+          position: "relative",
+          overflowX: "hidden",
+          paddingBottom: 100,
+          color: "#fff",
+          fontFamily: "'DM Sans', sans-serif"
+        }}
+      >
       {/* ── Global Styles overrides ─────────────────────────────────────────── */}
       <style>{`
+        .inner-overlay-card::-webkit-scrollbar {
+          width: 6px;
+        }
+        .inner-overlay-card::-webkit-scrollbar-track {
+          background: rgba(255,255,255,0.01);
+          border-radius: 0 24px 24px 0;
+        }
+        .inner-overlay-card::-webkit-scrollbar-thumb {
+          background: ${artist.color}55;
+          border-radius: 3px;
+        }
         .glass-panel {
           background: linear-gradient(135deg, rgba(12,12,18,0.78) 0%, rgba(6,6,10,0.5) 100%);
           backdrop-filter: blur(35px) saturate(180%);
