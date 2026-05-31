@@ -437,36 +437,157 @@ function ArtistCard({ a, delay }) {
   const navigate = useNavigate();
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay, type: "spring", bounce: 0.35 }}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      initial={{ opacity: 0, scale: 0.88, y: 20 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay, type: "spring", stiffness: 90, damping: 13 }}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
       onClick={() => navigate('/artists/' + a.name.toLowerCase().replace(/[^a-z0-9]/g, ""))}
       style={{
-        textAlign: "center", padding: "40px 24px 32px",
+        textAlign: "center",
+        padding: "45px 28px 36px",
+        position: "relative",
+        overflow: "hidden",
         background: hov
-          ? `linear-gradient(135deg, rgba(8,8,12,0.85) 0%, ${a.color}18 100%)`
-          : "linear-gradient(135deg, rgba(8,8,12,0.78) 0%, rgba(8,8,12,0.55) 100%)",
-        backdropFilter: "blur(22px)",
-        WebkitBackdropFilter: "blur(22px)",
-        border: `1px solid ${hov ? a.color + "55" : "rgba(124,58,237,0.22)"}`,
-        borderRadius: 16, cursor: "pointer",
+          ? `linear-gradient(135deg, rgba(255,255,255,0.04) 0%, ${a.color}15 100%)`
+          : "linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.005) 100%)",
+        backdropFilter: "blur(32px) saturate(180%)",
+        WebkitBackdropFilter: "blur(32px) saturate(180%)",
+        border: `1px solid ${hov ? a.color + "66" : "rgba(255,255,255,0.08)"}`,
+        borderRadius: 20,
+        cursor: "pointer",
         boxShadow: hov
-          ? `0 24px 60px rgba(0,0,0,0.75), 0 0 40px ${a.color}25, inset 0 1px 0 rgba(255,255,255,0.07)`
-          : "0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(124,58,237,0.07), inset 0 1px 0 rgba(255,255,255,0.04)",
-        transform: hov ? "translateY(-6px)" : "translateY(0)",
-        transition: "all 0.35s cubic-bezier(0.16,1,0.3,1)",
+          ? `0 30px 75px rgba(0,0,0,0.9), 0 0 45px ${a.color}28, inset 0 1px 0 rgba(255,255,255,0.22)`
+          : "0 16px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05)",
+        transform: hov ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)",
+        transition: "all 0.45s cubic-bezier(0.16, 1, 0.3, 1)",
       }}>
+      
+      {/* Light sheen sweeping reflect animation */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: hov ? "140%" : "-100%",
+        width: "50%",
+        height: "100%",
+        background: "linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent)",
+        transform: "skewX(-25deg)",
+        transition: hov ? "left 0.85s cubic-bezier(0.2, 0.8, 0.2, 1)" : "none"
+      }} />
+
+      {/* Floating accent glow node */}
+      <div style={{
+        position: "absolute",
+        top: "-15%",
+        left: "-15%",
+        width: "45%",
+        height: "45%",
+        borderRadius: "50%",
+        background: a.color,
+        filter: "blur(30px)",
+        opacity: hov ? 0.2 : 0.05,
+        transition: "opacity 0.4s"
+      }} />
+
+      {/* Top corner live set status tag */}
+      <div style={{
+        position: "absolute",
+        top: 16,
+        right: 18,
+        display: "flex",
+        alignItems: "center",
+        gap: 6
+      }}>
+        <span style={{
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: "#10b981",
+          boxShadow: hov ? "0 0 8px #10b981" : "none"
+        }} />
+        <span style={{
+          fontSize: "0.55rem",
+          fontFamily: "monospace",
+          letterSpacing: "0.15em",
+          color: "rgba(255,255,255,0.35)",
+          textTransform: "uppercase",
+          fontWeight: "bold"
+        }}>
+          ACTIVE
+        </span>
+      </div>
+
       <motion.div
-        animate={{ boxShadow: hov ? `0 0 40px ${a.color}55` : "none" }}
-        style={{ width: 100, height: 100, borderRadius: "50%", margin: "0 auto 20px", border: `2px solid ${hov ? a.color : "rgba(124,58,237,0.3)"}`, overflow: "hidden", transition: "border-color 0.3s", flexShrink: 0 }}>
-        <img src={a.img} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover", filter: hov ? "brightness(1.1)" : "brightness(0.85) saturate(0.9)", transition: "filter 0.35s" }} />
+        animate={{
+          boxShadow: hov ? `0 0 35px ${a.color}88` : "none",
+          scale: hov ? 1.05 : 1
+        }}
+        transition={{ duration: 0.4 }}
+        style={{
+          width: 104,
+          height: 104,
+          borderRadius: "50%",
+          margin: "0 auto 24px",
+          border: `2px solid ${hov ? a.color : "rgba(255,255,255,0.12)"}`,
+          overflow: "hidden",
+          transition: "border-color 0.4s",
+          flexShrink: 0
+        }}>
+        <img
+          src={a.img}
+          alt={a.name}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: hov ? "brightness(1.15) saturate(1.05)" : "brightness(0.85) saturate(0.85)",
+            transition: "filter 0.45s, transform 0.6s",
+            transform: hov ? "scale(1.06)" : "scale(1)"
+          }}
+        />
       </motion.div>
-      <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.65rem", color: "#fff", margin: "0 0 6px", letterSpacing: "0.08em" }}>{a.name}</h3>
-      <div style={{ fontSize: "0.72rem", color: a.color, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>{a.role}</div>
+
+      <h3 style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: "1.8rem",
+        color: "#fff",
+        margin: "0 0 6px",
+        letterSpacing: "0.08em",
+        textShadow: hov ? `0 0 20px ${a.color}33` : "none",
+        transition: "text-shadow 0.4s"
+      }}>
+        {a.name}
+      </h3>
+
+      <div style={{
+        fontSize: "0.7rem",
+        color: hov ? "#fff" : a.color,
+        letterSpacing: "0.22em",
+        textTransform: "uppercase",
+        marginBottom: 16,
+        fontWeight: "600",
+        fontFamily: "monospace",
+        transition: "color 0.4s"
+      }}>
+        {a.role}
+      </div>
+
       <AnimatePresence>
         {hov && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-            style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
+          <motion.div
+            initial={{ opacity: 0, height: 0, y: 10 }}
+            animate={{ opacity: 1, height: "auto", y: 0 }}
+            exit={{ opacity: 0, height: 0, y: 10 }}
+            transition={{ duration: 0.35, type: "spring", stiffness: 120 }}
+            style={{
+              fontSize: "0.82rem",
+              color: "rgba(255,255,255,0.55)",
+              lineHeight: 1.6,
+              borderTop: "1px solid rgba(255,255,255,0.06)",
+              paddingTop: 12,
+              marginTop: 4
+            }}>
             {a.bio}
           </motion.div>
         )}

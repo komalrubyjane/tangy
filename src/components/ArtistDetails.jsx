@@ -359,6 +359,150 @@ const ARTIST_DB = {
   }
 };
 
+// Pure React counter hook that counts smoothly up to the target number
+function Counter({ value, duration = 1.4 }) {
+  const [count, setCount] = useState(0);
+  const parsedVal = parseFloat(value);
+  const isInt = !value.includes(".");
+  const suffix = value.replace(/[0-9.]/g, "");
+
+  useEffect(() => {
+    let start = 0;
+    const end = parsedVal;
+    if (isNaN(end)) {
+      setCount(value);
+      return;
+    }
+    const totalMiliseconds = duration * 1000;
+    const incrementTime = 25;
+    const steps = Math.ceil(totalMiliseconds / incrementTime);
+    const stepVal = end / steps;
+
+    let currentStep = 0;
+    const timer = setInterval(() => {
+      currentStep++;
+      if (currentStep >= steps) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount((prev) => prev + stepVal);
+      }
+    }, incrementTime);
+
+    return () => clearInterval(timer);
+  }, [value, parsedVal, duration]);
+
+  const formattedCount = isInt ? Math.floor(count) : count.toFixed(1);
+  return (
+    <span>
+      {formattedCount}
+      {suffix}
+    </span>
+  );
+}
+
+// Subcomponent stat card featuring high-end glassmorphic glow reflection and hover animation
+function StatCard({ label, val, artist, delay }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40, scale: 0.92 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, delay, type: "spring", stiffness: 85, damping: 14 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        padding: "36px 28px",
+        borderRadius: 20,
+        textAlign: "center",
+        overflow: "hidden",
+        cursor: "pointer",
+        background: hovered
+          ? `linear-gradient(135deg, rgba(255,255,255,0.06) 0%, ${artist.color}18 100%)`
+          : "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+        border: hovered
+          ? `1px solid ${artist.color}88`
+          : "1px solid rgba(255,255,255,0.07)",
+        backdropFilter: "blur(38px) saturate(180%)",
+        WebkitBackdropFilter: "blur(38px) saturate(180%)",
+        boxShadow: hovered
+          ? `0 35px 80px rgba(0,0,0,0.9), 0 0 45px ${artist.color}35, inset 0 1px 0 rgba(255,255,255,0.22)`
+          : "0 20px 45px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.06)",
+        transform: hovered ? "translateY(-8px) scale(1.03)" : "translateY(0) scale(1)",
+        transition: "all 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
+      }}
+    >
+      {/* Light sheen sweeping reflect animation */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: hovered ? "140%" : "-100%",
+        width: "50%",
+        height: "100%",
+        background: "linear-gradient(to right, transparent, rgba(255,255,255,0.07), transparent)",
+        transform: "skewX(-25deg)",
+        transition: hovered ? "left 0.85s cubic-bezier(0.2, 0.8, 0.2, 1)" : "none"
+      }} />
+
+      {/* Floating accent glow node */}
+      <div style={{
+        position: "absolute",
+        top: "-20%",
+        right: "-20%",
+        width: "40%",
+        height: "40%",
+        borderRadius: "50%",
+        background: artist.color,
+        filter: "blur(25px)",
+        opacity: hovered ? 0.25 : 0.08,
+        transition: "opacity 0.4s"
+      }} />
+
+      {/* Bottom glowing border bar */}
+      <div style={{
+        position: "absolute",
+        bottom: 0,
+        left: "5%",
+        width: "90%",
+        height: 3,
+        borderRadius: "3px 3px 0 0",
+        background: hovered ? artist.color : `${artist.color}38`,
+        boxShadow: hovered ? `0 0 15px ${artist.color}, 0 0 5px ${artist.color}` : "none",
+        transition: "all 0.4s"
+      }} />
+
+      {/* Numerical counter */}
+      <div style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: "2.85rem",
+        color: "#fff",
+        letterSpacing: "0.05em",
+        marginBottom: 8,
+        textShadow: hovered ? `0 0 25px ${artist.color}66` : `0 0 12px ${artist.color}25`,
+        transition: "text-shadow 0.4s"
+      }}>
+        <Counter value={val} />
+      </div>
+
+      {/* Text label */}
+      <div style={{
+        fontSize: "0.68rem",
+        color: hovered ? "#fff" : "rgba(255,255,255,0.42)",
+        letterSpacing: "0.22em",
+        textTransform: "uppercase",
+        fontFamily: "monospace",
+        fontWeight: "600",
+        transition: "color 0.4s"
+      }}>
+        {label}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function ArtistDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -419,33 +563,33 @@ export default function ArtistDetails() {
 
   return (
     <div style={{
-      background: "#030304",
+      background: "#020203",
       minHeight: "100vh",
       color: "#fff",
       fontFamily: "'DM Sans', sans-serif",
       position: "relative",
       overflowX: "hidden",
-      paddingBottom: 80
+      paddingBottom: 100
     }}>
       {/* ── Global Styles overrides ─────────────────────────────────────────── */}
       <style>{`
         .glass-panel {
-          background: linear-gradient(135deg, rgba(8,8,12,0.82) 0%, rgba(5,5,8,0.6) 100%);
-          backdrop-filter: blur(28px);
-          -webkit-backdrop-filter: blur(28px);
-          border: 1px solid rgba(255,255,255,0.06);
-          box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.02);
+          background: linear-gradient(135deg, rgba(12,12,18,0.78) 0%, rgba(6,6,10,0.5) 100%);
+          backdrop-filter: blur(35px) saturate(180%);
+          -webkit-backdrop-filter: blur(35px) saturate(180%);
+          border: 1px solid rgba(255,255,255,0.08);
+          box-shadow: 0 25px 60px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.05);
         }
         .text-glow {
-          text-shadow: 0 0 40px ${artist.color}35, 0 0 12px ${artist.color}25;
+          text-shadow: 0 0 45px ${artist.color}45, 0 0 15px ${artist.color}25;
         }
         .glow-border-hover {
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .glow-border-hover:hover {
-          border-color: ${artist.color}45 !important;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 25px ${artist.color}15;
-          transform: translateY(-2px);
+          border-color: ${artist.color}66 !important;
+          box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px ${artist.color}20, inset 0 1px 0 rgba(255,255,255,0.12);
+          transform: translateY(-4px);
         }
         .equalizer-bar {
           width: 3px;
@@ -459,62 +603,86 @@ export default function ArtistDetails() {
           100% { height: 28px; }
         }
         .embed-btn {
-          padding: 10px 20px;
+          padding: 10px 22px;
           border-radius: 8px;
           font-size: 0.8rem;
           font-family: inherit;
           cursor: pointer;
-          transition: all 0.3s;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
           border: 1px solid rgba(255,255,255,0.08);
           background: rgba(255,255,255,0.03);
           color: rgba(255,255,255,0.5);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
         }
         .embed-btn.active {
           background: ${artist.color};
           color: #fff;
           border-color: ${artist.color};
-          box-shadow: 0 0 20px ${artist.color}35;
+          box-shadow: 0 0 25px ${artist.color}55;
+        }
+        
+        /* Hardware accelerated drift animations for ambient drifting particles */
+        @keyframes floatOrbA {
+          0% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(60px, -50px) scale(1.15); }
+          100% { transform: translate(0, 0) scale(1); }
+        }
+        @keyframes floatOrbB {
+          0% { transform: translate(0, 0) scale(1.1); }
+          50% { transform: translate(-80px, 60px) scale(0.9); }
+          100% { transform: translate(0, 0) scale(1.1); }
+        }
+        
+        /* Neon status light blinking effect */
+        @keyframes neonPulse {
+          0% { opacity: 0.8; box-shadow: 0 0 8px ${artist.statusColor}; }
+          50% { opacity: 1; box-shadow: 0 0 16px ${artist.statusColor}, 0 0 25px ${artist.statusColor}aa; }
+          100% { opacity: 0.8; box-shadow: 0 0 8px ${artist.statusColor}; }
         }
       `}</style>
 
-      {/* ── Ambient Background Lighting ────────────────────────────────────── */}
+      {/* ── Ambient Drifting Orbs ── */}
       <div style={{
         position: "fixed",
-        top: "-10%",
-        left: "-10%",
-        width: "60vw",
-        height: "60vw",
+        top: "10%",
+        left: "5%",
+        width: "45vw",
+        height: "45vw",
         borderRadius: "50%",
-        background: `radial-gradient(circle, ${artist.color}08 0%, transparent 70%)`,
+        background: `radial-gradient(circle, ${artist.color}0a 0%, transparent 68%)`,
         zIndex: 0,
-        pointerEvents: "none"
+        pointerEvents: "none",
+        animation: "floatOrbA 24s infinite ease-in-out"
       }} />
       <div style={{
         position: "fixed",
-        bottom: "10%",
-        right: "-10%",
-        width: "50vw",
-        height: "50vw",
+        bottom: "15%",
+        right: "5%",
+        width: "40vw",
+        height: "40vw",
         borderRadius: "50%",
-        background: `radial-gradient(circle, ${artist.accent}05 0%, transparent 70%)`,
+        background: `radial-gradient(circle, ${artist.accent}06 0%, transparent 70%)`,
         zIndex: 0,
-        pointerEvents: "none"
+        pointerEvents: "none",
+        animation: "floatOrbB 28s infinite ease-in-out"
       }} />
 
-      {/* ── Back Navigation Header ────────────────────────────────────────── */}
+      {/* ── Navigation Header ── */}
       <header style={{
         position: "sticky",
         top: 0,
         left: 0,
         right: 0,
         zIndex: 100,
-        background: "rgba(3,3,4,0.7)",
-        backdropFilter: "blur(16px)",
-        borderBottom: "1px solid rgba(255,255,255,0.04)",
-        padding: "16px 5vw",
+        background: "rgba(2,2,3,0.72)",
+        backdropFilter: "blur(24px)",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        padding: "18px 5vw",
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        boxShadow: `0 8px 30px rgba(0,0,0,0.5), 0 0 40px ${artist.color}05`
       }}>
         <button
           onClick={handleBack}
@@ -540,8 +708,8 @@ export default function ArtistDetails() {
 
         <div style={{
           fontFamily: "'Bebas Neue', sans-serif",
-          fontSize: "1.6rem",
-          letterSpacing: "0.1em",
+          fontSize: "1.75rem",
+          letterSpacing: "0.12em",
           color: "#fff",
           display: "flex",
           alignItems: "center"
@@ -550,39 +718,40 @@ export default function ArtistDetails() {
         </div>
       </header>
 
-      {/* ── Cinematic Hero Section ────────────────────────────────────────── */}
+      {/* ── Cinematic Hero Section ── */}
       <section style={{
         position: "relative",
-        height: "75vh",
-        minHeight: "550px",
+        height: "76vh",
+        minHeight: "560px",
         width: "100%",
         display: "flex",
         alignItems: "flex-end",
         overflow: "hidden",
-        borderBottom: "1px solid rgba(255,255,255,0.05)"
+        borderBottom: "1px solid rgba(255,255,255,0.06)"
       }}>
-        {/* Layered cinematic backgrounds */}
+        {/* Banner image with smooth parallax scale filter */}
         <div style={{
           position: "absolute",
           inset: 0,
           background: `url(${artist.banner}) no-repeat center center`,
           backgroundSize: "cover",
-          filter: "brightness(0.2) saturate(0.65) blur(4px)",
-          transform: "scale(1.05)",
+          filter: "brightness(0.18) saturate(0.6) blur(3px)",
+          transform: "scale(1.06)",
           zIndex: 0
         }} />
 
+        {/* Dynamic deep darkness gradient grids */}
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(to top, #030304 8%, rgba(3,3,4,0.6) 50%, rgba(3,3,4,0.1) 100%)",
+          background: "linear-gradient(to top, #020203 10%, rgba(2,2,3,0.55) 50%, rgba(2,2,3,0.1) 100%)",
           zIndex: 1
         }} />
 
         <div style={{
           position: "absolute",
           inset: 0,
-          background: `radial-gradient(circle at 80% 50%, ${artist.color}0c 0%, transparent 60%)`,
+          background: `radial-gradient(circle at 75% 55%, ${artist.color}12 0%, transparent 60%)`,
           zIndex: 1
         }} />
 
@@ -591,7 +760,7 @@ export default function ArtistDetails() {
           width: "90vw",
           maxWidth: 1200,
           margin: "0 auto",
-          paddingBottom: "80px",
+          paddingBottom: "90px",
           position: "relative",
           zIndex: 10,
           display: "flex",
@@ -599,56 +768,60 @@ export default function ArtistDetails() {
           gap: 16
         }}>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 35 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
             style={{ display: "flex", alignItems: "center", gap: 12 }}
           >
             <span style={{
-              width: 8,
-              height: 8,
+              width: 9,
+              height: 9,
               borderRadius: "50%",
               background: artist.statusColor,
-              boxShadow: `0 0 10px ${artist.statusColor}`
+              animation: "neonPulse 1.8s infinite ease-in-out"
             }} />
             <span style={{
               fontSize: "0.72rem",
               fontFamily: "monospace",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.6)"
+              color: artist.statusColor,
+              fontWeight: "bold",
+              textShadow: `0 0 10px ${artist.statusColor}88`
             }}>
               {artist.availability}
             </span>
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+            initial={{ opacity: 0, y: 55, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.12, type: "spring", damping: 15 }}
             style={{
               fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: "clamp(3.8rem, 10vw, 8rem)",
-              lineHeight: 0.9,
+              fontSize: "clamp(4.2rem, 11vw, 8.5rem)",
+              lineHeight: 0.85,
               letterSpacing: "0.02em",
               color: "#fff",
               margin: 0,
-              textShadow: `0 0 80px ${artist.color}25`
+              textShadow: `0 0 90px ${artist.color}35, 0 10px 40px rgba(0,0,0,0.5)`
             }}
           >
             {artist.name}
           </motion.h1>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.28 }}
             style={{
-              fontSize: "0.75rem",
+              fontSize: "0.78rem",
               fontFamily: "monospace",
-              letterSpacing: "0.3em",
+              letterSpacing: "0.28em",
               color: artist.color,
-              textTransform: "uppercase"
+              textTransform: "uppercase",
+              fontWeight: "600",
+              textShadow: `0 0 15px ${artist.color}33`
             }}
           >
             {artist.role} — {artist.location}
@@ -656,18 +829,17 @@ export default function ArtistDetails() {
         </div>
       </section>
 
-      {/* ── Main Layout Grid ──────────────────────────────────────────────── */}
+      {/* ── Main Layout Grid ── */}
       <main style={{
         width: "90vw",
         maxWidth: 1200,
-        margin: "-40px auto 0",
+        margin: "-50px auto 0",
         position: "relative",
         zIndex: 20,
         display: "grid",
         gridTemplateColumns: "1fr",
         gap: 40
       }}>
-        {/* Responsive dual column */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr",
@@ -676,26 +848,19 @@ export default function ArtistDetails() {
           <style>{`
             @media (min-width: 992px) {
               .main-content-layout {
-                grid-template-columns: 1.6fr 1fr;
+                grid-template-columns: 1.62fr 1fr;
               }
             }
           `}</style>
 
           {/* ── LEFT: Content & Media ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 60 }}>
-            {/* 1. Statistics Cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: 16
-              }}
-              className="stats-grid"
-            >
+            {/* 1. Staggered Counter Statistics Cards */}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: 20
+            }} className="stats-grid">
               <style>{`
                 @media (min-width: 576px) {
                   .stats-grid {
@@ -710,63 +875,44 @@ export default function ArtistDetails() {
                 { label: "Followers", val: artist.followers },
                 { label: "Collaborations", val: artist.collabs }
               ].map((s, idx) => (
-                <div
+                <StatCard
                   key={idx}
-                  className="glass-panel glow-border-hover"
-                  style={{
-                    padding: "24px 16px",
-                    borderRadius: 12,
-                    textAlign: "center"
-                  }}
-                >
-                  <div style={{
-                    fontFamily: "'Bebas Neue', sans-serif",
-                    fontSize: "2.2rem",
-                    color: "#fff",
-                    letterSpacing: "0.05em",
-                    marginBottom: 4
-                  }} className="text-glow">
-                    {s.val}
-                  </div>
-                  <div style={{
-                    fontSize: "0.62rem",
-                    color: "rgba(255,255,255,0.4)",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                    fontFamily: "monospace"
-                  }}>
-                    {s.label}
-                  </div>
-                </div>
+                  label={s.label}
+                  val={s.val}
+                  artist={artist}
+                  delay={idx * 0.12}
+                />
               ))}
-            </motion.div>
+            </div>
 
-            {/* 2. Biography */}
+            {/* 2. Narrative Biography */}
             <motion.section
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.7 }}
               className="glass-panel"
               style={{
-                padding: "36px",
-                borderRadius: 16,
-                position: "relative"
+                padding: "44px 40px",
+                borderRadius: 24,
+                position: "relative",
+                overflow: "hidden"
               }}
             >
+              {/* Radial gradient ambient lighting accent */}
               <div style={{
                 position: "absolute",
                 top: 0,
                 right: 0,
-                width: "150px",
-                height: "150px",
-                background: `radial-gradient(circle, ${artist.color}06 0%, transparent 70%)`,
+                width: "180px",
+                height: "180px",
+                background: `radial-gradient(circle, ${artist.color}0a 0%, transparent 72%)`,
                 pointerEvents: "none"
               }} />
 
               <h2 style={{
                 fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: "2.2rem",
+                fontSize: "2.4rem",
                 letterSpacing: "0.08em",
                 color: "#fff",
                 marginBottom: 10
@@ -774,29 +920,30 @@ export default function ArtistDetails() {
                 Sonic Narrative
               </h2>
               <div style={{
-                height: 2,
-                width: 40,
+                height: 3,
+                width: 48,
                 background: `linear-gradient(to right, ${artist.color}, transparent)`,
-                marginBottom: 28,
+                marginBottom: 32,
                 borderRadius: 2
               }} />
 
               <p style={{
-                fontSize: "1.05rem",
+                fontSize: "1.15rem",
                 lineHeight: 1.8,
-                color: "rgba(255,255,255,0.8)",
+                color: "rgba(255,255,255,0.85)",
                 fontFamily: "'Cormorant Garamond', serif",
                 fontStyle: "italic",
-                marginBottom: 24,
-                borderLeft: `2px solid ${artist.color}33`,
-                paddingLeft: 20
+                marginBottom: 28,
+                borderLeft: `3px solid ${artist.color}44`,
+                paddingLeft: 24,
+                textShadow: "0 2px 10px rgba(0,0,0,0.3)"
               }}>
                 "{artist.quote}"
               </p>
 
               <p style={{
-                fontSize: "0.93rem",
-                lineHeight: 1.7,
+                fontSize: "0.95rem",
+                lineHeight: 1.75,
                 color: "rgba(255,255,255,0.65)"
               }}>
                 {artist.bio}
@@ -805,17 +952,17 @@ export default function ArtistDetails() {
 
             {/* 3. Media Gallery */}
             <motion.section
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              style={{ display: "flex", flexDirection: "column", gap: 20 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.7 }}
+              style={{ display: "flex", flexDirection: "column", gap: 24 }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                 <div>
                   <h2 style={{
                     fontFamily: "'Bebas Neue', sans-serif",
-                    fontSize: "2.2rem",
+                    fontSize: "2.4rem",
                     letterSpacing: "0.08em",
                     color: "#fff",
                     margin: 0
@@ -823,8 +970,8 @@ export default function ArtistDetails() {
                     Atmospheric Gallery
                   </h2>
                   <div style={{
-                    height: 2,
-                    width: 40,
+                    height: 3,
+                    width: 48,
                     background: `linear-gradient(to right, ${artist.color}, transparent)`,
                     marginTop: 8,
                     borderRadius: 2
@@ -839,19 +986,19 @@ export default function ArtistDetails() {
                       style={{
                         background: "rgba(255,255,255,0.03)",
                         border: "1px solid rgba(255,255,255,0.08)",
-                        width: 38,
-                        height: 38,
+                        width: 40,
+                        height: 40,
                         borderRadius: "50%",
                         color: "#fff",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "0.9rem",
-                        transition: "all 0.3s"
+                        fontSize: "0.95rem",
+                        transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.background = `${artist.color}15`; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.background = `${artist.color}18`; e.currentTarget.style.transform = "scale(1.05)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "none"; }}
                     >
                       {dir === "left" ? "←" : "→"}
                     </button>
@@ -859,12 +1006,12 @@ export default function ArtistDetails() {
                 </div>
               </div>
 
-              {/* Gallery Horizontal Wrapper */}
+              {/* Gallery Scroll Container */}
               <div
                 ref={galleryRef}
                 style={{
                   display: "flex",
-                  gap: 16,
+                  gap: 20,
                   overflowX: "auto",
                   paddingBottom: 15,
                   scrollBehavior: "smooth"
@@ -873,14 +1020,14 @@ export default function ArtistDetails() {
               >
                 <style>{`
                   .gallery-scroll::-webkit-scrollbar {
-                    height: 3px;
+                    height: 4px;
                   }
                   .gallery-scroll::-webkit-scrollbar-track {
                     background: rgba(255,255,255,0.02);
                   }
                   .gallery-scroll::-webkit-scrollbar-thumb {
-                    background: ${artist.color}33;
-                    border-radius: 2px;
+                    background: ${artist.color}38;
+                    border-radius: 4px;
                   }
                 `}</style>
 
@@ -890,41 +1037,44 @@ export default function ArtistDetails() {
                     onClick={() => setLightbox(g)}
                     className="glass-panel"
                     style={{
-                      flex: "0 0 280px",
-                      borderRadius: 14,
+                      flex: "0 0 310px",
+                      borderRadius: 18,
                       overflow: "hidden",
                       cursor: "pointer",
-                      border: "1px solid rgba(255,255,255,0.05)",
-                      transition: "all 0.4s"
+                      border: "1px solid rgba(255,255,255,0.06)",
+                      transition: "all 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.transform = "scale(1.02)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; e.currentTarget.style.transform = "none"; }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.transform = "translateY(-6px)"; e.currentTarget.style.boxShadow = `0 25px 50px rgba(0,0,0,0.85), 0 0 25px ${artist.color}15`; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
                   >
-                    <div style={{ height: 180, overflow: "hidden", position: "relative" }}>
+                    <div style={{ height: 195, overflow: "hidden", position: "relative" }}>
                       <img
                         src={g.img}
                         alt={g.label}
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.6s", transformOrigin: "center" }}
+                        onMouseEnter={e => e.currentTarget.style.transform = "scale(1.06)"}
+                        onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
                       />
                       <div style={{
                         position: "absolute",
                         inset: 0,
-                        background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)"
+                        background: "linear-gradient(to top, rgba(2,2,3,0.92) 0%, transparent 62%)"
                       }} />
                     </div>
-                    <div style={{ padding: "16px 20px" }}>
+                    <div style={{ padding: "20px 24px" }}>
                       <div style={{
                         fontSize: "0.68rem",
                         fontFamily: "monospace",
                         color: artist.color,
                         letterSpacing: "0.15em",
                         textTransform: "uppercase",
-                        marginBottom: 4
+                        marginBottom: 4,
+                        fontWeight: "600"
                       }}>
                         Aesthetic Capture
                       </div>
                       <div style={{
-                        fontSize: "0.85rem",
+                        fontSize: "0.88rem",
                         color: "#fff",
                         fontWeight: "500",
                         whiteSpace: "nowrap",
@@ -939,25 +1089,25 @@ export default function ArtistDetails() {
               </div>
             </motion.section>
 
-            {/* 4. Live Previews */}
+            {/* 4. Live Music/Video Previews */}
             <motion.section
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.7 }}
               className="glass-panel"
               style={{
-                padding: "36px",
-                borderRadius: 16,
+                padding: "40px",
+                borderRadius: 24,
                 display: "flex",
                 flexDirection: "column",
-                gap: 24
+                gap: 28
               }}
             >
               <div>
                 <h2 style={{
                   fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: "2.2rem",
+                  fontSize: "2.4rem",
                   letterSpacing: "0.08em",
                   color: "#fff",
                   margin: 0
@@ -965,15 +1115,15 @@ export default function ArtistDetails() {
                   Vibrational Previews
                 </h2>
                 <div style={{
-                  height: 2,
-                  width: 40,
+                  height: 3,
+                  width: 48,
                   background: `linear-gradient(to right, ${artist.color}, transparent)`,
                   marginTop: 8,
                   borderRadius: 2
                 }} />
               </div>
 
-              {/* Music Equalizer and Selector */}
+              {/* Selector with custom anims */}
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -981,36 +1131,37 @@ export default function ArtistDetails() {
                 flexWrap: "wrap",
                 gap: 16
               }}>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ display: "flex", gap: 10 }}>
                   {["spotify", "soundcloud", "youtube"].map(type => (
                     <button
                       key={type}
                       className={`embed-btn ${activeEmbed === type ? "active" : ""}`}
                       onClick={() => setActiveEmbed(type)}
                     >
-                      {type.toUpperCase()}
+                      {type}
                     </button>
                   ))}
                 </div>
 
-                {/* Animated Equalizer */}
-                <div style={{ display: "flex", gap: 3, alignItems: "flex-end", height: 28 }}>
-                  <div className="equalizer-bar" style={{ animationDelay: "0.1s" }} />
-                  <div className="equalizer-bar" style={{ animationDelay: "0.3s" }} />
-                  <div className="equalizer-bar" style={{ animationDelay: "0.5s" }} />
-                  <div className="equalizer-bar" style={{ animationDelay: "0.2s" }} />
-                  <div className="equalizer-bar" style={{ animationDelay: "0.4s" }} />
+                {/* Pulsing Equalizer */}
+                <div style={{ display: "flex", gap: 3.5, alignItems: "flex-end", height: 28 }}>
+                  <div className="equalizer-bar" style={{ animationDelay: "0.1s", background: artist.color }} />
+                  <div className="equalizer-bar" style={{ animationDelay: "0.38s", background: artist.color }} />
+                  <div className="equalizer-bar" style={{ animationDelay: "0.55s", background: artist.color }} />
+                  <div className="equalizer-bar" style={{ animationDelay: "0.22s", background: artist.color }} />
+                  <div className="equalizer-bar" style={{ animationDelay: "0.45s", background: artist.color }} />
                 </div>
               </div>
 
-              {/* Audio Embed Render */}
+              {/* Dynamic Frame container */}
               <div style={{
-                background: "#050506",
-                borderRadius: 12,
-                border: "1px solid rgba(255,255,255,0.03)",
+                background: "#040405",
+                borderRadius: 16,
+                border: "1px solid rgba(255,255,255,0.05)",
                 overflow: "hidden",
                 height: activeEmbed === "youtube" ? 360 : activeEmbed === "spotify" ? 80 : 166,
-                transition: "height 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
+                transition: "height 0.45s cubic-bezier(0.16, 1, 0.3, 1)",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.6)"
               }}>
                 {activeEmbed === "spotify" && (
                   <iframe
@@ -1049,18 +1200,18 @@ export default function ArtistDetails() {
               </div>
             </motion.section>
 
-            {/* 5. Upcoming Alignments (Timeline) */}
+            {/* 5. Upcoming Performances */}
             <motion.section
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.7 }}
               style={{ display: "flex", flexDirection: "column", gap: 24 }}
             >
               <div>
                 <h2 style={{
                   fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: "2.2rem",
+                  fontSize: "2.4rem",
                   letterSpacing: "0.08em",
                   color: "#fff",
                   margin: 0
@@ -1068,8 +1219,8 @@ export default function ArtistDetails() {
                   Upcoming Alignments
                 </h2>
                 <div style={{
-                  height: 2,
-                  width: 40,
+                  height: 3,
+                  width: 48,
                   background: `linear-gradient(to right, ${artist.color}, transparent)`,
                   marginTop: 8,
                   borderRadius: 2
@@ -1077,14 +1228,14 @@ export default function ArtistDetails() {
               </div>
 
               {/* Event Cards */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {artist.upcoming.map((e, idx) => (
                   <div
                     key={idx}
                     className="glass-panel glow-border-hover"
                     style={{
-                      padding: "24px 28px",
-                      borderRadius: 14,
+                      padding: "26px 32px",
+                      borderRadius: 18,
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
@@ -1092,28 +1243,29 @@ export default function ArtistDetails() {
                       gap: 20
                     }}
                   >
-                    <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+                    <div style={{ display: "flex", gap: 28, alignItems: "center" }}>
                       <div style={{
                         background: `${artist.color}15`,
                         border: `1px solid ${artist.color}25`,
-                        padding: "10px 14px",
-                        borderRadius: 8,
+                        padding: "12px 18px",
+                        borderRadius: 10,
                         textAlign: "center"
                       }}>
                         <div style={{
                           fontSize: "0.68rem",
                           fontFamily: "monospace",
                           color: artist.color,
-                          letterSpacing: "0.1em"
+                          letterSpacing: "0.1em",
+                          fontWeight: "bold"
                         }}>
                           DATE
                         </div>
                         <div style={{
-                          fontSize: "0.85rem",
+                          fontSize: "0.95rem",
                           fontFamily: "monospace",
                           fontWeight: "bold",
                           color: "#fff",
-                          marginTop: 2
+                          marginTop: 3
                         }}>
                           {e.date.split(",")[0]}
                         </div>
@@ -1121,7 +1273,7 @@ export default function ArtistDetails() {
 
                       <div>
                         <h4 style={{
-                          fontSize: "1.1rem",
+                          fontSize: "1.15rem",
                           color: "#fff",
                           fontWeight: "500",
                           margin: 0
@@ -1129,22 +1281,23 @@ export default function ArtistDetails() {
                           {e.venue}
                         </h4>
                         <p style={{
-                          fontSize: "0.82rem",
-                          color: "rgba(255,255,255,0.4)",
-                          margin: "4px 0 0"
+                          fontSize: "0.85rem",
+                          color: "rgba(255,255,255,0.45)",
+                          margin: "6px 0 0"
                         }}>
                           {e.city}
                         </p>
                       </div>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                       <span style={{
-                        fontSize: "0.7rem",
+                        fontSize: "0.72rem",
                         fontFamily: "monospace",
                         color: e.status === "Selling Out" ? "#ef4444" : "rgba(255,255,255,0.4)",
-                        letterSpacing: "0.1em",
-                        textTransform: "uppercase"
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        fontWeight: "bold"
                       }}>
                         {e.status}
                       </span>
@@ -1154,16 +1307,16 @@ export default function ArtistDetails() {
                           background: "transparent",
                           border: `1px solid ${artist.color}45`,
                           color: "#fff",
-                          padding: "10px 18px",
-                          borderRadius: 8,
-                          fontSize: "0.8rem",
+                          padding: "11px 22px",
+                          borderRadius: 10,
+                          fontSize: "0.82rem",
                           fontWeight: "600",
                           fontFamily: "inherit",
                           cursor: "pointer",
-                          transition: "all 0.3s"
+                          transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = artist.color; e.currentTarget.style.borderColor = artist.color; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = `${artist.color}45`; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = artist.color; e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.boxShadow = `0 0 15px ${artist.color}66`; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = `${artist.color}45`; e.currentTarget.style.boxShadow = "none"; }}
                       >
                         Secure Access
                       </button>
@@ -1174,34 +1327,36 @@ export default function ArtistDetails() {
             </motion.section>
           </div>
 
-          {/* ── RIGHT: Sticky Booking & Socials ── */}
+          {/* ── RIGHT: Sticky Booking Card & Socials ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
-            {/* Booking Card */}
-            <div style={{ position: "sticky", top: 100, display: "flex", flexDirection: "column", gap: 24 }}>
+            <div style={{ position: "sticky", top: 100, display: "flex", flexDirection: "column", gap: 28 }}>
+              {/* Premium Booking Glass Panel */}
               <motion.section
-                initial={{ opacity: 0, x: 30 }}
+                initial={{ opacity: 0, x: 35 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                transition={{ duration: 0.7, delay: 0.15 }}
                 className="glass-panel"
                 style={{
-                  padding: "36px",
-                  borderRadius: 20,
-                  position: "relative"
+                  padding: "44px 36px",
+                  borderRadius: 24,
+                  position: "relative",
+                  overflow: "hidden"
                 }}
               >
+                {/* Accent circular radial background blur */}
                 <div style={{
                   position: "absolute",
                   top: 0,
                   left: 0,
-                  width: "120px",
-                  height: "120px",
-                  background: `radial-gradient(circle, ${artist.color}08 0%, transparent 70%)`,
+                  width: "150px",
+                  height: "150px",
+                  background: `radial-gradient(circle, ${artist.color}0a 0%, transparent 72%)`,
                   pointerEvents: "none"
                 }} />
 
                 <h3 style={{
                   fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: "1.9rem",
+                  fontSize: "2.1rem",
                   letterSpacing: "0.08em",
                   color: "#fff",
                   marginBottom: 6
@@ -1209,14 +1364,15 @@ export default function ArtistDetails() {
                   Reserve Alignment
                 </h3>
                 <p style={{
-                  fontSize: "0.78rem",
-                  color: "rgba(255,255,255,0.4)",
-                  marginBottom: 24
+                  fontSize: "0.8rem",
+                  color: "rgba(255,255,255,0.45)",
+                  marginBottom: 28,
+                  lineHeight: 1.5
                 }}>
-                  Direct inquiry line to the artist’s management desk.
+                  Direct dynamic inquiry desk to coordinates representing the artist’s manager.
                 </p>
 
-                <form onSubmit={handleInquiry} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <form onSubmit={handleInquiry} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <div>
                     <input
                       type="text"
@@ -1225,15 +1381,18 @@ export default function ArtistDetails() {
                       onChange={e => setForm({ ...form, name: e.target.value })}
                       style={{
                         width: "100%",
-                        padding: "13px 16px",
-                        background: "rgba(0,0,0,0.45)",
+                        padding: "14px 18px",
+                        background: "rgba(0,0,0,0.5)",
                         border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: 8,
+                        borderRadius: 10,
                         color: "#fff",
                         fontSize: "0.85rem",
                         fontFamily: "inherit",
-                        outline: "none"
+                        outline: "none",
+                        transition: "all 0.3s"
                       }}
+                      onFocus={e => e.currentTarget.style.borderColor = artist.color}
+                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
                     />
                   </div>
 
@@ -1245,15 +1404,18 @@ export default function ArtistDetails() {
                       onChange={e => setForm({ ...form, email: e.target.value })}
                       style={{
                         width: "100%",
-                        padding: "13px 16px",
-                        background: "rgba(0,0,0,0.45)",
+                        padding: "14px 18px",
+                        background: "rgba(0,0,0,0.5)",
                         border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: 8,
+                        borderRadius: 10,
                         color: "#fff",
                         fontSize: "0.85rem",
                         fontFamily: "inherit",
-                        outline: "none"
+                        outline: "none",
+                        transition: "all 0.3s"
                       }}
+                      onFocus={e => e.currentTarget.style.borderColor = artist.color}
+                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
                     />
                   </div>
 
@@ -1265,15 +1427,18 @@ export default function ArtistDetails() {
                       onChange={e => setForm({ ...form, date: e.target.value })}
                       style={{
                         width: "100%",
-                        padding: "13px 16px",
-                        background: "rgba(0,0,0,0.45)",
+                        padding: "14px 18px",
+                        background: "rgba(0,0,0,0.5)",
                         border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: 8,
+                        borderRadius: 10,
                         color: "#fff",
                         fontSize: "0.85rem",
                         fontFamily: "inherit",
-                        outline: "none"
+                        outline: "none",
+                        transition: "all 0.3s"
                       }}
+                      onFocus={e => e.currentTarget.style.borderColor = artist.color}
+                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
                     />
                   </div>
 
@@ -1285,16 +1450,19 @@ export default function ArtistDetails() {
                       rows="3"
                       style={{
                         width: "100%",
-                        padding: "13px 16px",
-                        background: "rgba(0,0,0,0.45)",
+                        padding: "14px 18px",
+                        background: "rgba(0,0,0,0.5)",
                         border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: 8,
+                        borderRadius: 10,
                         color: "#fff",
                         fontSize: "0.85rem",
                         fontFamily: "inherit",
                         outline: "none",
-                        resize: "none"
+                        resize: "none",
+                        transition: "all 0.3s"
                       }}
+                      onFocus={e => e.currentTarget.style.borderColor = artist.color}
+                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
                     />
                   </div>
 
@@ -1302,33 +1470,34 @@ export default function ArtistDetails() {
                     type="submit"
                     style={{
                       width: "100%",
-                      padding: "14px",
-                      background: `linear-gradient(to right, ${artist.color}, ${artist.color}dd)`,
+                      padding: "15px",
+                      background: `linear-gradient(135deg, ${artist.color} 0%, ${artist.color}bd 100%)`,
                       border: "none",
-                      borderRadius: 8,
+                      borderRadius: 10,
                       color: "#fff",
-                      fontWeight: "600",
-                      fontSize: "0.85rem",
+                      fontWeight: "bold",
+                      fontSize: "0.88rem",
                       cursor: "pointer",
-                      transition: "all 0.3s",
-                      boxShadow: `0 4px 15px ${artist.color}35`,
-                      letterSpacing: "0.05em"
+                      transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                      boxShadow: `0 8px 25px ${artist.color}35`,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase"
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 6px 20px ${artist.color}55`; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 4px 15px ${artist.color}35`; }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 12px 30px ${artist.color}58`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 8px 25px ${artist.color}35`; }}
                   >
                     Check Availability
                   </button>
                 </form>
 
-                {/* Management Info */}
+                {/* Management Desk info */}
                 <div style={{
-                  borderTop: "1px solid rgba(255,255,255,0.05)",
-                  marginTop: 28,
-                  paddingTop: 20,
+                  borderTop: "1px solid rgba(255,255,255,0.06)",
+                  marginTop: 32,
+                  paddingTop: 24,
                   display: "flex",
                   flexDirection: "column",
-                  gap: 12
+                  gap: 14
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.4)" }}>Agent In-Charge:</span>
@@ -1336,35 +1505,36 @@ export default function ArtistDetails() {
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.4)" }}>Average Response:</span>
-                    <span style={{ fontSize: "0.72rem", color: artist.accent, fontWeight: "600" }}>&lt; 6 Hours</span>
+                    <span style={{ fontSize: "0.72rem", color: artist.accent, fontWeight: "bold", textShadow: `0 0 10px ${artist.accent}33` }}>&lt; 6 Hours</span>
                   </div>
                 </div>
               </motion.section>
 
               {/* Social Links Panel */}
               <motion.section
-                initial={{ opacity: 0, x: 30 }}
+                initial={{ opacity: 0, x: 35 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                transition={{ duration: 0.7, delay: 0.22 }}
                 className="glass-panel"
                 style={{
-                  padding: "24px 30px",
-                  borderRadius: 16,
+                  padding: "26px 36px",
+                  borderRadius: 20,
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center"
                 }}
               >
                 <div style={{
-                  fontSize: "0.75rem",
+                  fontSize: "0.78rem",
                   fontFamily: "monospace",
-                  letterSpacing: "0.15em",
-                  color: "rgba(255,255,255,0.4)"
+                  letterSpacing: "0.18em",
+                  color: "rgba(255,255,255,0.45)",
+                  fontWeight: "bold"
                 }}>
                   CONNECT
                 </div>
 
-                <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ display: "flex", gap: 12 }}>
                   {Object.entries(artist.socials).map(([net, url]) => (
                     <a
                       key={net}
@@ -1372,21 +1542,21 @@ export default function ArtistDetails() {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
-                        width: 36,
-                        height: 36,
+                        width: 38,
+                        height: 38,
                         borderRadius: "50%",
                         background: "rgba(255,255,255,0.03)",
-                        border: "1px solid rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.08)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: "0.8rem",
-                        color: "rgba(255,255,255,0.6)",
+                        color: "rgba(255,255,255,0.55)",
                         textDecoration: "none",
-                        transition: "all 0.3s"
+                        transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.background = `${artist.color}15`; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.6)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+                      onMouseEnter={e => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.background = `${artist.color}15`; e.currentTarget.style.transform = "translateY(-2px) scale(1.05)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.55)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "none"; }}
                     >
                       {net === "instagram" ? "IG" : net === "spotify" ? "SP" : net === "youtube" ? "YT" : "SC"}
                     </a>
@@ -1410,8 +1580,8 @@ export default function ArtistDetails() {
               position: "fixed",
               inset: 0,
               zIndex: 3000,
-              background: "rgba(3,3,4,0.95)",
-              backdropFilter: "blur(20px)",
+              background: "rgba(2,2,3,0.96)",
+              backdropFilter: "blur(25px)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -1419,9 +1589,9 @@ export default function ArtistDetails() {
             }}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              exit={{ scale: 0.92, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
               onClick={e => e.stopPropagation()}
               style={{
@@ -1430,7 +1600,7 @@ export default function ArtistDetails() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: 16
+                gap: 18
               }}
             >
               <img
@@ -1440,14 +1610,15 @@ export default function ArtistDetails() {
                   maxWidth: "90vw",
                   maxHeight: "75vh",
                   objectFit: "contain",
-                  borderRadius: 12,
-                  boxShadow: `0 0 80px ${artist.color}25`
+                  borderRadius: 16,
+                  boxShadow: `0 0 100px ${artist.color}33`,
+                  border: "1px solid rgba(255,255,255,0.12)"
                 }}
               />
               <div style={{ textAlign: "center" }}>
                 <h4 style={{
                   fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: "1.8rem",
+                  fontSize: "1.9rem",
                   letterSpacing: "0.1em",
                   color: "#fff",
                   margin: 0
@@ -1456,10 +1627,10 @@ export default function ArtistDetails() {
                 </h4>
                 <p style={{
                   fontSize: "0.72rem",
-                  color: "rgba(255,255,255,0.4)",
+                  color: "rgba(255,255,255,0.45)",
                   fontFamily: "monospace",
-                  letterSpacing: "0.1em",
-                  marginTop: 4
+                  letterSpacing: "0.12em",
+                  marginTop: 6
                 }}>
                   ESC TO COLLAPSE
                 </p>
