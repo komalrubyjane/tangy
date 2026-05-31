@@ -200,6 +200,10 @@ export default function AdminDashboard() {
   const [editForm, setEditForm] = useState({ name: "", date: "", capacity: 0, sold: 0, revenue: 0, status: "" });
   const [notification, setNotification] = useState(null);
 
+  useEffect(() => {
+    setSearch("");
+  }, [tab]);
+
   const showNote = (msg, type = "success") => {
     setNotification({ msg, type });
     setTimeout(() => setNotification(null), 3000);
@@ -344,7 +348,7 @@ export default function AdminDashboard() {
                 {new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
               </div>
             </div>
-            {(tab === "bookings" || tab === "volunteers") && (
+            {(tab === "bookings" || tab === "volunteers" || tab === "artists") && (
               <input placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)}
                 style={{
                   padding: "10px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
