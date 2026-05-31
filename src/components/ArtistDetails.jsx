@@ -425,12 +425,12 @@ function StatCard({ label, val, artist, delay }) {
           : "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
         border: hovered
           ? `1px solid ${artist.color}88`
-          : "1px solid rgba(255,255,255,0.07)",
+          : `1px solid ${artist.color}22`,
         backdropFilter: "blur(38px) saturate(180%)",
         WebkitBackdropFilter: "blur(38px) saturate(180%)",
         boxShadow: hovered
           ? `0 35px 80px rgba(0,0,0,0.9), 0 0 45px ${artist.color}35, inset 0 1px 0 rgba(255,255,255,0.22)`
-          : "0 20px 45px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.06)",
+          : `0 20px 45px rgba(0,0,0,0.75), inset 0 1px 0 ${artist.color}0c`,
         transform: hovered ? "translateY(-8px) scale(1.03)" : "translateY(0) scale(1)",
         transition: "all 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
       }}
@@ -442,7 +442,7 @@ function StatCard({ label, val, artist, delay }) {
         left: hovered ? "140%" : "-100%",
         width: "50%",
         height: "100%",
-        background: "linear-gradient(to right, transparent, rgba(255,255,255,0.07), transparent)",
+        background: "linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent)",
         transform: "skewX(-25deg)",
         transition: hovered ? "left 0.85s cubic-bezier(0.2, 0.8, 0.2, 1)" : "none"
       }} />
@@ -577,8 +577,8 @@ export default function ArtistDetails() {
           background: linear-gradient(135deg, rgba(12,12,18,0.78) 0%, rgba(6,6,10,0.5) 100%);
           backdrop-filter: blur(35px) saturate(180%);
           -webkit-backdrop-filter: blur(35px) saturate(180%);
-          border: 1px solid rgba(255,255,255,0.08);
-          box-shadow: 0 25px 60px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.05);
+          border: 1px solid ${artist.color}25;
+          box-shadow: 0 25px 60px rgba(0,0,0,0.85), inset 0 1px 0 ${artist.color}15;
         }
         .text-glow {
           text-shadow: 0 0 45px ${artist.color}45, 0 0 15px ${artist.color}25;
@@ -588,7 +588,7 @@ export default function ArtistDetails() {
         }
         .glow-border-hover:hover {
           border-color: ${artist.color}66 !important;
-          box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px ${artist.color}20, inset 0 1px 0 rgba(255,255,255,0.12);
+          box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px ${artist.color}20, inset 0 1px 0 ${artist.color}35;
           transform: translateY(-4px);
         }
         .equalizer-bar {
@@ -609,7 +609,7 @@ export default function ArtistDetails() {
           font-family: inherit;
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid ${artist.color}22;
           background: rgba(255,255,255,0.03);
           color: rgba(255,255,255,0.5);
           letter-spacing: 0.1em;
@@ -677,7 +677,7 @@ export default function ArtistDetails() {
         zIndex: 100,
         background: "rgba(2,2,3,0.72)",
         backdropFilter: "blur(24px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        borderBottom: "1px solid " + artist.color + "22",
         padding: "18px 5vw",
         display: "flex",
         alignItems: "center",
@@ -727,7 +727,7 @@ export default function ArtistDetails() {
         display: "flex",
         alignItems: "flex-end",
         overflow: "hidden",
-        borderBottom: "1px solid rgba(255,255,255,0.06)"
+        borderBottom: "1px solid " + artist.color + "18"
       }}>
         {/* Banner image with smooth parallax scale filter */}
         <div style={{
@@ -985,7 +985,7 @@ export default function ArtistDetails() {
                       onClick={() => scrollGallery(dir)}
                       style={{
                         background: "rgba(255,255,255,0.03)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        border: "1px solid " + artist.color + "22",
                         width: 40,
                         height: 40,
                         borderRadius: "50%",
@@ -998,7 +998,7 @@ export default function ArtistDetails() {
                         transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.background = `${artist.color}18`; e.currentTarget.style.transform = "scale(1.05)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "none"; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = artist.color + "22"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "none"; }}
                     >
                       {dir === "left" ? "←" : "→"}
                     </button>
@@ -1041,11 +1041,11 @@ export default function ArtistDetails() {
                       borderRadius: 18,
                       overflow: "hidden",
                       cursor: "pointer",
-                      border: "1px solid rgba(255,255,255,0.06)",
+                      border: "1px solid " + artist.color + "22",
                       transition: "all 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
                     }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.transform = "translateY(-6px)"; e.currentTarget.style.boxShadow = `0 25px 50px rgba(0,0,0,0.85), 0 0 25px ${artist.color}15`; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = artist.color + "22"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
                   >
                     <div style={{ height: 195, overflow: "hidden", position: "relative" }}>
                       <img
@@ -1157,7 +1157,7 @@ export default function ArtistDetails() {
               <div style={{
                 background: "#040405",
                 borderRadius: 16,
-                border: "1px solid rgba(255,255,255,0.05)",
+                border: "1px solid " + artist.color + "18",
                 overflow: "hidden",
                 height: activeEmbed === "youtube" ? 360 : activeEmbed === "spotify" ? 80 : 166,
                 transition: "height 0.45s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -1383,7 +1383,7 @@ export default function ArtistDetails() {
                         width: "100%",
                         padding: "14px 18px",
                         background: "rgba(0,0,0,0.5)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        border: "1px solid " + artist.color + "22",
                         borderRadius: 10,
                         color: "#fff",
                         fontSize: "0.85rem",
@@ -1392,7 +1392,7 @@ export default function ArtistDetails() {
                         transition: "all 0.3s"
                       }}
                       onFocus={e => e.currentTarget.style.borderColor = artist.color}
-                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
+                      onBlur={e => e.currentTarget.style.borderColor = artist.color + "22"}
                     />
                   </div>
 
@@ -1406,7 +1406,7 @@ export default function ArtistDetails() {
                         width: "100%",
                         padding: "14px 18px",
                         background: "rgba(0,0,0,0.5)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        border: "1px solid " + artist.color + "22",
                         borderRadius: 10,
                         color: "#fff",
                         fontSize: "0.85rem",
@@ -1415,7 +1415,7 @@ export default function ArtistDetails() {
                         transition: "all 0.3s"
                       }}
                       onFocus={e => e.currentTarget.style.borderColor = artist.color}
-                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
+                      onBlur={e => e.currentTarget.style.borderColor = artist.color + "22"}
                     />
                   </div>
 
@@ -1429,7 +1429,7 @@ export default function ArtistDetails() {
                         width: "100%",
                         padding: "14px 18px",
                         background: "rgba(0,0,0,0.5)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        border: "1px solid " + artist.color + "22",
                         borderRadius: 10,
                         color: "#fff",
                         fontSize: "0.85rem",
@@ -1438,7 +1438,7 @@ export default function ArtistDetails() {
                         transition: "all 0.3s"
                       }}
                       onFocus={e => e.currentTarget.style.borderColor = artist.color}
-                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
+                      onBlur={e => e.currentTarget.style.borderColor = artist.color + "22"}
                     />
                   </div>
 
@@ -1452,7 +1452,7 @@ export default function ArtistDetails() {
                         width: "100%",
                         padding: "14px 18px",
                         background: "rgba(0,0,0,0.5)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        border: "1px solid " + artist.color + "22",
                         borderRadius: 10,
                         color: "#fff",
                         fontSize: "0.85rem",
@@ -1462,7 +1462,7 @@ export default function ArtistDetails() {
                         transition: "all 0.3s"
                       }}
                       onFocus={e => e.currentTarget.style.borderColor = artist.color}
-                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
+                      onBlur={e => e.currentTarget.style.borderColor = artist.color + "22"}
                     />
                   </div>
 
@@ -1492,7 +1492,7 @@ export default function ArtistDetails() {
 
                 {/* Management Desk info */}
                 <div style={{
-                  borderTop: "1px solid rgba(255,255,255,0.06)",
+                  borderTop: "1px solid " + artist.color + "1a",
                   marginTop: 32,
                   paddingTop: 24,
                   display: "flex",
@@ -1546,7 +1546,7 @@ export default function ArtistDetails() {
                         height: 38,
                         borderRadius: "50%",
                         background: "rgba(255,255,255,0.03)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        border: "1px solid " + artist.color + "22",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1556,7 +1556,7 @@ export default function ArtistDetails() {
                         transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
                       onMouseEnter={e => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = artist.color; e.currentTarget.style.background = `${artist.color}15`; e.currentTarget.style.transform = "translateY(-2px) scale(1.05)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.55)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "none"; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.55)"; e.currentTarget.style.borderColor = artist.color + "22"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "none"; }}
                     >
                       {net === "instagram" ? "IG" : net === "spotify" ? "SP" : net === "youtube" ? "YT" : "SC"}
                     </a>
@@ -1612,7 +1612,7 @@ export default function ArtistDetails() {
                   objectFit: "contain",
                   borderRadius: 16,
                   boxShadow: `0 0 100px ${artist.color}33`,
-                  border: "1px solid rgba(255,255,255,0.12)"
+                  border: "1px solid " + artist.color + "44"
                 }}
               />
               <div style={{ textAlign: "center" }}>
