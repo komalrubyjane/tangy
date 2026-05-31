@@ -15,6 +15,7 @@ import Volunteer from "./src/components/Volunteer";
 import AdminDashboard from "./src/components/AdminDashboard";
 import ArtistPortal from "./TangyArtistPortal";
 import { ModalProvider, useModal } from "./src/components/ModalProvider";
+import ArtistDetails from "./src/components/ArtistDetails";
 
 // ─── ERROR BOUNDARY ───────────────────────────────────────────────────────────
 class ErrorBoundary extends React.Component {
@@ -433,11 +434,13 @@ function Artists() {
 
 function ArtistCard({ a, delay }) {
   const [hov, setHov] = useState(false);
+  const navigate = useNavigate();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay, type: "spring", bounce: 0.35 }}
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      onClick={() => navigate('/artists/' + a.name.toLowerCase().replace(/[^a-z0-9]/g, ""))}
       style={{
         textAlign: "center", padding: "40px 24px 32px",
         background: hov
@@ -1135,6 +1138,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/artist" element={<ArtistPortal />} />
+        <Route path="/artists/:id" element={<ArtistDetails />} />
       </Routes>
     );
   }
