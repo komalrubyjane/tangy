@@ -379,11 +379,10 @@ export default function VolunteerDetails() {
         </div>
       </section>
 
-      {/* ─── APPLICATION FORM SECTION (Premium Glass) ─── */}
-      <section id="apply-section" style={{ padding: "120px 5vw", position: "relative", overflow: "hidden" }}>
-        {/* Subtle noise texture over gradient background */}
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(180deg, #050505 0%, #1a0b2e 50%, #050505 100%)", zIndex: 0 }} />
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.03%22/%3E%3C/svg%3E')", zIndex: 0, pointerEvents: "none" }} />
+      {/* ─── APPLICATION FORM SECTION (Simple Black Glass) ─── */}
+      <section id="apply-section" style={{ padding: "120px 5vw", position: "relative" }}>
+        {/* Subtle dark background image for glass to blur over */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(40px)", opacity: 0.15, zIndex: 0 }} />
         
         <div style={{ maxWidth: 850, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <div style={{ textAlign: "center", marginBottom: 60 }}>
@@ -392,13 +391,7 @@ export default function VolunteerDetails() {
           </div>
           
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-            <div style={{ position: "relative" }}>
-              {/* Glowing animated border effect around the form */}
-              <motion.div animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                style={{ position: "absolute", top: -2, left: -2, right: -2, bottom: -2, background: "linear-gradient(90deg, #7c3aed, #ec4899, #7c3aed, #06b6d4, #7c3aed)", backgroundSize: "400% 400%", borderRadius: 20, zIndex: -1, filter: "blur(10px)", opacity: 0.5 }} />
-              
-              <VolunteerForm />
-            </div>
+            <VolunteerForm />
           </motion.div>
         </div>
       </section>

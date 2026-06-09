@@ -4,9 +4,10 @@ import { volunteerService } from "../services/volunteerService";
 
 const GlassCard = ({ children, style, className }) => (
   <div className={className} style={{
-    background: "rgba(255,255,255,0.03)",
-    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    border: "1px solid rgba(124,58,237,0.2)", borderRadius: 16,
+    background: "rgba(10, 10, 10, 0.7)",
+    backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+    border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 16,
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
     ...style
   }}>
     {children}
@@ -15,8 +16,8 @@ const GlassCard = ({ children, style, className }) => (
 
 const INPUT_STYLE = {
   width: "100%", padding: "13px 16px",
-  background: "rgba(0,0,0,0.45)",
-  border: "1px solid rgba(124,58,237,0.25)",
+  background: "rgba(0, 0, 0, 0.6)",
+  border: "1px solid rgba(255, 255, 255, 0.12)",
   borderRadius: 8, color: "#fff", fontSize: "0.85rem",
   outline: "none", boxSizing: "border-box", fontFamily: "inherit",
   transition: "all 0.2s"
