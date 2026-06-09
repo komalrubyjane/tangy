@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import PaymentModal from "../components/PaymentModal";
+import { bookingService } from "../services/bookingService";
 
 // ─── SHARED EVENT DATA (keep in sync with App.jsx EVENTS) ────────────────────
 export const EVENTS_DATA = [
@@ -617,9 +618,11 @@ function FAQSection({ ev }) {
 
 // ─── BOOKING FORM SECTION ─────────────────────────────────────────────────────
 function BookingSection({ ev }) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", qty: 1 });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", qty: 1, notes: "" });
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const total = ev.price * form.qty;
 
@@ -637,6 +640,25 @@ function BookingSection({ ev }) {
     const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length === 0) setShowModal(true);
+  };
+
+  const handlePaymentSuccess = async () => {
+    setShowModal(false);
+    setIsSubmitting(true);
+    
+    // Pass the event name automatically
+    const result = await bookingService.submitBooking({
+      ...form,
+      eventName: ev.name
+    });
+    
+    setIsSubmitting(false);
+    if (result.success) {
+      setSubmitSuccess(true);
+      setForm({ name: "", email: "", phone: "", qty: 1, notes: "" });
+    } else {
+      alert("Failed to submit booking. Please try again.");
+    }
   };
 
   const fieldStyle = (field) => ({
@@ -669,6 +691,26 @@ function BookingSection({ ev }) {
           viewport={{ once: true }}
           transition={{ type: "spring", bounce: 0.3 }}
         >
+          {submitSuccess ? (
+            <GlassCard style={{ padding: "60px 36px", textAlign: "center", border: "1px solid rgba(16, 185, 129, 0.4)", boxShadow: "0 25px 60px rgba(0,0,0,0.7), 0 0 50px rgba(16, 185, 129, 0.15)" }}>
+              <div style={{ fontSize: "3.5rem", marginBottom: 20 }}>🎉</div>
+              <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.5rem", color: "#10b981", margin: "0 0 16px", letterSpacing: "0.06em" }}>Booking Confirmed</h3>
+              <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, marginBottom: 30 }}>
+                Your tickets for <strong>{ev.name}</strong> have been secured successfully! 
+                Your response has been saved. We'll send the details to <strong>{form.email}</strong> shortly.
+              </p>
+              <button
+                onClick={() => setSubmitSuccess(false)}
+                style={{
+                  padding: "12px 24px", background: "transparent", border: "1px solid rgba(16, 185, 129, 0.5)",
+                  color: "#10b981", borderRadius: 8, cursor: "pointer", fontFamily: "inherit",
+                  textTransform: "uppercase", letterSpacing: "0.1em", fontSize: "0.8rem"
+                }}
+              >
+                Book Another Ticket
+              </button>
+            </GlassCard>
+          ) : (
           <GlassCard style={{ padding: "40px 36px", border: "1px solid rgba(124,58,237,0.35)", boxShadow: "0 25px 60px rgba(0,0,0,0.7), 0 0 50px rgba(124,58,237,0.12)" }}>
             {/* Event info banner */}
             <div style={{
@@ -729,6 +771,20 @@ function BookingSection({ ev }) {
                 onBlur={e => { e.target.style.borderColor = errors.phone ? "#ef4444" : "rgba(124,58,237,0.25)"; e.target.style.boxShadow = "none"; }}
               />
               {errors.phone && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.phone}</div>}
+            </div>
+
+            {/* Additional Notes */}
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Additional Notes (Optional)</label>
+              <textarea
+                id="booking-notes"
+                placeholder="Any special requests or details..."
+                value={form.notes}
+                onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                style={{ ...fieldStyle("notes"), minHeight: "80px", resize: "vertical" }}
+                onFocus={e => { e.target.style.borderColor = "#7c3aed"; e.target.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.12)"; }}
+                onBlur={e => { e.target.style.borderColor = "rgba(124,58,237,0.25)"; e.target.style.boxShadow = "none"; }}
+              />
             </div>
 
             {/* Quantity */}
@@ -798,25 +854,41 @@ function BookingSection({ ev }) {
             <motion.button
               id="proceed-to-payment"
               onClick={handleSubmit}
-              whileHover={{ scale: 1.02, backgroundColor: "#6d28d9" }}
-              whileTap={{ scale: 0.97 }}
+              disabled={isSubmitting}
+              whileHover={!isSubmitting ? { scale: 1.02, backgroundColor: "#6d28d9" } : {}}
+              whileTap={!isSubmitting ? { scale: 0.97 } : {}}
               style={{
                 width: "100%", padding: "17px 0",
-                background: "#7c3aed", color: "#fff", border: "none",
-                borderRadius: 8, cursor: "pointer", fontFamily: "inherit",
+                background: isSubmitting ? "rgba(124,58,237,0.5)" : "#7c3aed", 
+                color: "#fff", border: "none",
+                borderRadius: 8, cursor: isSubmitting ? "not-allowed" : "pointer", 
+                fontFamily: "inherit",
                 letterSpacing: "0.14em", textTransform: "uppercase",
                 fontSize: "0.9rem", fontWeight: 700,
                 boxShadow: "0 0 40px rgba(124,58,237,0.4)",
                 transition: "background 0.2s",
+                display: "flex", justifyContent: "center", alignItems: "center", gap: 10
               }}
             >
-              Proceed to Payment →
+              {isSubmitting ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%" }}
+                  />
+                  <span>Confirming Booking...</span>
+                </>
+              ) : (
+                "Proceed to Payment →"
+              )}
             </motion.button>
 
             <div style={{ marginTop: 16, textAlign: "center", fontSize: "0.7rem", color: "rgba(255,255,255,0.2)" }}>
               🔒 Secure checkout · Instant confirmation · Free cancellation within 48h
             </div>
           </GlassCard>
+          )}
         </motion.div>
       </div>
 
@@ -826,10 +898,7 @@ function BookingSection({ ev }) {
             amount={total}
             event={ev}
             onClose={() => setShowModal(false)}
-            onSuccess={() => {
-              setShowModal(false);
-              setForm({ name: "", email: "", phone: "", qty: 1 });
-            }}
+            onSuccess={handlePaymentSuccess}
           />
         )}
       </AnimatePresence>
