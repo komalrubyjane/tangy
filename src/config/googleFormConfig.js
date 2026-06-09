@@ -5,11 +5,23 @@ export const GOOGLE_FORM_CONFIG = {
   
   // Replace these with the actual "entry.XXXXXX" IDs from your Google Form
   entries: {
-    name: "entry.111111111",      // Placeholder for Full Name
-    email: "entry.222222222",     // Placeholder for Email Address
-    phone: "entry.333333333",     // Placeholder for Phone Number
-    eventName: "entry.444444444", // Placeholder for Event Name
-    tickets: "entry.555555555",   // Placeholder for Number of Tickets
-    notes: "entry.666666666",     // Placeholder for Additional Notes
+    name: "entry.111111111",         // Your Full Name
+    email: "entry.222222222",        // Email Address
+    phone: "entry.333333333",        // Mobile Number
+    eventName: "entry.444444444",    // Event Name (Hidden)
+    tickets: "entry.555555555",      // Number of tickets booked
+    notes: "entry.666666666",        // Anything else you'd like to share?
+    dob: "entry.777777777",          // Date of Birth
+    gender: "entry.888888888",       // Gender
+    paymentTo: "entry.999999999",    // Payment made to
+    upiName: "entry.101010101",      // Who made the payment? (UPI Name)
+    upiId: "entry.121212121",        // UPI Transaction ID
+    paymentMethod: "entry.131313131",// Payment made through
+    attendedBefore: "entry.141414141",// Have you attended a Tangy Session before?
+    cityPart: "entry.151515151",     // Which part of the city are you coming from?
+    artistCollab: "entry.161616161", // Are you an Artist? / Collaborate
+    seatingPreference: "entry.171717171", // Seating preference
+    instagram: "entry.181818181",    // Instagram Id
+    amountPaid: "entry.191919191"    // Amount Paid in INR
   }
 };

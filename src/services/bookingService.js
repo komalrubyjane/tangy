@@ -11,11 +11,23 @@ export const bookingService = {
       const formData = new URLSearchParams();
       
       // Map our bookingData object to the specific entry.XXX IDs Google Forms expects
-      formData.append(GOOGLE_FORM_CONFIG.entries.name, bookingData.name);
-      formData.append(GOOGLE_FORM_CONFIG.entries.email, bookingData.email);
-      formData.append(GOOGLE_FORM_CONFIG.entries.phone, bookingData.phone);
-      formData.append(GOOGLE_FORM_CONFIG.entries.eventName, bookingData.eventName);
-      formData.append(GOOGLE_FORM_CONFIG.entries.tickets, bookingData.qty.toString());
+      formData.append(GOOGLE_FORM_CONFIG.entries.name, bookingData.name || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.email, bookingData.email || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.phone, bookingData.phone || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.eventName, bookingData.eventName || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.tickets, bookingData.qty ? bookingData.qty.toString() : "1");
+      formData.append(GOOGLE_FORM_CONFIG.entries.dob, bookingData.dob || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.gender, bookingData.gender || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.paymentTo, bookingData.paymentTo || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.upiName, bookingData.upiName || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.upiId, bookingData.upiId || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.paymentMethod, bookingData.paymentMethod || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.attendedBefore, bookingData.attendedBefore || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.cityPart, bookingData.cityPart || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.artistCollab, bookingData.artistCollab || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.seatingPreference, bookingData.seatingPreference || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.instagram, bookingData.instagram || "");
+      formData.append(GOOGLE_FORM_CONFIG.entries.amountPaid, bookingData.amountPaid ? bookingData.amountPaid.toString() : "");
       
       if (bookingData.notes) {
         formData.append(GOOGLE_FORM_CONFIG.entries.notes, bookingData.notes);
