@@ -4,9 +4,9 @@ import { volunteerService } from "../services/volunteerService";
 
 const GlassCard = ({ children, style, className }) => (
   <div className={className} style={{
-    background: "rgba(10, 10, 10, 0.7)",
-    backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-    border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 16,
+    background: "rgba(5, 5, 5, 0.4)",
+    backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)",
+    border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: 16,
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
     ...style
   }}>

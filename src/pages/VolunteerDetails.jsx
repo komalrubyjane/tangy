@@ -5,9 +5,9 @@ import VolunteerForm from "../components/VolunteerForm";
 
 const GlassCard = ({ children, style, className, whileHover, transition }) => (
   <motion.div className={className} whileHover={whileHover} transition={transition} style={{
-    background: "linear-gradient(135deg, rgba(16,16,24,0.7) 0%, rgba(16,16,24,0.4) 100%)",
-    backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
-    border: "1px solid rgba(124,58,237,0.2)", borderRadius: 16,
+    background: "linear-gradient(135deg, rgba(5,5,5,0.5) 0%, rgba(5,5,5,0.3) 100%)",
+    backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)",
+    border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16,
     boxShadow: "0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
     ...style
   }}>
