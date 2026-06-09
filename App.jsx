@@ -246,6 +246,7 @@ function Hero() {
     <section ref={sectionRef} id="home" style={{ position: "relative", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: "#090909" }}>
       {/* Localized Pinterest Background Video (Watermark-Free, Fully Loopable, High Performance) */}
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
@@ -256,6 +257,8 @@ function Hero() {
           width: "100%",
           height: "100%",
           objectFit: "cover",
+          objectPosition: "center",
+          imageRendering: "auto",
           zIndex: 0,
         }}
       >
@@ -263,7 +266,7 @@ function Hero() {
       </video>
 
       {/* Layered overlays */}
-      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.58)", zIndex: 1 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.45))", zIndex: 1 }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 55%, #090909 100%)", zIndex: 2 }} />
 
       {/* Cursor-driven light flare — hidden on mobile (zero overhead) */}
