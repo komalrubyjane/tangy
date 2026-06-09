@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { volunteerService } from "../services/volunteerService";
+import VolunteerForm from "../components/VolunteerForm";
 
 const GlassCard = ({ children, style, className }) => (
   <div className={className} style={{
@@ -350,97 +351,13 @@ export default function VolunteerDetails() {
 
       {/* ─── APPLICATION FORM SECTION ─── */}
       <section id="apply-section" style={{ padding: "100px 5vw", background: "#0a0a0a" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 60 }}>
             <SectionLabel text="Step Into The Magic" />
             <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3rem" }}>APPLY TO JOIN THE CREW</h2>
           </div>
-
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            {submitSuccess ? (
-              <GlassCard style={{ padding: "60px 40px", textAlign: "center", border: "1px solid rgba(16, 185, 129, 0.4)" }}>
-                <div style={{ fontSize: "4rem", marginBottom: 20 }}>🎉</div>
-                <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.5rem", color: "#10b981", margin: "0 0 16px" }}>Application Received!</h3>
-                <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, marginBottom: 30 }}>
-                  Welcome to the Tangy Sessions community. Our team will review your application and get in touch with you at <strong>{form.email}</strong> soon.
-                </p>
-                <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
-                  <button onClick={() => navigate("/")} style={{ padding: "12px 24px", background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.5)", color: "#10b981", borderRadius: 8, cursor: "pointer", textTransform: "uppercase", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
-                    Return Home
-                  </button>
-                  <button onClick={() => { navigate("/"); setTimeout(() => document.getElementById("events")?.scrollIntoView(), 100); }} style={{ padding: "12px 24px", background: "transparent", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", borderRadius: 8, cursor: "pointer", textTransform: "uppercase", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
-                    Explore Events
-                  </button>
-                </div>
-              </GlassCard>
-            ) : (
-              <GlassCard style={{ padding: "40px" }}>
-                
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Full Name *</label>
-                  <input type="text" placeholder="Your name" value={form.name} onChange={e => { setForm(f => ({...f, name: e.target.value})); setErrors(er => ({...er, name: null})); }} style={fieldStyle("name")} />
-                  {errors.name && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.name}</div>}
-                </div>
-
-                <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
-                  <div style={{ flex: "1 1 200px" }}>
-                    <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Email Address *</label>
-                    <input type="email" placeholder="you@email.com" value={form.email} onChange={e => { setForm(f => ({...f, email: e.target.value})); setErrors(er => ({...er, email: null})); }} style={fieldStyle("email")} />
-                    {errors.email && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.email}</div>}
-                  </div>
-                  <div style={{ flex: "1 1 200px" }}>
-                    <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Phone Number (WhatsApp) *</label>
-                    <input type="tel" placeholder="+91 98765 43210" value={form.phone} onChange={e => { setForm(f => ({...f, phone: e.target.value})); setErrors(er => ({...er, phone: null})); }} style={fieldStyle("phone")} />
-                    {errors.phone && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.phone}</div>}
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
-                  <div style={{ flex: "1 1 200px" }}>
-                    <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Date of Birth *</label>
-                    <input type="text" placeholder="DD/MM/YYYY" value={form.dob} onChange={e => { setForm(f => ({...f, dob: e.target.value})); setErrors(er => ({...er, dob: null})); }} style={fieldStyle("dob")} />
-                    {errors.dob && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.dob}</div>}
-                  </div>
-                  <div style={{ flex: "1 1 200px" }}>
-                    <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Preferred Team *</label>
-                    <select value={form.team} onChange={e => setForm(f => ({...f, team: e.target.value}))} style={{...fieldStyle("team"), appearance: "none", cursor: "pointer"}}>
-                      {ROLES.map(r => <option key={r.title} value={r.title}>{r.title}</option>)}
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Why do you want to volunteer? *</label>
-                  <textarea placeholder="Tell us what drives you..." value={form.why} onChange={e => { setForm(f => ({...f, why: e.target.value})); setErrors(er => ({...er, why: null})); }} style={{...fieldStyle("why"), minHeight: 80, resize: "vertical"}} />
-                  {errors.why && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.why}</div>}
-                </div>
-
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Prior Event Experience (Optional)</label>
-                  <textarea placeholder="Have you worked at events before?" value={form.experience} onChange={e => setForm(f => ({...f, experience: e.target.value}))} style={{...fieldStyle("experience"), minHeight: 60, resize: "vertical"}} />
-                </div>
-
-                <div style={{ marginBottom: 28 }}>
-                  <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Instagram / LinkedIn Profile</label>
-                  <input type="text" placeholder="@username or URL" value={form.social} onChange={e => setForm(f => ({...f, social: e.target.value}))} style={fieldStyle("social")} />
-                </div>
-
-                <motion.button
-                  onClick={handleSubmit} disabled={isSubmitting}
-                  whileHover={!isSubmitting ? { scale: 1.02, backgroundColor: "#6d28d9" } : {}}
-                  whileTap={!isSubmitting ? { scale: 0.97 } : {}}
-                  style={{
-                    width: "100%", padding: "18px 0", background: isSubmitting ? "rgba(124,58,237,0.5)" : "#7c3aed",
-                    color: "#fff", border: "none", borderRadius: 8, cursor: isSubmitting ? "not-allowed" : "pointer",
-                    fontFamily: "inherit", letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.95rem", fontWeight: 700,
-                    boxShadow: "0 0 30px rgba(124,58,237,0.3)", display: "flex", justifyContent: "center", alignItems: "center", gap: 10
-                  }}>
-                  {isSubmitting ? (
-                    <><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%" }} /> Submitting...</>
-                  ) : "Submit Application"}
-                </motion.button>
-              </GlassCard>
-            )}
+            <VolunteerForm />
           </motion.div>
         </div>
       </section>
