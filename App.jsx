@@ -10,12 +10,12 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import UnicornBackground from "./src/components/UnicornBackground";
-import PaymentModal from "./src/components/PaymentModal";
 import Volunteer from "./src/components/Volunteer";
 import AdminDashboard from "./src/components/AdminDashboard";
 import ArtistPortal from "./TangyArtistPortal";
 import { ModalProvider, useModal } from "./src/components/ModalProvider";
 import ArtistDetails from "./src/components/ArtistDetails";
+import EventDetails from "./src/pages/EventDetails";
 
 // ─── ERROR BOUNDARY ───────────────────────────────────────────────────────────
 class ErrorBoundary extends React.Component {
@@ -53,9 +53,9 @@ const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const EVENTS = [
-  { id: 1, name: "Tangy Sessions Vol. 1", date: "Aug 15, 2025", time: "7:00 PM", location: "Bansilal Stepwell", desc: "An immersive night of underground electronic music echoing through ancient stone corridors.", price: 799, tags: ["Deep House", "Ambient"], capacity: 200 },
-  { id: 2, name: "Tangy Sessions Vol. 2", date: "Sep 20, 2025", time: "8:00 PM", location: "Bansilal Stepwell", desc: "Deep house and ambient textures meet centuries-old architecture for a transcendent experience.", price: 999, tags: ["House", "Experimental"], capacity: 250 },
-  { id: 3, name: "Tangy Sessions: Solstice", date: "Dec 21, 2025", time: "6:30 PM", location: "Bansilal Stepwell", desc: "A winter solstice special — the longest night, the deepest sounds.", price: 1299, tags: ["Techno", "Dark Ambient"], capacity: 180 },
+  { id: 1, slug: "vol-1", name: "Tangy Sessions Vol. 1", date: "Aug 15, 2025", time: "7:00 PM", location: "Bansilal Stepwell", desc: "An immersive night of underground electronic music echoing through ancient stone corridors.", price: 799, tags: ["Deep House", "Ambient"], capacity: 200 },
+  { id: 2, slug: "vol-2", name: "Tangy Sessions Vol. 2", date: "Sep 20, 2025", time: "8:00 PM", location: "Bansilal Stepwell", desc: "Deep house and ambient textures meet centuries-old architecture for a transcendent experience.", price: 999, tags: ["House", "Experimental"], capacity: 250 },
+  { id: 3, slug: "solstice", name: "Tangy Sessions: Solstice", date: "Dec 21, 2025", time: "6:30 PM", location: "Bansilal Stepwell", desc: "A winter solstice special — the longest night, the deepest sounds.", price: 1299, tags: ["Techno", "Dark Ambient"], capacity: 180 },
 ];
 
 const ARTISTS = [
@@ -95,7 +95,7 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const links = ["Home", "Events", "Artists", "Gallery", "Tickets", "Volunteer", "Contact"];
+  const links = ["Home", "Events", "Artists", "Gallery", "Volunteer", "Contact"];
 
   const scrollTo = (id) => {
     const target = id.toLowerCase();
@@ -118,11 +118,12 @@ function Navbar() {
       transition: "all 0.35s ease", padding: "0 5vw",
       display: "flex", alignItems: "center", justifyContent: "space-between", height: 64,
     }}>
-      <div
-        style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.4rem", letterSpacing: "0.15em", color: "#fff", cursor: "pointer" }}
-        onClick={() => scrollTo("home")}>
-        TANGY<span style={{ color: "#7c3aed" }}>.</span>
-      </div>
+      <img
+        src="/logo.svg"
+        alt="Tangy Sessions Logo"
+        style={{ height: 44, cursor: "pointer" }}
+        onClick={() => scrollTo("home")}
+      />
 
       {/* Desktop links */}
       <div style={{ display: "flex", gap: 28 }} className="nav-links">
@@ -163,7 +164,7 @@ function Navbar() {
 }
 
 // ─── HERO ─────────────────────────────────────────────────────────────────────
-function Hero({ onBook }) {
+function Hero() {
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef(null);
   const sectionRef = useRef(null);
@@ -302,7 +303,7 @@ function Hero({ onBook }) {
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
           style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 36, flexWrap: "wrap" }}>
-          <button onClick={onBook} style={{
+          <button onClick={() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" })} style={{
             padding: "15px 40px", background: "#7c3aed", color: "#fff", border: "none",
             borderRadius: 4, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.12em",
             textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 600,
@@ -310,7 +311,7 @@ function Hero({ onBook }) {
           }}
             onMouseEnter={e => { e.target.style.background = "#6d28d9"; e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = "0 8px 30px rgba(124,58,237,0.5)"; }}
             onMouseLeave={e => { e.target.style.background = "#7c3aed"; e.target.style.transform = "none"; e.target.style.boxShadow = "0 0 40px rgba(124,58,237,0.45)"; }}>
-            Book Tickets
+            Explore Events
           </button>
           <button onClick={() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" })} style={{
             padding: "15px 40px", background: "transparent", color: "#fff",
@@ -337,19 +338,20 @@ function Hero({ onBook }) {
 }
 
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
-function Events({ onBook }) {
+function Events() {
   return (
     <section id="events" style={{ background: "transparent", padding: "100px 5vw" }}>
       <SectionHeader label="Calendar" title="Upcoming Events" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginTop: 60 }}>
-        {EVENTS.map((ev, i) => <EventCard key={ev.id} ev={ev} delay={i * 0.15} onBook={onBook} />)}
+        {EVENTS.map((ev, i) => <EventCard key={ev.id} ev={ev} delay={i * 0.15} />)}
       </div>
     </section>
   );
 }
 
-function EventCard({ ev, delay, onBook }) {
+function EventCard({ ev, delay }) {
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }}
@@ -410,10 +412,23 @@ function EventCard({ ev, delay, onBook }) {
           <div style={{ fontSize: "0.62rem", color: "rgba(255,255,255,0.3)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 2 }}>From</div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#fff", letterSpacing: "0.04em" }}>₹{ev.price}</div>
         </div>
-        <motion.button onClick={() => onBook(ev)}
-          whileHover={{ scale: 1.05, backgroundColor: "#6d28d9" }} whileTap={{ scale: 0.95 }}
-          style={{ padding: "11px 26px", background: "#7c3aed", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "0.78rem", fontWeight: 600 }}>
-          Book Now
+        <motion.button
+          onClick={() => navigate(`/events/${ev.slug}`)}
+          whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+          style={{
+            padding: "11px 26px",
+            background: "transparent",
+            color: "#a78bfa",
+            border: "1px solid rgba(124,58,237,0.55)",
+            borderRadius: 6, cursor: "pointer", fontFamily: "inherit",
+            letterSpacing: "0.1em", textTransform: "uppercase",
+            fontSize: "0.78rem", fontWeight: 600,
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.18)"; e.currentTarget.style.borderColor = "#7c3aed"; e.currentTarget.style.color = "#fff"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(124,58,237,0.55)"; e.currentTarget.style.color = "#a78bfa"; }}
+        >
+          View Details →
         </motion.button>
       </div>
     </motion.div>
@@ -851,125 +866,7 @@ function Gallery() {
   );
 }
 
-// ─── TICKETS ──────────────────────────────────────────────────────────────────
-function Tickets({ toast, selectedEvent }) {
-  const [form, setForm] = useState({ event: selectedEvent?.id || "", qty: 1, name: "", email: "" });
-  const [errors, setErrors] = useState({});
-  const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    if (selectedEvent) setForm(f => ({ ...f, event: selectedEvent.id }));
-  }, [selectedEvent]);
-
-  const selectedEv = EVENTS.find(e => e.id === Number(form.event));
-  const total = selectedEv ? selectedEv.price * form.qty : 0;
-
-  const validate = () => {
-    const errs = {};
-    if (!form.event) errs.event = "Please select an event";
-    if (!form.name.trim()) errs.name = "Name required";
-    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = "Valid email required";
-    if (!form.qty || form.qty < 1) errs.qty = "Minimum 1 ticket";
-    if (form.qty > 10) errs.qty = "Maximum 10 tickets";
-    return errs;
-  };
-
-  const handleSubmit = () => {
-    const errs = validate();
-    setErrors(errs);
-    if (Object.keys(errs).length) { toast({ message: "Please fix the errors above", type: "error" }); return; }
-    setShowModal(true);
-  };
-
-  const inp = field => ({
-    width: "100%", padding: "12px 14px", background: "rgba(0,0,0,0.4)",
-    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(124,58,237,0.2)"}`,
-    borderRadius: 8, color: "#fff", fontSize: "0.88rem", fontFamily: "inherit",
-    outline: "none", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s",
-  });
-
-  return (
-    <section id="tickets" style={{ background: "transparent", padding: "100px 5vw", position: "relative", zIndex: 10 }}>
-      <SectionHeader label="Reserve" title="Book Tickets" />
-      <motion.div
-        initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", bounce: 0.3 }}
-        style={{
-          maxWidth: 520, margin: "60px auto 0",
-          background: "linear-gradient(135deg, rgba(8,8,12,0.85) 0%, rgba(8,8,12,0.65) 100%)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          border: "1px solid rgba(124,58,237,0.3)",
-          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.8), 0 0 40px rgba(124,58,237,0.15), inset 0 1px 1px rgba(255,255,255,0.05)",
-          borderRadius: 18, padding: "40px 36px"
-        }}>
-
-        {/* Event */}
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ display: "block", fontSize: "0.68rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 8 }}>Select Event</label>
-          <select value={form.event} onChange={e => { setForm(f => ({ ...f, event: e.target.value })); setErrors(er => ({ ...er, event: null })); }}
-            style={{ ...inp("event"), appearance: "none" }}>
-            <option value="" style={{ background: "#0d0d0d" }}>— Choose an event —</option>
-            {EVENTS.map(e => <option key={e.id} value={e.id} style={{ background: "#0d0d0d" }}>{e.name} · {e.date}</option>)}
-          </select>
-          {errors.event && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 6 }}>⚠ {errors.event}</div>}
-        </div>
-
-        {/* Name + Email */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-          {["name", "email"].map(f => (
-            <div key={f}>
-              <label style={{ display: "block", fontSize: "0.68rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 8 }}>{f}</label>
-              <input placeholder={f === "name" ? "Full name" : "Email"} value={form[f]}
-                onChange={e => { setForm(x => ({ ...x, [f]: e.target.value })); setErrors(er => ({ ...er, [f]: null })); }}
-                style={inp(f)}
-                onFocus={e => e.target.style.borderColor = "#7c3aed"}
-                onBlur={e => e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(255,255,255,0.1)"}
-              />
-              {errors[f] && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors[f]}</div>}
-            </div>
-          ))}
-        </div>
-
-        {/* Quantity */}
-        <div style={{ marginBottom: 24 }}>
-          <label style={{ display: "block", fontSize: "0.68rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 8 }}>Quantity (max 10)</label>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <button onClick={() => setForm(f => ({ ...f, qty: Math.max(1, f.qty - 1) }))}
-              style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", cursor: "pointer", fontSize: "1.2rem", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>−</button>
-            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", color: "#fff", minWidth: 32, textAlign: "center" }}>{form.qty}</div>
-            <button onClick={() => setForm(f => ({ ...f, qty: Math.min(10, f.qty + 1) }))}
-              style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", cursor: "pointer", fontSize: "1.2rem", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>+</button>
-            {errors.qty && <div style={{ color: "#ef4444", fontSize: "0.73rem" }}>⚠ {errors.qty}</div>}
-          </div>
-        </div>
-
-        {/* Total */}
-        <div style={{ background: "rgba(124,58,237,0.07)", border: "1px solid rgba(124,58,237,0.18)", borderRadius: 10, padding: "18px 20px", marginBottom: 26 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", color: "rgba(255,255,255,0.45)", fontSize: "0.82rem", marginBottom: 8 }}>
-            <span>Price per ticket</span><span>₹{selectedEv?.price ?? "—"}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.7rem", letterSpacing: "0.04em", color: "#fff" }}>
-            <span>Total</span><span style={{ color: "#7c3aed" }}>₹{total || "—"}</span>
-          </div>
-        </div>
-
-        <motion.button onClick={handleSubmit} whileHover={{ scale: 1.02, backgroundColor: "#6d28d9" }} whileTap={{ scale: 0.97 }}
-          style={{ width: "100%", padding: 16, background: "#7c3aed", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.9rem", fontWeight: 600, boxShadow: "0 0 30px rgba(124,58,237,0.35)" }}>
-          Proceed to Payment →
-        </motion.button>
-
-        <div style={{ marginTop: 16, textAlign: "center", fontSize: "0.72rem", color: "rgba(255,255,255,0.2)" }}>
-          🔒 Secure · Instant confirmation · Free cancellation within 24h
-        </div>
-      </motion.div>
-
-      <AnimatePresence>
-        {showModal && <PaymentModal amount={total} event={selectedEv} onClose={() => setShowModal(false)}
-          onSuccess={() => { toast({ message: "Tickets confirmed! See you at the Stepwell. 🎵", type: "success" }); setForm({ event: "", qty: 1, name: "", email: "" }); }} />}
-      </AnimatePresence>
-    </section>
-  );
-}
+// (Tickets section removed from homepage — booking now happens on Event Details pages)
 
 // ─── ABOUT ────────────────────────────────────────────────────────────────────
 function About() {
@@ -1292,9 +1189,11 @@ function Footer() {
       }}>
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 40, marginBottom: 48 }}>
         <div>
-          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", letterSpacing: "0.1em", color: "#fff", marginBottom: 8 }}>
-            TANGY<span style={{ color: "#7c3aed" }}>.</span>
-          </div>
+          <img
+            src="/logo.svg"
+            alt="Tangy Sessions Logo"
+            style={{ height: 56, marginBottom: 8 }}
+          />
           <div style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.82rem", fontStyle: "italic" }}>Music beneath history.</div>
         </div>
         <div style={{ display: "flex", gap: 60, flexWrap: "wrap" }}>
@@ -1336,17 +1235,6 @@ function SectionHeader({ label, title }) {
 function LandingPage({ showArtistOverlay = false }) {
   const modal = useModal();
   const toast = modal.toast;
-  const [selectedEvent, setSelectedEvent] = useState(null);
-
-  const scrollToTickets = (ev) => {
-    setSelectedEvent(ev || null);
-    setTimeout(() => {
-      const el = document.getElementById("tickets");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 100);
-  };
 
   return (
     <div style={{ background: "transparent", minHeight: "100vh", fontFamily: "'DM Sans', system-ui, sans-serif", color: "#fff", position: "relative" }}>
@@ -1430,11 +1318,10 @@ function LandingPage({ showArtistOverlay = false }) {
       `}</style>
 
       <Navbar />
-      <ErrorBoundary name="Hero"><Hero onBook={() => scrollToTickets()} /></ErrorBoundary>
-      <ErrorBoundary name="Events"><Events onBook={scrollToTickets} /></ErrorBoundary>
+      <ErrorBoundary name="Hero"><Hero /></ErrorBoundary>
+      <ErrorBoundary name="Events"><Events /></ErrorBoundary>
       <ErrorBoundary name="Artists"><Artists /></ErrorBoundary>
       <ErrorBoundary name="Gallery"><Gallery /></ErrorBoundary>
-      <ErrorBoundary name="Tickets"><Tickets toast={toast} selectedEvent={selectedEvent} /></ErrorBoundary>
       <ErrorBoundary name="About"><About /></ErrorBoundary>
       <ErrorBoundary name="Volunteer"><Volunteer toast={toast} /></ErrorBoundary>
       <ErrorBoundary name="Contact"><Contact toast={toast} /></ErrorBoundary>
@@ -1467,6 +1354,7 @@ export default function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/artist" element={<ArtistPortal />} />
         <Route path="/artists/:id" element={<LandingPage showArtistOverlay={true} />} />
+        <Route path="/events/:slug" element={<EventDetails />} />
       </Routes>
     );
   }
