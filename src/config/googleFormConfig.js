@@ -23,5 +23,18 @@ export const GOOGLE_FORM_CONFIG = {
     seatingPreference: "entry.171717171", // Seating preference
     instagram: "entry.181818181",    // Instagram Id
     amountPaid: "entry.191919191"    // Amount Paid in INR
+  },
+  
+  // VOLUNTEER FORM CONFIGURATION
+  volunteerFormActionUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc7JUMJCBbd35ApJ1pX6ak-07AmBtC-rgF3YlmsRh-c272olQ/formResponse",
+  volunteerEntries: {
+    name: "entry.111111111",      // Full Name
+    email: "entry.222222222",     // Email
+    phone: "entry.333333333",     // Phone
+    dob: "entry.444444444",       // DOB
+    why: "entry.555555555",       // Why do you want to volunteer?
+    team: "entry.666666666",      // Which team?
+    experience: "entry.777777777",// Prior experience?
+    social: "entry.888888888"     // Instagram / LinkedIn
   }
 };

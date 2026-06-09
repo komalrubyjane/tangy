@@ -16,6 +16,7 @@ import ArtistPortal from "./TangyArtistPortal";
 import { ModalProvider, useModal } from "./src/components/ModalProvider";
 import ArtistDetails from "./src/components/ArtistDetails";
 import EventDetails from "./src/pages/EventDetails";
+import VolunteerDetails from "./src/pages/VolunteerDetails";
 
 // ─── ERROR BOUNDARY ───────────────────────────────────────────────────────────
 class ErrorBoundary extends React.Component {
@@ -98,6 +99,12 @@ function Navbar() {
   const links = ["Home", "Events", "Artists", "Gallery", "Volunteer", "Contact"];
 
   const scrollTo = (id) => {
+    if (id === "Volunteer") {
+      navigate("/volunteer");
+      window.scrollTo(0, 0);
+      setMenuOpen(false);
+      return;
+    }
     const target = id.toLowerCase();
     if (location.pathname !== "/") {
       navigate("/");
@@ -1355,6 +1362,7 @@ export default function App() {
         <Route path="/artist" element={<ArtistPortal />} />
         <Route path="/artists/:id" element={<LandingPage showArtistOverlay={true} />} />
         <Route path="/events/:slug" element={<EventDetails />} />
+        <Route path="/volunteer" element={<VolunteerDetails />} />
       </Routes>
     );
   }
