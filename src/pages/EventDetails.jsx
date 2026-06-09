@@ -951,7 +951,7 @@ export default function EventDetails() {
         {/* Logo */}
         <img
           src="/logo.svg" alt="Tangy Sessions"
-          style={{ height: 38, cursor: "pointer" }}
+          style={{ height: 38, width: "auto", minWidth: 80, cursor: "pointer" }}
           onClick={() => { navigate("/"); window.scrollTo(0, 0); }}
         />
 
