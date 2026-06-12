@@ -149,7 +149,7 @@ export default function Volunteer() {
                 style={{
                   width: "100%",
                   height: "100%",
-                  backgroundImage: "url('/gallery/tangy3.jpg')",
+                  backgroundImage: "url('/gallery/tangy6.jpg')",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}

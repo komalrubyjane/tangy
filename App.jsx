@@ -868,7 +868,7 @@ function WhyTangy() {
               whileHover={{ scale: 1.02, zIndex: 10 }}
               transition={{ duration: 0.4 }}
             >
-              <img src="/gallery/tangy3.jpg" alt="Crowd Connecting" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="/gallery/tangy1.jpg" alt="Crowd Connecting" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </motion.div>
 
             {/* Image 3: Environment/Descent */}
