@@ -2333,6 +2333,8 @@ function LandingPage({ showArtistOverlay = false }) {
       <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="About"><About /></ErrorBoundary>
       <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <ErrorBoundary name="Volunteer"><Volunteer /></ErrorBoundary>
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Contact"><Contact toast={toast} /></ErrorBoundary>
       <Footer />
 
