@@ -95,13 +95,13 @@ export default function Volunteer({ toast }) {
           </motion.div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.5rem", color: "#fff", letterSpacing: "0.05em" }}>You're In!</div>
           <p style={{ color: "rgba(255,255,255,0.5)", marginTop: 12, lineHeight: 1.7, fontSize: "0.9rem" }}>
-            Thanks, <strong style={{ color: "#7c3aed" }}>{form.name}</strong>! Your application for the{" "}
+            Thanks, <strong style={{ color: "#1D4E3A" }}>{form.name}</strong>! Your application for the{" "}
             <strong style={{ color: "#06b6d4" }}>{selectedRole?.label}</strong> role has been received.
             We'll send a confirmation to <strong style={{ color: "#fff" }}>{form.email}</strong>.
           </p>
-          <div style={{ marginTop: 32, padding: "16px 20px", background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: 10 }}>
+          <div style={{ marginTop: 32, padding: "16px 20px", background: "rgba(29,78,58,0.08)", border: "1px solid rgba(29,78,58,0.2)", borderRadius: 10 }}>
             <div style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 4 }}>Application ID</div>
-            <div style={{ fontFamily: "monospace", color: "#7c3aed", letterSpacing: "0.15em" }}>VOL-{Math.random().toString(36).toUpperCase().slice(2, 10)}</div>
+            <div style={{ fontFamily: "monospace", color: "#1D4E3A", letterSpacing: "0.15em" }}>VOL-{Math.random().toString(36).toUpperCase().slice(2, 10)}</div>
           </div>
         </motion.div>
       </section>
@@ -114,10 +114,10 @@ export default function Volunteer({ toast }) {
       <motion.div
         initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         style={{ textAlign: "center", marginBottom: 60 }}>
-        <div style={{ fontSize: "0.7rem", letterSpacing: "0.35em", color: "#7c3aed", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 14 }}>Join Us</div>
+        <div style={{ fontSize: "0.7rem", letterSpacing: "0.35em", color: "#1D4E3A", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 14 }}>Join Us</div>
         <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#fff", margin: 0, letterSpacing: "0.05em" }}>Volunteer</h2>
         <motion.div initial={{ width: 0 }} whileInView={{ width: 48 }} transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-          style={{ height: 2, background: "linear-gradient(to right, #7c3aed, #06b6d4)", margin: "18px auto 0", borderRadius: 2 }} />
+          style={{ height: 2, background: "linear-gradient(to right, #1D4E3A, #06b6d4)", margin: "18px auto 0", borderRadius: 2 }} />
         <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.95rem", marginTop: 20, maxWidth: 500, margin: "20px auto 0", lineHeight: 1.7 }}>
           Be part of the magic behind Tangy Sessions. Volunteers get free entry, backstage access, and merch.
         </p>
@@ -127,7 +127,7 @@ export default function Volunteer({ toast }) {
       <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap", marginBottom: 60 }}>
         {[["🎟️", "Free Entry"], ["🎒", "Merch Kit"], ["🎭", "Backstage"], ["🤝", "Network"]].map(([icon, label]) => (
           <motion.div key={label}
-            whileHover={{ scale: 1.05, borderColor: "rgba(124,58,237,0.4)" }}
+            whileHover={{ scale: 1.05, borderColor: "rgba(29,78,58,0.4)" }}
             style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 40, fontSize: "0.82rem", color: "rgba(255,255,255,0.6)" }}>
             <span>{icon}</span><span>{label}</span>
           </motion.div>
@@ -136,7 +136,7 @@ export default function Volunteer({ toast }) {
 
       <motion.div
         initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-        style={{ maxWidth: 580, margin: "0 auto", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: 20, overflow: "hidden" }}>
+        style={{ maxWidth: 580, margin: "0 auto", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(29,78,58,0.2)", borderRadius: 20, overflow: "hidden" }}>
 
         {/* Step progress bar */}
         <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
@@ -144,8 +144,8 @@ export default function Volunteer({ toast }) {
             <div key={s} style={{
               flex: 1, padding: "16px 10px", textAlign: "center", fontSize: "0.72rem",
               letterSpacing: "0.1em", textTransform: "uppercase",
-              color: i === step ? "#fff" : i < step ? "#7c3aed" : "rgba(255,255,255,0.25)",
-              borderBottom: `2px solid ${i === step ? "#7c3aed" : i < step ? "rgba(124,58,237,0.3)" : "transparent"}`,
+              color: i === step ? "#fff" : i < step ? "#1D4E3A" : "rgba(255,255,255,0.25)",
+              borderBottom: `2px solid ${i === step ? "#1D4E3A" : i < step ? "rgba(29,78,58,0.3)" : "transparent"}`,
               transition: "all 0.3s",
               cursor: i < step ? "pointer" : "default",
             }} onClick={() => i < step && setStep(i)}>
@@ -165,7 +165,7 @@ export default function Volunteer({ toast }) {
                   <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 6 }}>Full Name</label>
                   <input placeholder="Your name" value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: null })); }}
                     style={inp("name")}
-                    onFocus={e => e.target.style.borderColor = "#7c3aed"}
+                    onFocus={e => e.target.style.borderColor = "#1D4E3A"}
                     onBlur={e => e.target.style.borderColor = errors.name ? "#ef4444" : "rgba(255,255,255,0.1)"}
                   />
                   {errors.name && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.name}</div>}
@@ -174,7 +174,7 @@ export default function Volunteer({ toast }) {
                   <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 6 }}>Email</label>
                   <input placeholder="you@email.com" value={form.email} onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(er => ({ ...er, email: null })); }}
                     style={inp("email")}
-                    onFocus={e => e.target.style.borderColor = "#7c3aed"}
+                    onFocus={e => e.target.style.borderColor = "#1D4E3A"}
                     onBlur={e => e.target.style.borderColor = errors.email ? "#ef4444" : "rgba(255,255,255,0.1)"}
                   />
                   {errors.email && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.email}</div>}
@@ -184,7 +184,7 @@ export default function Volunteer({ toast }) {
                     <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 6 }}>Phone</label>
                     <input placeholder="10-digit number" value={form.phone} onChange={e => { setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })); setErrors(er => ({ ...er, phone: null })); }}
                       style={inp("phone")}
-                      onFocus={e => e.target.style.borderColor = "#7c3aed"}
+                      onFocus={e => e.target.style.borderColor = "#1D4E3A"}
                       onBlur={e => e.target.style.borderColor = errors.phone ? "#ef4444" : "rgba(255,255,255,0.1)"}
                     />
                     {errors.phone && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.phone}</div>}
@@ -193,7 +193,7 @@ export default function Volunteer({ toast }) {
                     <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 6 }}>Age</label>
                     <input placeholder="Age (18+)" type="number" min="18" max="60" value={form.age} onChange={e => { setForm(f => ({ ...f, age: e.target.value })); setErrors(er => ({ ...er, age: null })); }}
                       style={inp("age")}
-                      onFocus={e => e.target.style.borderColor = "#7c3aed"}
+                      onFocus={e => e.target.style.borderColor = "#1D4E3A"}
                       onBlur={e => e.target.style.borderColor = errors.age ? "#ef4444" : "rgba(255,255,255,0.1)"}
                     />
                     {errors.age && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.age}</div>}
@@ -211,12 +211,12 @@ export default function Volunteer({ toast }) {
                     {ROLES.map(r => (
                       <motion.button key={r.id}
                         onClick={() => { setForm(f => ({ ...f, role: r.id })); setErrors(er => ({ ...er, role: null })); }}
-                        whileHover={{ scale: 1.02, borderColor: "rgba(124,58,237,0.5)" }}
+                        whileHover={{ scale: 1.02, borderColor: "rgba(29,78,58,0.5)" }}
                         whileTap={{ scale: 0.97 }}
                         style={{
                           padding: "14px 12px", textAlign: "left",
-                          background: form.role === r.id ? "rgba(124,58,237,0.12)" : "rgba(255,255,255,0.03)",
-                          border: `1px solid ${form.role === r.id ? "#7c3aed" : "rgba(255,255,255,0.08)"}`,
+                          background: form.role === r.id ? "rgba(29,78,58,0.12)" : "rgba(255,255,255,0.03)",
+                          border: `1px solid ${form.role === r.id ? "#1D4E3A" : "rgba(255,255,255,0.08)"}`,
                           borderRadius: 10, cursor: "pointer", color: "#fff", transition: "all 0.2s",
                         }}>
                         <div style={{ fontSize: "1.3rem", marginBottom: 4 }}>{r.icon}</div>
@@ -234,8 +234,8 @@ export default function Volunteer({ toast }) {
                     <button key={ev} onClick={() => { setForm(f => ({ ...f, event: ev })); setErrors(er => ({ ...er, event: null })); }}
                       style={{
                         display: "block", width: "100%", marginBottom: 8, padding: "12px 14px", textAlign: "left",
-                        background: form.event === ev ? "rgba(124,58,237,0.12)" : "rgba(255,255,255,0.03)",
-                        border: `1px solid ${form.event === ev ? "#7c3aed" : "rgba(255,255,255,0.08)"}`,
+                        background: form.event === ev ? "rgba(29,78,58,0.12)" : "rgba(255,255,255,0.03)",
+                        border: `1px solid ${form.event === ev ? "#1D4E3A" : "rgba(255,255,255,0.08)"}`,
                         borderRadius: 8, color: form.event === ev ? "#fff" : "rgba(255,255,255,0.6)",
                         cursor: "pointer", fontSize: "0.85rem", transition: "all 0.2s",
                       }}>
@@ -250,7 +250,7 @@ export default function Volunteer({ toast }) {
                   <textarea placeholder="Tell us what drives you to be part of Tangy Sessions..." value={form.why} rows={3}
                     onChange={e => { setForm(f => ({ ...f, why: e.target.value })); setErrors(er => ({ ...er, why: null })); }}
                     style={{ ...inp("why"), resize: "vertical" }}
-                    onFocus={e => e.target.style.borderColor = "#7c3aed"}
+                    onFocus={e => e.target.style.borderColor = "#1D4E3A"}
                     onBlur={e => e.target.style.borderColor = errors.why ? "#ef4444" : "rgba(255,255,255,0.1)"}
                   />
                   <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
@@ -264,8 +264,8 @@ export default function Volunteer({ toast }) {
             {/* ── Step 2: Review & Submit ── */}
             {step === 2 && (
               <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <div style={{ background: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.15)", borderRadius: 12, padding: 20, marginBottom: 20 }}>
-                  <div style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: "#7c3aed", textTransform: "uppercase", marginBottom: 16 }}>Application Summary</div>
+                <div style={{ background: "rgba(29,78,58,0.06)", border: "1px solid rgba(29,78,58,0.15)", borderRadius: 12, padding: 20, marginBottom: 20 }}>
+                  <div style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: "#1D4E3A", textTransform: "uppercase", marginBottom: 16 }}>Application Summary</div>
                   {[
                     ["Name", form.name],
                     ["Email", form.email],
@@ -287,7 +287,7 @@ export default function Volunteer({ toast }) {
 
                 <label style={{ display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer", marginBottom: 4 }}>
                   <input type="checkbox" checked={form.terms} onChange={e => { setForm(f => ({ ...f, terms: e.target.checked })); setErrors(er => ({ ...er, terms: null })); }}
-                    style={{ marginTop: 2, accentColor: "#7c3aed", width: 16, height: 16 }} />
+                    style={{ marginTop: 2, accentColor: "#1D4E3A", width: 16, height: 16 }} />
                   <span style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
                     I agree to the volunteer guidelines and understand that this is a commitment. I confirm I am 18+ and will attend the selected event.
                   </span>
@@ -311,11 +311,11 @@ export default function Volunteer({ toast }) {
               whileTap={{ scale: 0.97 }}
               style={{
                 flex: 2, padding: "13px",
-                background: step === 2 ? "#10b981" : "#7c3aed",
+                background: step === 2 ? "#10b981" : "#1D4E3A",
                 color: "#fff", border: "none", borderRadius: 8,
                 cursor: "pointer", fontFamily: "inherit", fontSize: "0.88rem",
                 fontWeight: 600, letterSpacing: "0.08em",
-                boxShadow: `0 0 20px ${step === 2 ? "rgba(16,185,129,0.3)" : "rgba(124,58,237,0.3)"}`,
+                boxShadow: `0 0 20px ${step === 2 ? "rgba(16,185,129,0.3)" : "rgba(29,78,58,0.3)"}`,
               }}>
               {step < 2 ? "Continue →" : "Submit Application ✓"}
             </motion.button>

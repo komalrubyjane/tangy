@@ -4,10 +4,7 @@ import { volunteerService } from "../services/volunteerService";
 
 const GlassCard = ({ children, style, className }) => (
   <div className={className} style={{
-    background: "rgba(5, 5, 5, 0.4)",
-    backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)",
-    border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: 16,
-    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
+    background: "transparent",
     ...style
   }}>
     {children}
@@ -15,17 +12,18 @@ const GlassCard = ({ children, style, className }) => (
 );
 
 const INPUT_STYLE = {
-  width: "100%", padding: "13px 16px",
-  background: "rgba(0, 0, 0, 0.6)",
-  border: "1px solid rgba(255, 255, 255, 0.12)",
-  borderRadius: 8, color: "#fff", fontSize: "0.85rem",
+  width: "100%", padding: "16px 20px",
+  background: "rgba(0, 0, 0, 0.4)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderRadius: 12, color: "#fff", fontSize: "0.95rem",
   outline: "none", boxSizing: "border-box", fontFamily: "inherit",
-  transition: "all 0.2s"
+  transition: "all 0.3s ease",
 };
 
 const LABEL_STYLE = {
-  display: "block", fontSize: "0.65rem", letterSpacing: "0.2em",
-  color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8
+  display: "block", fontSize: "0.75rem", letterSpacing: "0.15em",
+  color: "rgba(255,255,255,0.6)", textTransform: "uppercase", marginBottom: 12,
+  fontWeight: 600
 };
 
 const DEPTS = [
@@ -159,11 +157,19 @@ export default function VolunteerForm() {
   }
 
   return (
-    <GlassCard style={{ padding: "40px" }}>
+    <GlassCard className="volunteer-form-container" style={{ padding: "40px" }}>
+      <style>{`
+        .volunteer-form-container input:focus,
+        .volunteer-form-container select:focus,
+        .volunteer-form-container textarea:focus {
+          border-color: #a855f7 !important;
+          box-shadow: 0 0 15px rgba(168,85,247,0.3) !important;
+        }
+      `}</style>
       {/* Progress Bar */}
       <div style={{ display: "flex", gap: 8, marginBottom: 40 }}>
         {[1, 2, 3, 4, 5].map(s => (
-          <div key={s} style={{ height: 4, flex: 1, borderRadius: 2, background: s <= step ? "#7c3aed" : "rgba(255,255,255,0.1)", transition: "background 0.3s" }} />
+          <div key={s} style={{ height: 4, flex: 1, borderRadius: 2, background: s <= step ? "#8B5CF6" : "rgba(255,255,255,0.1)", transition: "background 0.3s" }} />
         ))}
       </div>
       
@@ -234,7 +240,7 @@ export default function VolunteerForm() {
 
               {/* CONDITIONALS */}
               {form.primaryDept === "Creative Direction & Show Design" && (
-                <div style={{ background: "rgba(124,58,237,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ background: "rgba(139, 92, 246,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
                   <h4 style={{ margin: 0, color: "#a78bfa" }}>Creative Direction Section</h4>
                   <div><label style={LABEL_STYLE}>Role *</label>
                     <select value={form.cdRole} onChange={e => handleChange("cdRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Show Director">Show Director</option><option value="Show Crew">Show Crew</option></select>
@@ -248,7 +254,7 @@ export default function VolunteerForm() {
               )}
 
               {form.primaryDept === "Stage Designer & Decor Lead" && (
-                <div style={{ background: "rgba(124,58,237,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ background: "rgba(139, 92, 246,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
                   <h4 style={{ margin: 0, color: "#a78bfa" }}>Stage Design Section</h4>
                   <div><label style={LABEL_STYLE}>Background *</label><select value={form.sdBg} onChange={e => handleChange("sdBg", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Interior Design">Interior Design</option><option value="Architecture">Architecture</option><option value="Event Decor">Event Decor</option><option value="Fashion / Set Design">Fashion / Set Design</option><option value="Self Taught">Self Taught</option><option value="Beginner">Beginner</option></select></div>
                   <div><label style={LABEL_STYLE}>Role *</label><select value={form.sdRole} onChange={e => handleChange("sdRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Decor Lead">Decor Lead</option><option value="Decor Crew">Decor Crew</option><option value="Either">Either</option></select></div>
@@ -261,7 +267,7 @@ export default function VolunteerForm() {
 
               {/* Add other conditionals similarly */}
               {form.primaryDept === "Costume Design" && (
-                <div style={{ background: "rgba(124,58,237,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ background: "rgba(139, 92, 246,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
                   <h4 style={{ margin: 0, color: "#a78bfa" }}>Costume Design Section</h4>
                   <div><label style={LABEL_STYLE}>Role *</label><select value={form.csRole} onChange={e => handleChange("csRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Costume Head">Costume Head</option><option value="Costume Crew">Costume Crew</option></select></div>
                   <div><label style={LABEL_STYLE}>Background *</label><input type="text" value={form.csBg} onChange={e => handleChange("csBg", e.target.value)} style={INPUT_STYLE} /></div>
@@ -271,7 +277,7 @@ export default function VolunteerForm() {
               )}
 
               {form.primaryDept === "Visual & Content" && (
-                <div style={{ background: "rgba(124,58,237,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ background: "rgba(139, 92, 246,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
                   <h4 style={{ margin: 0, color: "#a78bfa" }}>Visual & Content Section</h4>
                   <div><label style={LABEL_STYLE}>Skills *</label><select value={form.vcSkills} onChange={e => handleChange("vcSkills", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Photographer">Photographer</option><option value="Videographer">Videographer</option><option value="Editor">Editor</option><option value="Reels Creator">Reels Creator</option><option value="Colourist">Colourist</option><option value="Graphic Designer">Graphic Designer</option><option value="Motion Designer">Motion Designer</option></select></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><input type="text" value={form.vcExp} onChange={e => handleChange("vcExp", e.target.value)} style={INPUT_STYLE} /></div>
@@ -305,7 +311,7 @@ export default function VolunteerForm() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: 16, background: "rgba(0,0,0,0.3)", borderRadius: 8, border: `1px solid ${errors.dates ? "#ef4444" : "rgba(255,255,255,0.1)"}` }}>
                   {DATES.map(date => (
                     <label key={date} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontSize: "0.85rem", color: "rgba(255,255,255,0.8)" }}>
-                      <input type="checkbox" checked={form.dates.includes(date)} onChange={() => handleMultiSelect("dates", date)} style={{ width: 16, height: 16, accentColor: "#7c3aed" }} />
+                      <input type="checkbox" checked={form.dates.includes(date)} onChange={() => handleMultiSelect("dates", date)} style={{ width: 16, height: 16, accentColor: "#8B5CF6" }} />
                       {date}
                     </label>
                   ))}
@@ -353,7 +359,7 @@ export default function VolunteerForm() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: 16, background: "rgba(0,0,0,0.3)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)" }}>
                   {["Event Experience", "Portfolio Building", "Community", "Learning", "Career Growth", "Contribution", "Networking", "All Of The Above", "Other"].map(opt => (
                     <label key={opt} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontSize: "0.85rem", color: "rgba(255,255,255,0.8)" }}>
-                      <input type="checkbox" checked={form.hopeGain.includes(opt)} onChange={() => handleMultiSelect("hopeGain", opt)} style={{ width: 16, height: 16, accentColor: "#7c3aed" }} />
+                      <input type="checkbox" checked={form.hopeGain.includes(opt)} onChange={() => handleMultiSelect("hopeGain", opt)} style={{ width: 16, height: 16, accentColor: "#8B5CF6" }} />
                       {opt}
                     </label>
                   ))}
@@ -367,9 +373,9 @@ export default function VolunteerForm() {
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Final Declaration</h3>
               
-              <div style={{ display: "flex", flexDirection: "column", gap: 24, padding: 24, background: "rgba(124,58,237,0.05)", borderRadius: 12, border: "1px solid rgba(124,58,237,0.2)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 24, padding: 24, background: "rgba(139, 92, 246,0.05)", borderRadius: 12, border: "1px solid rgba(139, 92, 246,0.2)" }}>
                 <label style={{ display: "flex", alignItems: "flex-start", gap: 16, cursor: "pointer", fontSize: "0.9rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.5 }}>
-                  <input type="checkbox" checked={form.dec1} onChange={e => handleChange("dec1", e.target.checked)} style={{ width: 20, height: 20, accentColor: "#7c3aed", marginTop: 2 }} />
+                  <input type="checkbox" checked={form.dec1} onChange={e => handleChange("dec1", e.target.checked)} style={{ width: 20, height: 20, accentColor: "#8B5CF6", marginTop: 2 }} />
                   <div>
                     I understand that I'm joining the Tangy Sessions community and contributing my skills and energy to build something meaningful. *
                     {errors.dec1 && <div style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: 6 }}>⚠ {errors.dec1}</div>}
@@ -377,7 +383,7 @@ export default function VolunteerForm() {
                 </label>
 
                 <label style={{ display: "flex", alignItems: "flex-start", gap: 16, cursor: "pointer", fontSize: "0.9rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.5 }}>
-                  <input type="checkbox" checked={form.dec2} onChange={e => handleChange("dec2", e.target.checked)} style={{ width: 20, height: 20, accentColor: "#7c3aed", marginTop: 2 }} />
+                  <input type="checkbox" checked={form.dec2} onChange={e => handleChange("dec2", e.target.checked)} style={{ width: 20, height: 20, accentColor: "#8B5CF6", marginTop: 2 }} />
                   <div>
                     I agree to be contacted by Tangy Sessions via WhatsApp and email regarding this application and future show updates. *
                     {errors.dec2 && <div style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: 6 }}>⚠ {errors.dec2}</div>}
@@ -402,7 +408,7 @@ export default function VolunteerForm() {
           onClick={step === 5 ? handleSubmit : nextStep} disabled={isSubmitting}
           whileHover={!isSubmitting ? { scale: 1.05, backgroundColor: "#6d28d9" } : {}}
           whileTap={!isSubmitting ? { scale: 0.95 } : {}}
-          style={{ padding: "14px 36px", background: isSubmitting ? "rgba(124,58,237,0.5)" : "#7c3aed", color: "#fff", border: "none", borderRadius: 8, cursor: isSubmitting ? "not-allowed" : "pointer", textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.1em", boxShadow: "0 0 20px rgba(124,58,237,0.3)" }}>
+          style={{ padding: "14px 36px", background: isSubmitting ? "rgba(139, 92, 246,0.5)" : "#8B5CF6", color: "#fff", border: "none", borderRadius: 8, cursor: isSubmitting ? "not-allowed" : "pointer", textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.1em", boxShadow: "0 0 20px rgba(139, 92, 246,0.3)" }}>
           {isSubmitting ? "Submitting..." : step === 5 ? "Submit Application" : "Continue"}
         </motion.button>
       </div>

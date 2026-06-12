@@ -77,15 +77,15 @@ const ModalOverlay = ({ modal, onClose }) => {
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
         style={{
           background: "linear-gradient(135deg, #111 0%, #0d0d0d 100%)",
-          border: "1px solid rgba(124, 58, 237, 0.3)",
-          boxShadow: "0 25px 50px -12px rgba(124, 58, 237, 0.25)",
+          border: "1px solid rgba(139, 92, 246, 0.3)",
+          boxShadow: "0 25px 50px -12px rgba(139, 92, 246, 0.25)",
           borderRadius: "16px", padding: "30px", width: "100%", maxWidth: "420px",
           color: "#fff", fontFamily: "'DM Sans', sans-serif"
         }}
       >
         {title && (
           <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", letterSpacing: "0.05em", color: "var(--tangy-cream, #fff)", marginBottom: "12px", display: "flex", alignItems: "center", gap: "10px" }}>
-            {type === 'confirm' ? <span style={{ color: '#f59e0b' }}>⚠️</span> : <span style={{ color: '#7c3aed' }}>✦</span>}
+            {type === 'confirm' ? <span style={{ color: '#f59e0b' }}>⚠️</span> : <span style={{ color: '#8B5CF6' }}>✦</span>}
             {title}
           </h3>
         )}
@@ -112,13 +112,13 @@ const ModalOverlay = ({ modal, onClose }) => {
           <button
             onClick={() => { if (onConfirm) onConfirm(); onClose(); }}
             style={{
-              padding: "10px 24px", background: "#7c3aed",
+              padding: "10px 24px", background: "#8B5CF6",
               border: "none", borderRadius: "8px",
               color: "#fff", fontSize: "0.85rem", fontWeight: "600", cursor: "pointer",
-              transition: "all 0.2s", boxShadow: "0 4px 12px rgba(124,58,237,0.3)"
+              transition: "all 0.2s", boxShadow: "0 4px 12px rgba(139, 92, 246,0.3)"
             }}
             onMouseEnter={(e) => { e.target.style.background = "#8b5cf6"; e.target.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={(e) => { e.target.style.background = "#7c3aed"; e.target.style.transform = "none"; }}
+            onMouseLeave={(e) => { e.target.style.background = "#8B5CF6"; e.target.style.transform = "none"; }}
           >
             {type === "confirm" ? "Confirm" : "Okay"}
           </button>
@@ -136,13 +136,13 @@ const Toast = ({ modal, onClose }) => {
       exit={{ opacity: 0, scale: 0.9 }}
       style={{
         position: "fixed", bottom: "24px", right: "24px", zIndex: 10001,
-        background: "#111", border: "1px solid #7c3aed",
+        background: "#111", border: "1px solid #8B5CF6",
         color: "#fff", padding: "14px 24px", borderRadius: "10px", fontSize: "0.9rem",
-        boxShadow: "0 10px 30px rgba(124, 58, 237, 0.2)", maxWidth: "320px",
+        boxShadow: "0 10px 30px rgba(139, 92, 246, 0.2)", maxWidth: "320px",
         fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", gap: "12px"
       }}
     >
-      <span style={{ color: "#7c3aed" }}>✦</span>
+      <span style={{ color: "#8B5CF6" }}>✦</span>
       {modal.message}
     </motion.div>
   );

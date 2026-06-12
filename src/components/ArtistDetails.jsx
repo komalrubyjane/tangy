@@ -215,7 +215,7 @@ const ARTIST_DB = {
     availability: "Available for bookings",
     statusColor: "#10b981",
     color: "#ef4444",
-    accent: "#7c3aed",
+    accent: "#8B5CF6",
     bio: "Noctis operates in the lower, somatic frequencies of sound. Creating monolithic walls of dark sub drone, modular noise, and processed heavy industrial feedback, their music feels like a physical presence inside a room. An immersive sonic weight designed for deep introspection in unique acoustic spaces.",
     quote: "Listen deep enough into the darkness, and you will hear the sound of the universe collapsing.",
     gallery: [
@@ -416,7 +416,7 @@ function StatCard({ label, val, artist, delay }) {
       style={{
         position: "relative",
         padding: "36px 28px",
-        borderRadius: 20,
+        borderRadius: 24,
         textAlign: "center",
         overflow: "hidden",
         cursor: "pointer",
@@ -1200,7 +1200,7 @@ export default function ArtistDetails() {
               {/* Dynamic Frame container */}
               <div style={{
                 background: "#040405",
-                borderRadius: 16,
+                borderRadius: 24,
                 border: "1px solid " + artist.color + "18",
                 overflow: "hidden",
                 height: activeEmbed === "youtube" ? 360 : activeEmbed === "spotify" ? 80 : 166,
@@ -1562,7 +1562,7 @@ export default function ArtistDetails() {
                 className="glass-panel"
                 style={{
                   padding: "26px 36px",
-                  borderRadius: 20,
+                  borderRadius: 24,
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center"
@@ -1654,7 +1654,7 @@ export default function ArtistDetails() {
                   maxWidth: "90vw",
                   maxHeight: "75vh",
                   objectFit: "contain",
-                  borderRadius: 16,
+                  borderRadius: 24,
                   boxShadow: `0 0 100px ${artist.color}33`,
                   border: "1px solid " + artist.color + "44"
                 }}

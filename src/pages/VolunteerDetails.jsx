@@ -1,417 +1,884 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import VolunteerForm from "../components/VolunteerForm";
 
-const GlassCard = ({ children, style, className, whileHover, transition }) => (
-  <motion.div className={className} whileHover={whileHover} transition={transition} style={{
-    background: "linear-gradient(135deg, rgba(5,5,5,0.5) 0%, rgba(5,5,5,0.3) 100%)",
-    backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)",
-    border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16,
-    boxShadow: "0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
-    ...style
-  }}>
-    {children}
-  </motion.div>
+/* ─── GLOBAL STYLES ─────────────────────────────────────────────────────────── */
+const GlobalStyles = () => (
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { margin: 0; padding: 0; overflow-x: hidden; background: #050505; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .vol-page { background: #050505; min-height: 100vh; color: #fff; overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; }
+    ::selection { background: rgba(139,92,246,0.4); }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #8B5CF6; border-radius: 2px; }
+    
+    @keyframes floatUp {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.4; }
+      100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+    
+    .vol-input:focus { border-color: #a855f7 !important; box-shadow: 0 0 0 1px rgba(168,85,247,0.5), 0 0 20px rgba(168,85,247,0.2) !important; outline: none !important; }
+    .vol-input { transition: all 0.3s ease !important; }
+    
+    .panel-hover { transition: all 0.6s cubic-bezier(0.16,1,0.3,1); }
+    .panel-hover:hover .panel-img { transform: scale(1.06) !important; }
+    .panel-hover:hover .panel-overlay { background: rgba(5,5,5,0.4) !important; }
+    .panel-hover:hover .panel-label { letter-spacing: 0.4em !important; }
+    .panel-img { transition: transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .panel-overlay { transition: background 0.6s ease; }
+    .panel-label { transition: letter-spacing 0.4s ease; }
+  `}</style>
 );
 
-const SectionLabel = ({ text }) => (
-  <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} style={{
-    display: "inline-block", padding: "6px 12px", background: "rgba(124,58,237,0.15)",
-    border: "1px solid rgba(124,58,237,0.3)", borderRadius: 20, color: "#e9d5ff",
-    fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 16,
-    boxShadow: "0 0 15px rgba(124,58,237,0.4)"
-  }}>
-    {text}
-  </motion.div>
-);
+/* ─── FLOATING PARTICLES ─────────────────────────────────────────────────────── */
+const Particles = ({ count = 18 }) => {
+  const particles = useRef(
+    [...Array(count)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      size: Math.random() * 3 + 1,
+      duration: Math.random() * 15 + 12,
+      delay: Math.random() * 10,
+    }))
+  );
+  return (
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 1 }}>
+      {particles.current.map((p, i) => (
+        <div key={i} style={{
+          position: "absolute", bottom: "-5%", left: p.left,
+          width: p.size, height: p.size, borderRadius: "50%",
+          background: "#a78bfa", filter: "blur(1px)",
+          animation: `floatUp ${p.duration}s linear ${p.delay}s infinite`,
+          boxShadow: "0 0 6px #8B5CF6",
+        }} />
+      ))}
+    </div>
+  );
+};
 
-// ─── EFFECTS COMPONENTS ───────────────────────────────────────────────────
-
+/* ─── MOUSE GLOW ─────────────────────────────────────────────────────────────── */
 const MouseGlow = () => {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [pos, setPos] = useState({ x: -9999, y: -9999 });
   useEffect(() => {
-    const handleMove = (e) => setPos({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
+    const h = (e) => setPos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", h);
+    return () => window.removeEventListener("mousemove", h);
   }, []);
   return (
     <div style={{
-      position: "fixed", top: 0, left: 0, right: 0, bottom: 0, pointerEvents: "none", zIndex: 9999,
-      background: `radial-gradient(600px circle at ${pos.x}px ${pos.y}px, rgba(124,58,237,0.08), transparent 40%)`
+      position: "fixed", inset: 0, pointerEvents: "none", zIndex: 2,
+      background: `radial-gradient(700px circle at ${pos.x}px ${pos.y}px, rgba(139,92,246,0.06), transparent 40%)`,
     }} />
   );
 };
 
-const FloatingParticles = () => (
-  <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflow: "hidden", pointerEvents: "none" }}>
-    {[...Array(20)].map((_, i) => (
-      <motion.div key={i}
-        animate={{ y: ["0vh", "-100vh"], x: [0, Math.random() * 100 - 50], opacity: [0, 0.5, 0] }}
-        transition={{ duration: Math.random() * 10 + 10, repeat: Infinity, ease: "linear", delay: Math.random() * 10 }}
+/* ─── COUNT UP HOOK ──────────────────────────────────────────────────────────── */
+function useCountUp(target, duration = 2200, start = false) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    let startTime = null;
+    const step = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 4);
+      setCount(Math.floor(ease * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [start, target, duration]);
+  return count;
+}
+
+/* ─── TYPEWRITER HOOK ────────────────────────────────────────────────────────── */
+function useTypewriter(text, speed = 50, start = false) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    if (!start) return;
+    setDisplayed("");
+    setDone(false);
+    let i = 0;
+    const timer = setInterval(() => {
+      i++;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) { clearInterval(timer); setDone(true); }
+    }, speed);
+    return () => clearInterval(timer);
+  }, [start, text, speed]);
+  return { displayed, done };
+}
+
+/* ─── STAT NUMBER ────────────────────────────────────────────────────────────── */
+const StatNumber = ({ target, suffix = "+", label, delay = 0 }) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [triggered, setTriggered] = useState(false);
+  useEffect(() => { if (inView) setTimeout(() => setTriggered(true), delay); }, [inView, delay]);
+  const count = useCountUp(target, 2000, triggered);
+  return (
+    <div ref={ref} style={{ textAlign: "center" }}>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={triggered ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          position: "absolute", bottom: "-10%", left: `${Math.random() * 100}%`,
-          width: Math.random() * 4 + 2, height: Math.random() * 4 + 2,
-          background: "#a78bfa", borderRadius: "50%", filter: "blur(2px)",
-          boxShadow: "0 0 10px #7c3aed"
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "clamp(5rem, 10vw, 9rem)",
+          lineHeight: 1,
+          background: "linear-gradient(135deg, #fff 30%, #a78bfa 100%)",
+          WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          filter: "drop-shadow(0 0 30px rgba(139,92,246,0.3))",
         }}
-      />
-    ))}
-  </div>
+      >
+        {count}{suffix}
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={triggered ? { opacity: 1 } : {}}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginTop: 12 }}
+      >
+        {label}
+      </motion.div>
+    </div>
+  );
+};
+
+/* ─── TYPEWRITER STAT ────────────────────────────────────────────────────────── */
+const TypewriterStat = ({ text, delay = 0 }) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [triggered, setTriggered] = useState(false);
+  useEffect(() => { if (inView) setTimeout(() => setTriggered(true), delay); }, [inView, delay]);
+  const { displayed, done } = useTypewriter(text, 55, triggered);
+  return (
+    <div ref={ref} style={{ textAlign: "center" }}>
+      <div style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+        lineHeight: 1,
+        background: "linear-gradient(135deg, #fff 30%, #a78bfa 100%)",
+        WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+        minHeight: "1.2em", display: "flex", alignItems: "center", justifyContent: "center",
+        filter: "drop-shadow(0 0 20px rgba(139,92,246,0.25))",
+      }}>
+        {displayed}
+        {!done && (
+          <span style={{
+            display: "inline-block", width: 3, height: "0.85em",
+            background: "#a78bfa", marginLeft: 4, verticalAlign: "middle",
+            animation: "pulseGlow 0.7s ease-in-out infinite",
+          }} />
+        )}
+      </div>
+      <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginTop: 12 }}>
+        Community
+      </div>
+    </div>
+  );
+};
+
+/* ─── SECTION DIVIDER ────────────────────────────────────────────────────────── */
+const Divider = () => (
+  <div style={{ width: "100%", height: 1, background: "linear-gradient(to right, transparent, rgba(139,92,246,0.15) 50%, transparent)" }} />
 );
 
-// ─── DATA OBJECTS ─────────────────────────────────────────────────────────────
-const ROLES = [
-  { title: "Registration Team", desc: "Check-ins, ticket verification, and guest assistance.", icon: "🎫" },
-  { title: "Guest Experience", desc: "Help attendees, venue support, and information desk.", icon: "🤝" },
-  { title: "Content Team", desc: "Social media content, reels, and stories.", icon: "📱" },
-  { title: "Photo & Video", desc: "Capture moments and provide full event coverage.", icon: "📸" },
-  { title: "Logistics Team", desc: "Venue setup, coordination, and operations.", icon: "🏗️" },
-  { title: "Stage Assistance", desc: "Artist support and technical coordination.", icon: "🎸" },
-  { title: "Community Team", desc: "Community engagement and volunteer coordination.", icon: "🌍" },
-];
-
-const TIMELINE = [
-  { time: "3:00 PM", text: "Team Check-In" },
-  { time: "4:00 PM", text: "Venue Setup" },
-  { time: "5:00 PM", text: "Volunteer Briefing" },
-  { time: "6:00 PM", text: "Guest Arrival" },
-  { time: "7:00 PM", text: "Event Begins" },
-  { time: "10:00 PM", text: "Networking" },
-  { time: "11:00 PM", text: "Wrap Up" },
-];
-
-const FAQS = [
-  { q: "Is volunteering paid?", a: "No, volunteering is unpaid, but you receive free entry, backstage access, a merch kit, and priceless networking opportunities." },
-  { q: "Do volunteers get free entry?", a: "Absolutely! When you volunteer, your entry to the Tangy Sessions event is completely free." },
-  { q: "Can students apply?", a: "Yes! Students are highly encouraged to apply. It's a great way to gain real-world event production experience." },
-  { q: "Do I need prior experience?", a: "Not at all. We value enthusiasm, reliability, and a positive attitude over prior experience. We'll train you on the day!" },
-  { q: "How much time is required?", a: "Typically, volunteers are needed from 3:00 PM to 11:00 PM on the day of the event." },
-  { q: "Can I volunteer for multiple events?", a: "Yes! Many of our volunteers join our core community and help out at multiple events." },
-  { q: "Will I receive a certificate?", a: "Yes, upon request we provide a certificate of appreciation detailing your role and contribution." }
-];
-
-// ─── MAIN COMPONENT ─────────────────────────────────────────────────────────
+/* ─── MAIN COMPONENT ─────────────────────────────────────────────────────────── */
 export default function VolunteerDetails() {
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
 
-  const [openFaq, setOpenFaq] = useState(null);
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const heroY = useTransform(scrollYProgress, [0, 0.3], ["0%", "25%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0.4]);
 
   const scrollToApply = () => {
-    document.getElementById("apply-section").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("apply-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  /* ─ Manifesto lines ─ */
+  const manifestoLines = [
+    "You don't need experience.",
+    "You don't need credentials.",
+    "You don't need a title.",
+    "",
+    "You only need curiosity.",
+    "You only need intention.",
+    "You only need the willingness to create something meaningful.",
+  ];
+
   return (
-    <div style={{ background: "#050505", minHeight: "100vh", color: "#fff", overflowX: "hidden", position: "relative" }}>
+    <div className="vol-page">
+      <GlobalStyles />
       <MouseGlow />
-      
-      {/* Navigation Bar overlay */}
-      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, padding: "20px 5vw", display: "flex", justifyContent: "space-between", alignItems: "center", background: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)" }}>
+
+      {/* ─── NAVBAR ─── */}
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        padding: "20px 5vw", display: "flex", justifyContent: "space-between", alignItems: "center",
+        background: "linear-gradient(to bottom, rgba(5,5,5,0.95), transparent)",
+        backdropFilter: "blur(0px)",
+      }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <img src="/logo.svg" alt="Tangy" style={{ height: 38, cursor: "pointer" }} onClick={() => navigate("/")} />
-          <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-            <span style={{ cursor: "pointer" }} onClick={() => navigate("/")}>Home</span> <span style={{ margin: "0 8px" }}>›</span> Volunteer
+          <img src="/logo.svg" alt="Tangy" style={{ height: 36, cursor: "pointer" }} onClick={() => navigate("/")} />
+          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.12em" }}>
+            <span
+              style={{ cursor: "pointer", transition: "color 0.2s" }}
+              onClick={() => navigate("/")}
+              onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.7)"}
+              onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.3)"}
+            >
+              Home
+            </span>
+            <span style={{ margin: "0 10px", opacity: 0.3 }}>›</span>
+            <span style={{ color: "#a78bfa" }}>Community</span>
           </div>
         </div>
-      </div>
+        <motion.button
+          onClick={scrollToApply}
+          whileHover={{ scale: 1.03, backgroundColor: "#6D28D9" }}
+          whileTap={{ scale: 0.97 }}
+          style={{
+            padding: "10px 24px", background: "#8B5CF6", color: "#fff", border: "none",
+            borderRadius: 30, cursor: "pointer", fontSize: "0.78rem", fontWeight: 700,
+            letterSpacing: "0.12em", textTransform: "uppercase",
+          }}
+        >
+          Apply Now
+        </motion.button>
+      </nav>
 
-      {/* ─── HERO SECTION ─── */}
-      <section style={{ minHeight: "100vh", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "120px 5vw 60px", textAlign: "center" }}>
-        <motion.div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, y: heroY, scale: heroScale, zIndex: 0 }}>
-          {/* Heritage Stepwell / Golden Hour Imagery */}
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url('https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')", backgroundSize: "cover", backgroundPosition: "center" }} />
-          {/* Vignette Overlay */}
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(to bottom, rgba(5,5,5,0.4), rgba(5,5,5,0.9)), radial-gradient(circle, rgba(124,58,237,0.2) 0%, rgba(5,5,5,0.8) 100%)" }} />
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 1 — HERO
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ position: "relative", height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+        {/* Parallax background */}
+        <motion.div style={{ position: "absolute", inset: 0, y: heroY, scale: 1.15 }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            backgroundImage: "url('https://images.unsplash.com/photo-1470229722913-7c090b332da8?auto=format&fit=crop&w=2500&q=80')",
+            backgroundSize: "cover", backgroundPosition: "center 30%",
+          }} />
+          <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.72)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, transparent 40%, rgba(5,5,5,0.6) 80%, #050505 100%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 60% 50%, rgba(139,92,246,0.12) 0%, transparent 65%)" }} />
         </motion.div>
-        
-        <FloatingParticles />
 
-        <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1, ease: "easeOut" }} style={{ position: "relative", zIndex: 1, maxWidth: 800 }}>
-          <SectionLabel text="Join The Tangy Crew" />
-          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.5rem, 8vw, 6.5rem)", lineHeight: 1, margin: "0 0 24px", letterSpacing: "0.04em", textShadow: "0 20px 40px rgba(0,0,0,0.8)" }}>
-            BECOME PART OF THE <span style={{ background: "-webkit-linear-gradient(45deg, #a855f7, #ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", filter: "drop-shadow(0 0 20px rgba(168,85,247,0.6))" }}>MAGIC</span>
-          </h1>
-          <p style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.6, marginBottom: 40, maxWidth: 600, margin: "0 auto 40px", textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}>
-            Become part of the team that creates unforgettable experiences and helps shape the Tangy Sessions community.
-          </p>
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-            <motion.button onClick={scrollToApply} whileHover={{ scale: 1.05, backgroundColor: "#6d28d9", boxShadow: "0 0 40px rgba(124,58,237,0.6)" }} whileTap={{ scale: 0.95 }}
-              style={{ padding: "16px 36px", background: "#7c3aed", color: "#fff", border: "none", borderRadius: 30, cursor: "pointer", fontFamily: "inherit", fontSize: "0.95rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", boxShadow: "0 10px 30px rgba(124,58,237,0.4)", transition: "box-shadow 0.3s" }}>
-              Apply Now
-            </motion.button>
-            <motion.button onClick={() => document.getElementById("about").scrollIntoView({ behavior: "smooth" })} whileHover={{ scale: 1.05, borderColor: "rgba(124,58,237,0.8)", background: "rgba(124,58,237,0.1)" }} whileTap={{ scale: 0.95 }}
-              style={{ padding: "16px 36px", background: "rgba(255,255,255,0.05)", backdropFilter: "blur(10px)", color: "#fff", border: "1px solid rgba(124,58,237,0.3)", borderRadius: 30, cursor: "pointer", fontFamily: "inherit", fontSize: "0.95rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-              Learn More
-            </motion.button>
+        <Particles count={20} />
+
+        {/* Hero content */}
+        <motion.div
+          style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 5vw", maxWidth: 1000, opacity: heroOpacity }}
+        >
+          {/* Label */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            style={{
+              fontSize: "0.72rem", letterSpacing: "0.45em", color: "#a78bfa",
+              textTransform: "uppercase", fontFamily: "monospace", marginBottom: 32,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 16,
+            }}
+          >
+            <span style={{ display: "inline-block", width: 40, height: 1, background: "rgba(167,139,250,0.5)" }} />
+            COMMUNITY • TANGY SESSIONS
+            <span style={{ display: "inline-block", width: 40, height: 1, background: "rgba(167,139,250,0.5)" }} />
+          </motion.div>
+
+          {/* Massive headline */}
+          <div style={{ overflow: "hidden" }}>
+            <motion.h1
+              initial={{ y: "100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1.1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: "clamp(5rem, 14vw, 13rem)",
+                lineHeight: 0.88, letterSpacing: "0.02em",
+                margin: 0, color: "#fff",
+                textShadow: "0 0 80px rgba(139,92,246,0.15)",
+              }}
+            >
+              NOT EVERYONE<br />
+              <span style={{ color: "#fff", WebkitTextStroke: "1px rgba(167,139,250,0.6)", WebkitTextFillColor: "transparent" }}>JUST ARRIVES.</span>
+            </motion.h1>
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.8 }}
+            style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(2rem, 5vw, 4.5rem)",
+              letterSpacing: "0.06em", color: "#a78bfa",
+              margin: "8px 0 32px",
+            }}
+          >
+            Some people HELP CREATE THE MAGIC.
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 1.1 }}
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic", fontSize: "clamp(1rem, 2.2vw, 1.4rem)",
+              color: "rgba(255,255,255,0.65)", lineHeight: 1.7,
+              maxWidth: 680, margin: "0 auto 48px",
+            }}
+          >
+            Behind every Tangy Session is a collective of artists, dreamers, builders, volunteers and creators shaping moments that stay with people long after the music ends.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.3 }}
+            style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}
+          >
+            <motion.button
+              onClick={scrollToApply}
+              whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(139,92,246,0.5)" }}
+              whileTap={{ scale: 0.97 }}
+              style={{
+                padding: "18px 48px", background: "#8B5CF6", color: "#fff", border: "none",
+                borderRadius: 40, cursor: "pointer", fontFamily: "inherit", fontSize: "0.9rem",
+                fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase",
+                boxShadow: "0 8px 30px rgba(139,92,246,0.35)",
+              }}
+            >
+              Join The Collective
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.04, background: "rgba(255,255,255,0.08)" }}
+              whileTap={{ scale: 0.97 }}
+              style={{
+                padding: "18px 48px", background: "transparent", color: "#fff",
+                border: "1px solid rgba(255,255,255,0.2)", borderRadius: 40, cursor: "pointer",
+                fontFamily: "inherit", fontSize: "0.9rem", fontWeight: 700,
+                letterSpacing: "0.18em", textTransform: "uppercase",
+              }}
+            >
+              Watch The Journey
+            </motion.button>
+          </motion.div>
+        </motion.div>
+
+        {/* Scroll cue */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          style={{
+            position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 8, zIndex: 2,
+          }}
+        >
+          <div style={{ fontSize: "0.65rem", letterSpacing: "0.35em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>Scroll</div>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            style={{ width: 1, height: 40, background: "linear-gradient(to bottom, rgba(167,139,250,0.6), transparent)" }}
+          />
         </motion.div>
       </section>
 
-      {/* ─── ABOUT VOLUNTEERING (Fixed Background) ─── */}
-      <section id="about" style={{ padding: "120px 5vw", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url('https://images.unsplash.com/photo-1623062369408-545bd4a22b07?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", opacity: 0.15, zIndex: 0 }} />
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(to bottom, #050505, transparent, #050505)", zIndex: 0 }} />
-        
-        <div style={{ maxWidth: 1000, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
-          <SectionLabel text="Why Volunteer?" />
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)", marginBottom: 60, textShadow: "0 10px 20px rgba(0,0,0,0.5)" }}>MORE THAN JUST HELPING OUT</h2>
-          
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 24 }}>
-            {[
-              { t: "Meet Creatives", d: "Connect with artists, organizers, and music lovers." },
-              { t: "Learn Production", d: "Get hands-on experience running live events." },
-              { t: "Build Community", d: "Become part of a growing family of passionate individuals." },
-              { t: "Gain Experience", d: "Build your resume with real-world operations." }
-            ].map((item, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ delay: i * 0.1, duration: 0.6 }}>
-                <GlassCard whileHover={{ y: -10, boxShadow: "0 30px 60px rgba(124,58,237,0.2)" }} style={{ padding: "40px 30px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                  <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", color: "#a78bfa", margin: "0 0 16px", textShadow: "0 0 10px rgba(167,139,250,0.3)" }}>{item.t}</h3>
-                  <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.6, margin: 0 }}>{item.d}</p>
-                </GlassCard>
-              </motion.div>
-            ))}
-          </div>
+      <Divider />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 2 — EDITORIAL QUOTE
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "160px 5vw", position: "relative", overflow: "hidden" }}>
+        {/* Giant bg text */}
+        <div style={{
+          position: "absolute", top: "50%", left: "50%",
+          transform: "translate(-50%, -50%)",
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "clamp(10rem, 30vw, 40rem)",
+          color: "#fff", opacity: 0.025, pointerEvents: "none",
+          whiteSpace: "nowrap", userSelect: "none", lineHeight: 1,
+          filter: "blur(3px)",
+        }}>
+          MOMENT
         </div>
-      </section>
 
-      {/* ─── NEW: VENUES SECTION ─── */}
-      <section style={{ padding: "120px 5vw", background: "linear-gradient(to bottom, #050505, #0a0a0a)" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
-          <SectionLabel text="Our Spaces" />
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)", marginBottom: 60 }}>MAGICAL VENUES</h2>
-          
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 30 }}>
-            {[
-              { name: "Bansilalpet Stepwell", img: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-              { name: "Bapu Ghat Stepwell", img: "https://images.unsplash.com/photo-1598094628860-2e06180630b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-              { name: "Maha Laqa Stepwell", img: "https://images.unsplash.com/photo-1588691512401-49b497047f3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
-            ].map((venue, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                style={{ position: "relative", height: 400, borderRadius: 20, overflow: "hidden", cursor: "pointer" }}>
-                <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.6 }} style={{ width: "100%", height: "100%", backgroundImage: `url(${venue.img})`, backgroundSize: "cover", backgroundPosition: "center" }} />
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%)", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", bottom: 30, left: 30, right: 30, pointerEvents: "none" }}>
-                  <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.2rem", margin: 0, textShadow: "0 4px 20px rgba(0,0,0,0.8)" }}>{venue.name}</h3>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── VOLUNTEER BENEFITS (Abstract Gradients) ─── */}
-      <section style={{ padding: "120px 5vw", position: "relative", overflow: "hidden" }}>
-        <motion.div animate={{ rotate: 360, scale: [1, 1.2, 1] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} style={{ position: "absolute", top: "-20%", left: "-10%", width: "70vw", height: "70vw", background: "radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%)", filter: "blur(80px)", zIndex: 0 }} />
-        <motion.div animate={{ rotate: -360, scale: [1, 1.3, 1] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }} style={{ position: "absolute", bottom: "-30%", right: "-10%", width: "80vw", height: "80vw", background: "radial-gradient(circle, rgba(236,72,153,0.1) 0%, transparent 70%)", filter: "blur(100px)", zIndex: 0 }} />
-
-        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
-          <SectionLabel text="The Perks" />
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)", marginBottom: 60 }}>WHAT YOU GET</h2>
-          
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 20 }}>
-            {["Free Event Entry", "Exclusive Merch Kit", "Backstage Access", "Networking", "Behind The Scenes", "Community Recognition"].map((perk, i) => (
-              <motion.div key={i} whileHover={{ scale: 1.05, y: -10, boxShadow: "0 20px 40px rgba(168,85,247,0.3)" }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
+        <div style={{
+          maxWidth: 1400, margin: "0 auto",
+          display: "grid", gridTemplateColumns: "1fr 1fr",
+          gap: "6vw", alignItems: "center", position: "relative", zIndex: 1,
+        }}
+          className="editorial-grid"
+        >
+          {/* Left – Image */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            style={{ position: "relative" }}
+          >
+            <div style={{
+              position: "relative", borderRadius: 4, overflow: "hidden",
+              height: "clamp(400px, 55vw, 700px)",
+            }}>
+              <motion.div
+                whileHover={{ scale: 1.04 }}
+                transition={{ duration: 0.8 }}
                 style={{
-                  padding: "24px 36px", background: "rgba(255,255,255,0.03)", backdropFilter: "blur(16px)",
-                  border: "1px solid rgba(168,85,247,0.3)", borderRadius: 40, color: "#e9d5ff",
-                  fontSize: "1rem", fontWeight: 600, letterSpacing: "0.05em", boxShadow: "0 10px 30px rgba(0,0,0,0.3)"
-                }}>
-                {perk}
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── VOLUNTEER ROLES (Behind the scenes) ─── */}
-      <section style={{ padding: "120px 5vw", position: "relative" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url('https://images.unsplash.com/photo-1506157786151-b8491531f063?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.08, zIndex: 0 }} />
-        
-        <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ textAlign: "center", marginBottom: 80 }}>
-            <SectionLabel text="Find Your Fit" />
-            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)" }}>VOLUNTEER ROLES</h2>
-          </div>
-          
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 30 }}>
-            {ROLES.map((role, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: i * 0.1 }}>
-                <GlassCard whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(124,58,237,0.2)" }} style={{ padding: 40, height: "100%" }}>
-                  <div style={{ fontSize: "3rem", marginBottom: 20, filter: "drop-shadow(0 0 10px rgba(255,255,255,0.3))" }}>{role.icon}</div>
-                  <h3 style={{ margin: "0 0 12px", fontSize: "1.4rem", color: "#fff", letterSpacing: "0.05em" }}>{role.title}</h3>
-                  <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", lineHeight: 1.6, margin: 0 }}>{role.desc}</p>
-                </GlassCard>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── DAY IN THE LIFE TIMELINE (Blurred Crowd) ─── */}
-      <section style={{ padding: "120px 5vw", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(20px)", transform: "scale(1.1)", opacity: 0.3, zIndex: 0 }} />
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(5,5,5,0.8)", zIndex: 0 }} />
-        
-        <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ textAlign: "center", marginBottom: 80 }}>
-            <SectionLabel text="What to Expect" />
-            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)" }}>A DAY IN THE LIFE</h2>
-          </div>
-          
-          <div style={{ position: "relative", paddingLeft: 50 }}>
-            <div style={{ position: "absolute", left: 20, top: 10, bottom: 10, width: 2, background: "linear-gradient(to bottom, #7c3aed, #ec4899)" }} />
-            {TIMELINE.map((item, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ delay: i * 0.1 }}
-                style={{ position: "relative", marginBottom: i === TIMELINE.length - 1 ? 0 : 60 }}>
-                <motion.div whileHover={{ scale: 1.5 }} style={{ position: "absolute", left: -39, top: 2, width: 18, height: 18, borderRadius: "50%", background: "#050505", border: "4px solid #ec4899", zIndex: 2, boxShadow: "0 0 20px #ec4899" }} />
-                <GlassCard style={{ padding: "24px 32px", display: "inline-block", minWidth: 300 }}>
-                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#fbcfe8", marginBottom: 4, letterSpacing: "0.05em" }}>{item.time}</div>
-                  <div style={{ fontSize: "1.15rem", color: "#fff", fontWeight: 600 }}>{item.text}</div>
-                </GlassCard>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── COMMUNITY IMPACT (Collage Background) ─── */}
-      <section style={{ padding: "120px 5vw", position: "relative" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gridTemplateRows: "repeat(2, 1fr)", opacity: 0.15, filter: "blur(3px)", zIndex: 0 }}>
-          {[
-            "https://images.unsplash.com/photo-1470229722913-7c090b332da8?auto=format&fit=crop&w=400&q=80",
-            "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80",
-            "https://images.unsplash.com/photo-1521337581100-8ca9a73a5f79?auto=format&fit=crop&w=400&q=80",
-            "https://images.unsplash.com/photo-1540039155733-d7696d4eb98e?auto=format&fit=crop&w=400&q=80",
-            "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=400&q=80",
-            "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80",
-            "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=400&q=80",
-            "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=400&q=80"
-          ].map((img, i) => <div key={i} style={{ backgroundImage: `url(${img})`, backgroundSize: "cover", backgroundPosition: "center" }} />)}
-        </div>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(to bottom, #050505, rgba(5,5,5,0.7), #050505)", zIndex: 0 }} />
-
-        <div style={{ maxWidth: 1000, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
-          <SectionLabel text="Our Impact" />
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)", marginBottom: 80 }}>GROWING TOGETHER</h2>
-          
-          <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 40 }}>
-            {[
-              { num: "50+", label: "Volunteers" },
-              { num: "10+", label: "Events Hosted" },
-              { num: "500+", label: "Attendees" },
-              { num: "100+", label: "Community Members" }
-            ].map((stat, i) => (
-              <div key={i} style={{ padding: 20 }}>
-                <motion.div initial={{ scale: 0.5, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }} transition={{ type: "spring", bounce: 0.6, delay: i * 0.15 }}
-                  style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "5.5rem", background: "-webkit-linear-gradient(45deg, #a855f7, #ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1, filter: "drop-shadow(0 0 20px rgba(168,85,247,0.4))" }}>
-                  {stat.num}
-                </motion.div>
-                <div style={{ fontSize: "0.9rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em", color: "rgba(255,255,255,0.7)", marginTop: 16 }}>
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── TESTIMONIALS (Gradient Mesh Background) ─── */}
-      <section style={{ padding: "120px 5vw", position: "relative", overflow: "hidden" }}>
-        {/* Animated 4-color gradient mesh */}
-        <motion.div animate={{ rotate: [0, 90, 180, 270, 360] }} transition={{ duration: 60, repeat: Infinity, ease: "linear" }} style={{ position: "absolute", top: "-50%", left: "-50%", right: "-50%", bottom: "-50%", background: "conic-gradient(from 0deg, rgba(124,58,237,0.1), rgba(236,72,153,0.1), rgba(245,158,11,0.1), rgba(79,70,229,0.1), rgba(124,58,237,0.1))", filter: "blur(100px)", zIndex: 0 }} />
-        
-        <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
-          <SectionLabel text="Word on the Street" />
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)", marginBottom: 60 }}>VOLUNTEER STORIES</h2>
-          
-          <GlassCard style={{ padding: "80px 60px", position: "relative" }}>
-            <div style={{ color: "#f59e0b", fontSize: "2rem", marginBottom: 30, letterSpacing: "0.2em" }}>★★★★★</div>
-            <AnimatePresence mode="wait">
-              <motion.div key={activeTestimonial} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }}>
-                <p style={{ fontSize: "1.6rem", fontStyle: "italic", color: "#fff", lineHeight: 1.6, margin: "0 0 30px", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
-                  "{["I came for one event and stayed for the community.", "The best networking opportunity I've experienced.", "I learned more in one event than months of theory."][activeTestimonial]}"
-                </p>
-              </motion.div>
-            </AnimatePresence>
-            <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 40 }}>
-              {[0, 1, 2].map(i => (
-                <button key={i} onClick={() => setActiveTestimonial(i)}
-                  style={{ width: 12, height: 12, borderRadius: "50%", border: "none", cursor: "pointer", background: activeTestimonial === i ? "#a855f7" : "rgba(255,255,255,0.2)", transition: "all 0.3s", transform: activeTestimonial === i ? "scale(1.3)" : "scale(1)" }}
-                />
-              ))}
+                  width: "100%", height: "100%",
+                  backgroundImage: "url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1400&q=80')",
+                  backgroundSize: "cover", backgroundPosition: "center",
+                }}
+              />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(139,92,246,0.15), transparent 60%)" }} />
             </div>
-          </GlassCard>
+            {/* Floating accent card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              style={{
+                position: "absolute", bottom: -28, right: -28,
+                background: "rgba(11,11,15,0.9)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(139,92,246,0.2)",
+                borderRadius: 16, padding: "24px 28px",
+                boxShadow: "0 20px 50px rgba(0,0,0,0.7)",
+              }}
+            >
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.4rem", color: "#a78bfa", lineHeight: 1 }}>3+</div>
+              <div style={{ fontSize: "0.7rem", letterSpacing: "0.25em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginTop: 4 }}>Sessions</div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right – Quote */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 24, fontFamily: "monospace" }}>
+              The Manifesto
+            </div>
+            <blockquote style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "clamp(2rem, 4vw, 3.2rem)",
+              fontStyle: "italic", fontWeight: 300, lineHeight: 1.35,
+              color: "#fff", margin: "0 0 36px",
+              borderLeft: "2px solid rgba(139,92,246,0.4)", paddingLeft: 32,
+            }}>
+              "We don't build events.<br />We build moments people remember."
+            </blockquote>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "1.15rem", color: "rgba(255,255,255,0.55)",
+              lineHeight: 1.8, fontStyle: "italic",
+            }}>
+              Tangy Sessions is a living, breathing collective — each session shaped by the hands, hearts, and presence of the people who show up to create it together.
+            </p>
+          </motion.div>
+        </div>
+
+        <style>{`
+          @media (max-width: 768px) {
+            .editorial-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+      </section>
+
+      <Divider />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 3 — INSIDE THE MOVEMENT (Horizontal panels)
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "160px 0", background: "#050505" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          style={{ textAlign: "center", marginBottom: 80, padding: "0 5vw" }}
+        >
+          <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#a78bfa", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
+            Exclusive Access
+          </div>
+          <h2 style={{
+            fontFamily: "'Bebas Neue', sans-serif",
+            fontSize: "clamp(3rem, 8vw, 7rem)",
+            letterSpacing: "0.04em", color: "#fff",
+            lineHeight: 0.9, margin: 0,
+          }}>
+            INSIDE THE MOVEMENT
+          </h2>
+        </motion.div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {[
+            {
+              id: "01", title: "BEHIND THE MUSIC", sub: "The moments before the music starts",
+              img: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=2000&q=80",
+              accent: "#8B5CF6",
+            },
+            {
+              id: "02", title: "THE PEOPLE", sub: "A community built on shared presence",
+              img: "https://images.unsplash.com/photo-1540039155733-d7696d4eb98e?auto=format&fit=crop&w=2000&q=80",
+              accent: "#EC4899",
+            },
+            {
+              id: "03", title: "THE PROCESS", sub: "Creation before the crowd arrives",
+              img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=2000&q=80",
+              accent: "#6D28D9",
+            },
+          ].map((panel, i) => (
+            <motion.div
+              key={i}
+              className="panel-hover"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.7, delay: i * 0.12 }}
+              style={{
+                position: "relative", height: "clamp(220px, 32vw, 440px)",
+                overflow: "hidden", cursor: "pointer",
+              }}
+            >
+              <div
+                className="panel-img"
+                style={{
+                  position: "absolute", inset: 0,
+                  backgroundImage: `url('${panel.img}')`,
+                  backgroundSize: "cover", backgroundPosition: "center",
+                }}
+              />
+              <div
+                className="panel-overlay"
+                style={{
+                  position: "absolute", inset: 0,
+                  background: "rgba(5,5,5,0.62)",
+                }}
+              />
+              <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to right, ${panel.accent}22 0%, transparent 60%)` }} />
+
+              {/* Content */}
+              <div style={{
+                position: "absolute", inset: 0,
+                display: "flex", alignItems: "center",
+                padding: "0 8vw",
+                justifyContent: "space-between",
+              }}>
+                <div>
+                  <div style={{
+                    fontFamily: "'Bebas Neue', sans-serif", fontSize: "5rem",
+                    color: panel.accent, opacity: 0.3, lineHeight: 1,
+                    position: "absolute", left: "5vw", top: "50%",
+                    transform: "translateY(-50%)", userSelect: "none",
+                  }}>
+                    {panel.id}
+                  </div>
+                  <div style={{ position: "relative", zIndex: 1 }}>
+                    <h3 style={{
+                      fontFamily: "'Bebas Neue', sans-serif",
+                      fontSize: "clamp(2rem, 5vw, 4rem)",
+                      letterSpacing: "0.08em", color: "#fff", margin: "0 0 8px",
+                    }}>
+                      {panel.title}
+                    </h3>
+                    <p className="panel-label" style={{
+                      fontSize: "0.78rem", letterSpacing: "0.25em",
+                      color: "rgba(255,255,255,0.5)", textTransform: "uppercase",
+                    }}>
+                      {panel.sub}
+                    </p>
+                  </div>
+                </div>
+                <motion.div
+                  whileHover={{ x: 8 }}
+                  style={{
+                    width: 48, height: 48, border: `1px solid ${panel.accent}55`,
+                    borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "rgba(255,255,255,0.5)", fontSize: "1.2rem",
+                    flexShrink: 0,
+                  }}
+                >
+                  →
+                </motion.div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* ─── FAQ ─── */}
-      <section style={{ padding: "120px 5vw", position: "relative" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ textAlign: "center", marginBottom: 80 }}>
-            <SectionLabel text="Got Questions?" />
-            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)" }}>FAQ</h2>
-          </div>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            {FAQS.map((faq, i) => (
-              <GlassCard key={i} whileHover={{ borderColor: "rgba(168,85,247,0.5)" }} style={{ padding: 0, overflow: "hidden", transition: "border-color 0.3s" }}>
-                <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  style={{ width: "100%", padding: "24px 30px", background: "transparent", border: "none", color: "#fff", textAlign: "left", fontSize: "1.1rem", fontWeight: 600, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  {faq.q}
-                  <motion.span animate={{ rotate: openFaq === i ? 180 : 0 }} style={{ color: "#a855f7", fontSize: "1.2rem" }}>▼</motion.span>
-                </button>
-                <AnimatePresence>
-                  {openFaq === i && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} style={{ overflow: "hidden" }}>
-                      <div style={{ padding: "0 30px 30px", color: "rgba(255,255,255,0.7)", lineHeight: 1.7, fontSize: "1rem" }}>
-                        {faq.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </GlassCard>
-            ))}
+      <Divider />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 4 — STATISTICS (Cinematic count-up)
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "180px 5vw", position: "relative", overflow: "hidden" }}>
+        <div style={{
+          position: "absolute", top: "50%", left: "50%",
+          transform: "translate(-50%, -50%)",
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "clamp(8rem, 20vw, 30rem)",
+          color: "#8B5CF6", opacity: 0.04,
+          pointerEvents: "none", whiteSpace: "nowrap", userSelect: "none",
+          filter: "blur(4px)",
+        }}>
+          TANGY
+        </div>
+
+        {/* Ambient orbs */}
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], opacity: [0.06, 0.1, 0.06] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          style={{
+            position: "absolute", top: "20%", left: "10%",
+            width: "40vw", height: "40vw",
+            background: "radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%)",
+            filter: "blur(60px)", pointerEvents: "none",
+          }}
+        />
+        <motion.div
+          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.08, 0.05] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          style={{
+            position: "absolute", bottom: "20%", right: "10%",
+            width: "35vw", height: "35vw",
+            background: "radial-gradient(circle, rgba(236,72,153,0.2) 0%, transparent 70%)",
+            filter: "blur(60px)", pointerEvents: "none",
+          }}
+        />
+
+        <div style={{
+          maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1,
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          gap: "clamp(40px, 6vw, 80px)",
+          alignItems: "center",
+        }}>
+          <StatNumber target={1200} suffix="+" label="Attendees" delay={0} />
+          <StatNumber target={12} suffix="" label="Artists" delay={150} />
+          <StatNumber target={3} suffix="" label="Sessions" delay={300} />
+          <TypewriterStat text="GROWING" delay={500} />
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 5 — THE PEOPLE WE LOOK FOR (Manifesto lines)
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "180px 5vw", position: "relative" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ marginBottom: 80 }}
+          >
+            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#a78bfa", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
+              No Prerequisites
+            </div>
+            <h2 style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(3rem, 7vw, 6rem)",
+              letterSpacing: "0.04em", color: "#fff", lineHeight: 0.95, margin: 0,
+            }}>
+              THE PEOPLE<br />WE LOOK FOR
+            </h2>
+          </motion.div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            {manifestoLines.map((line, i) => {
+              if (!line) return <div key={i} style={{ height: 40 }} />;
+              const isAccent = line.startsWith("You only");
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.7, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                  style={{
+                    padding: "20px 0",
+                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <span style={{
+                    fontFamily: isAccent ? "'Bebas Neue', sans-serif" : "'Cormorant Garamond', serif",
+                    fontSize: isAccent ? "clamp(2rem, 4vw, 3rem)" : "clamp(1.5rem, 3vw, 2.2rem)",
+                    fontStyle: isAccent ? "normal" : "italic",
+                    letterSpacing: isAccent ? "0.06em" : "0",
+                    color: isAccent ? "#fff" : "rgba(255,255,255,0.45)",
+                    fontWeight: isAccent ? 400 : 300,
+                    display: "block",
+                  }}>
+                    {isAccent && (
+                      <span style={{ color: "#a78bfa", marginRight: 16 }}>—</span>
+                    )}
+                    {line}
+                  </span>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ─── APPLICATION FORM SECTION (Simple Black Glass) ─── */}
-      <section id="apply-section" style={{ padding: "120px 5vw", position: "relative" }}>
-        {/* Subtle dark background image for glass to blur over */}
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(40px)", opacity: 0.15, zIndex: 0 }} />
-        
-        <div style={{ maxWidth: 850, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ textAlign: "center", marginBottom: 60 }}>
-            <SectionLabel text="Step Into The Magic" />
-            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 5vw, 4rem)", textShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>APPLY TO JOIN THE CREW</h2>
-          </div>
-          
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+      <Divider />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 6 — APPLICATION FORM
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section id="apply-section" style={{ padding: "160px 5vw", position: "relative" }}>
+        {/* Full-bleed bg image */}
+        <div style={{
+          position: "absolute", inset: 0,
+          backgroundImage: "url('https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=2500&q=80')",
+          backgroundSize: "cover", backgroundPosition: "center",
+          filter: "blur(50px) brightness(0.3)", opacity: 0.5, zIndex: 0,
+        }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #050505, rgba(5,5,5,0.5) 40%, rgba(5,5,5,0.5) 60%, #050505)", zIndex: 0 }} />
+
+        <div style={{ maxWidth: 860, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ textAlign: "center", marginBottom: 64 }}
+          >
+            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#a78bfa", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
+              Join The Collective
+            </div>
+            <h2 style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(3rem, 7vw, 5.5rem)",
+              letterSpacing: "0.04em", color: "#fff", lineHeight: 0.95, margin: "0 0 24px",
+            }}>
+              YOUR APPLICATION
+            </h2>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic", fontSize: "1.2rem",
+              color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto",
+            }}>
+              This is not a job application. It's an invitation to become part of something real.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.1 }}
+            style={{
+              background: "rgba(8,8,12,0.7)",
+              backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+              border: "1px solid rgba(139,92,246,0.2)",
+              borderRadius: 24,
+              boxShadow: "0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03)",
+              overflow: "hidden",
+            }}
+          >
             <VolunteerForm />
           </motion.div>
         </div>
       </section>
 
-      {/* ─── FINAL CTA ─── */}
-      <section style={{ padding: "150px 5vw", textAlign: "center", position: "relative", borderTop: "1px solid rgba(124,58,237,0.15)", background: "#050505" }}>
-        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.5rem, 6vw, 5.5rem)", margin: "0 0 24px", letterSpacing: "0.02em" }}>READY TO CREATE <span style={{ color: "#ec4899" }}>MAGIC</span> WITH US?</h2>
-        <p style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.7)", maxWidth: 700, margin: "0 auto 50px", lineHeight: 1.6 }}>
-          Join a community of creators, music lovers, organizers, and dreamers building unforgettable experiences together.
-        </p>
-        <div style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}>
-          <motion.button onClick={scrollToApply} whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(236,72,153,0.5)" }} style={{ padding: "18px 40px", background: "linear-gradient(45deg, #a855f7, #ec4899)", color: "#fff", border: "none", borderRadius: 40, cursor: "pointer", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", fontSize: "0.95rem" }}>
-            Apply Now
-          </motion.button>
-          <motion.button onClick={() => { navigate("/"); setTimeout(() => document.getElementById("events")?.scrollIntoView(), 100); }} whileHover={{ scale: 1.05, background: "rgba(255,255,255,0.1)" }} style={{ padding: "18px 40px", background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 40, cursor: "pointer", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", fontSize: "0.95rem" }}>
-            Explore Events
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 7 — FINAL CTA: SEE YOU INSIDE
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ position: "relative", height: "80vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {/* Video / image bg */}
+        <div style={{ position: "absolute", inset: 0 }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            backgroundImage: "url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=2500&q=80')",
+            backgroundSize: "cover", backgroundPosition: "center 40%",
+          }} />
+          <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.78)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #050505 0%, transparent 25%, transparent 75%, #050505 100%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at center, rgba(139,92,246,0.1) 0%, transparent 65%)" }} />
+        </div>
+
+        <Particles count={12} />
+
+        <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 5vw" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h2 style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(5rem, 18vw, 16rem)",
+              lineHeight: 0.88, letterSpacing: "0.02em", color: "#fff",
+              margin: "0 0 32px",
+              textShadow: "0 0 80px rgba(139,92,246,0.2)",
+            }}>
+              SEE YOU<br />
+              <span style={{ WebkitTextStroke: "1px rgba(167,139,250,0.6)", WebkitTextFillColor: "transparent" }}>
+                INSIDE.
+              </span>
+            </h2>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic", fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
+              color: "rgba(255,255,255,0.55)", lineHeight: 1.7,
+              marginBottom: 48, maxWidth: 600, margin: "0 auto 48px",
+            }}
+          >
+            Some people attend Tangy.<br />Others become part of it.
+          </motion.p>
+
+          <motion.button
+            onClick={scrollToApply}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(139,92,246,0.5)" }}
+            whileTap={{ scale: 0.97 }}
+            style={{
+              padding: "20px 56px",
+              background: "linear-gradient(135deg, #8B5CF6, #6D28D9)",
+              color: "#fff", border: "none", borderRadius: 40,
+              cursor: "pointer", fontFamily: "inherit", fontSize: "0.95rem",
+              fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase",
+              boxShadow: "0 12px 40px rgba(139,92,246,0.3)",
+            }}
+          >
+            Begin Your Journey
           </motion.button>
         </div>
       </section>
-
     </div>
   );
 }

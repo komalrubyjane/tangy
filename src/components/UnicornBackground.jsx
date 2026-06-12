@@ -23,7 +23,7 @@ export default function UnicornBackground() {
       <div style={{
         position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
         zIndex: -1, pointerEvents: "none",
-        background: "radial-gradient(ellipse at 25% 40%, rgba(124,58,237,0.12), transparent 55%), radial-gradient(ellipse at 75% 60%, rgba(6,182,212,0.08), transparent 55%), #090909",
+        background: "radial-gradient(ellipse at 25% 40%, rgba(139,92,246,0.06), transparent 55%), radial-gradient(ellipse at 75% 60%, rgba(139,92,246,0.04), transparent 55%), #050505",
       }} />
     );
   }
@@ -31,7 +31,7 @@ export default function UnicornBackground() {
   return (
     <div style={{
       position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
-      zIndex: -1, pointerEvents: "none", background: "#0a0a0a", overflow: "hidden",
+      zIndex: -1, pointerEvents: "none", background: "#050505", overflow: "hidden",
     }}>
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "calc(100% + 70px)" }}>
         <UnicornScene

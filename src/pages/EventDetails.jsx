@@ -137,7 +137,7 @@ export const EVENTS_DATA = [
 function SectionLabel({ text }) {
   return (
     <div style={{
-      fontSize: "0.65rem", letterSpacing: "0.42em", color: "#7c3aed",
+      fontSize: "0.65rem", letterSpacing: "0.42em", color: "#8B5CF6",
       textTransform: "uppercase", fontFamily: "monospace", marginBottom: 12,
     }}>
       {text}
@@ -151,9 +151,9 @@ function GlassCard({ children, style = {}, ...props }) {
       background: "linear-gradient(135deg, rgba(8,8,12,0.82) 0%, rgba(8,8,12,0.62) 100%)",
       backdropFilter: "blur(22px)",
       WebkitBackdropFilter: "blur(22px)",
-      border: "1px solid rgba(124,58,237,0.22)",
-      borderRadius: 16,
-      boxShadow: "0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(124,58,237,0.06), inset 0 1px 0 rgba(255,255,255,0.05)",
+      border: "1px solid rgba(139, 92, 246,0.22)",
+      borderRadius: 24,
+      boxShadow: "0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(139, 92, 246,0.06), inset 0 1px 0 rgba(255,255,255,0.05)",
       ...style,
     }} {...props}>
       {children}
@@ -173,7 +173,7 @@ function Breadcrumb({ eventName }) {
       <span
         onClick={() => { navigate("/"); window.scrollTo(0, 0); }}
         style={{ cursor: "pointer", transition: "color 0.2s" }}
-        onMouseEnter={e => e.target.style.color = "#7c3aed"}
+        onMouseEnter={e => e.target.style.color = "#8B5CF6"}
         onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
       >
         Home
@@ -182,7 +182,7 @@ function Breadcrumb({ eventName }) {
       <span
         onClick={() => { navigate("/"); setTimeout(() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" }), 120); }}
         style={{ cursor: "pointer", transition: "color 0.2s" }}
-        onMouseEnter={e => e.target.style.color = "#7c3aed"}
+        onMouseEnter={e => e.target.style.color = "#8B5CF6"}
         onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
       >
         Events
@@ -209,8 +209,8 @@ function EventHero({ ev }) {
       }} />
       {/* Overlays */}
       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #090909 0%, transparent 65%)", zIndex: 2 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(124,58,237,0.08), transparent 60%)", zIndex: 2 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #070707 0%, transparent 65%)", zIndex: 2 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(139, 92, 246,0.08), transparent 60%)", zIndex: 2 }} />
 
       {/* Content */}
       <div style={{ position: "relative", zIndex: 3, width: "100%", padding: "0 5vw 60px" }}>
@@ -224,8 +224,8 @@ function EventHero({ ev }) {
             {ev.tags.map(tag => (
               <span key={tag} style={{
                 padding: "4px 12px",
-                background: "rgba(124,58,237,0.18)",
-                border: "1px solid rgba(124,58,237,0.4)",
+                background: "rgba(139, 92, 246,0.18)",
+                border: "1px solid rgba(139, 92, 246,0.4)",
                 borderRadius: 20, fontSize: "0.68rem",
                 color: "#a78bfa", letterSpacing: "0.1em", textTransform: "uppercase",
               }}>
@@ -240,7 +240,7 @@ function EventHero({ ev }) {
             fontSize: "clamp(3rem, 8vw, 7rem)",
             color: "#fff", margin: "0 0 24px",
             lineHeight: 0.95, letterSpacing: "0.04em",
-            textShadow: "0 0 80px rgba(124,58,237,0.3)",
+            textShadow: "0 0 80px rgba(139, 92, 246,0.3)",
           }}>
             {ev.name}
           </h1>
@@ -255,8 +255,8 @@ function EventHero({ ev }) {
               <div key={label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <div style={{
                   width: 40, height: 40, borderRadius: 10,
-                  background: "rgba(124,58,237,0.18)",
-                  border: "1px solid rgba(124,58,237,0.35)",
+                  background: "rgba(139, 92, 246,0.18)",
+                  border: "1px solid rgba(139, 92, 246,0.35)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: "1.1rem", flexShrink: 0,
                 }}>
@@ -287,7 +287,7 @@ function EventHero({ ev }) {
                   height: "100%", borderRadius: 4,
                   background: isLow
                     ? "linear-gradient(to right, #f59e0b, #ef4444)"
-                    : "linear-gradient(to right, #7c3aed, #06b6d4)",
+                    : "linear-gradient(to right, #8B5CF6, #06b6d4)",
                 }}
               />
             </div>
@@ -337,8 +337,8 @@ function AboutEvent({ ev }) {
               {ev.genres.map(g => (
                 <span key={g} style={{
                   padding: "7px 16px",
-                  background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.08))",
-                  border: "1px solid rgba(124,58,237,0.3)",
+                  background: "linear-gradient(135deg, rgba(139, 92, 246,0.15), rgba(6,182,212,0.08))",
+                  border: "1px solid rgba(139, 92, 246,0.3)",
                   borderRadius: 30, fontSize: "0.78rem",
                   color: "#c4b5fd", letterSpacing: "0.06em",
                 }}>
@@ -378,7 +378,7 @@ function AboutEvent({ ev }) {
 // ─── SCHEDULE SECTION ─────────────────────────────────────────────────────────
 function ScheduleSection({ ev }) {
   return (
-    <section style={{ padding: "80px 5vw", background: "rgba(124,58,237,0.02)" }}>
+    <section style={{ padding: "80px 5vw", background: "rgba(139, 92, 246,0.02)" }}>
       <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <SectionLabel text="Programme" />
@@ -388,7 +388,7 @@ function ScheduleSection({ ev }) {
           <motion.div
             initial={{ width: 0 }} whileInView={{ width: 48 }}
             transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #7c3aed, #06b6d4)", margin: "16px auto 0", borderRadius: 2 }}
+            style={{ height: 2, background: "linear-gradient(to right, #8B5CF6, #06b6d4)", margin: "16px auto 0", borderRadius: 2 }}
           />
         </div>
 
@@ -396,7 +396,7 @@ function ScheduleSection({ ev }) {
           {/* Timeline line */}
           <div style={{
             position: "absolute", left: 79, top: 0, bottom: 0, width: 1,
-            background: "linear-gradient(to bottom, transparent, rgba(124,58,237,0.4) 10%, rgba(124,58,237,0.4) 90%, transparent)",
+            background: "linear-gradient(to bottom, transparent, rgba(139, 92, 246,0.4) 10%, rgba(139, 92, 246,0.4) 90%, transparent)",
           }} />
 
           {ev.schedule.map((item, i) => (
@@ -412,7 +412,7 @@ function ScheduleSection({ ev }) {
               <div style={{
                 minWidth: 68, textAlign: "right",
                 fontFamily: "monospace", fontSize: "0.72rem",
-                color: "#7c3aed", letterSpacing: "0.08em", paddingTop: 14,
+                color: "#8B5CF6", letterSpacing: "0.08em", paddingTop: 14,
               }}>
                 {item.time}
               </div>
@@ -427,9 +427,9 @@ function ScheduleSection({ ev }) {
                   viewport={{ once: true }}
                   style={{
                     width: 12, height: 12, borderRadius: "50%",
-                    background: i === 0 ? "#10b981" : "#7c3aed",
-                    border: `2px solid ${i === 0 ? "#10b981" : "#7c3aed"}`,
-                    boxShadow: `0 0 12px ${i === 0 ? "#10b981" : "#7c3aed"}66`,
+                    background: i === 0 ? "#10b981" : "#8B5CF6",
+                    border: `2px solid ${i === 0 ? "#10b981" : "#8B5CF6"}`,
+                    boxShadow: `0 0 12px ${i === 0 ? "#10b981" : "#8B5CF6"}66`,
                     flexShrink: 0,
                   }}
                 />
@@ -472,7 +472,7 @@ function GallerySection({ ev }) {
           <motion.div
             initial={{ width: 0 }} whileInView={{ width: 48 }}
             transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #7c3aed, #06b6d4)", margin: "16px auto 0", borderRadius: 2 }}
+            style={{ height: 2, background: "linear-gradient(to right, #8B5CF6, #06b6d4)", margin: "16px auto 0", borderRadius: 2 }}
           />
         </div>
 
@@ -487,7 +487,7 @@ function GallerySection({ ev }) {
               transition={{ duration: 0.4, delay: i * 0.07 }}
               whileHover={{ scale: 1.03 }}
               style={{
-                aspectRatio: "4/3", borderRadius: 12, cursor: "pointer",
+                aspectRatio: "4/3", borderRadius: 24, cursor: "pointer",
                 overflow: "hidden", background: "#0a0a0a",
                 border: "1px solid rgba(255,255,255,0.06)",
                 position: "relative",
@@ -525,9 +525,9 @@ function GallerySection({ ev }) {
               initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }}
               transition={{ type: "spring", damping: 22 }}
               onClick={e => e.stopPropagation()}
-              style={{ background: "#0d0d0d", border: "1px solid rgba(124,58,237,0.3)", borderRadius: 20, overflow: "hidden", boxShadow: "0 0 120px rgba(124,58,237,0.18)", maxWidth: "90vw", maxHeight: "85vh" }}
+              style={{ background: "#0d0d0d", border: "1px solid rgba(139, 92, 246,0.3)", borderRadius: 24, overflow: "hidden", boxShadow: "0 0 120px rgba(139, 92, 246,0.18)", maxWidth: "90vw", maxHeight: "85vh" }}
             >
-              <img src={lightbox.img} alt={lightbox.label} style={{ display: "block", maxWidth: "90vw", maxHeight: "75vh", objectFit: "contain" }} />
+              <img src={lightbox.img} alt={lightbox.label} style={{ display: "block", maxWidth: "90vw", maxHeight: "75vh", objectFit: "contain", borderRadius: "24px 24px 0 0" }} />
               <div style={{ padding: "18px 28px", textAlign: "center" }}>
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.4rem", color: "#fff", letterSpacing: "0.1em" }}>{lightbox.label}</div>
                 <div style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.7rem", marginTop: 4, fontFamily: "monospace" }}>ESC or click to close</div>
@@ -544,7 +544,7 @@ function GallerySection({ ev }) {
 function FAQSection({ ev }) {
   const [open, setOpen] = useState(null);
   return (
-    <section style={{ padding: "80px 5vw", background: "rgba(124,58,237,0.02)" }}>
+    <section style={{ padding: "80px 5vw", background: "rgba(139, 92, 246,0.02)" }}>
       <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <SectionLabel text="FAQ" />
@@ -554,7 +554,7 @@ function FAQSection({ ev }) {
           <motion.div
             initial={{ width: 0 }} whileInView={{ width: 48 }}
             transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #7c3aed, #06b6d4)", margin: "16px auto 0", borderRadius: 2 }}
+            style={{ height: 2, background: "linear-gradient(to right, #8B5CF6, #06b6d4)", margin: "16px auto 0", borderRadius: 2 }}
           />
         </div>
 
@@ -568,9 +568,9 @@ function FAQSection({ ev }) {
               transition={{ duration: 0.45, delay: i * 0.06 }}
             >
               <GlassCard style={{
-                border: open === i ? "1px solid rgba(124,58,237,0.45)" : "1px solid rgba(124,58,237,0.18)",
+                border: open === i ? "1px solid rgba(139, 92, 246,0.45)" : "1px solid rgba(139, 92, 246,0.18)",
                 transition: "border-color 0.25s, box-shadow 0.25s",
-                boxShadow: open === i ? "0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(124,58,237,0.12)" : undefined,
+                boxShadow: open === i ? "0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(139, 92, 246,0.12)" : undefined,
               }}>
                 <button
                   onClick={() => setOpen(open === i ? null : i)}
@@ -587,7 +587,7 @@ function FAQSection({ ev }) {
                   <motion.span
                     animate={{ rotate: open === i ? 45 : 0 }}
                     transition={{ duration: 0.25 }}
-                    style={{ color: "#7c3aed", fontSize: "1.3rem", flexShrink: 0, lineHeight: 1 }}
+                    style={{ color: "#8B5CF6", fontSize: "1.3rem", flexShrink: 0, lineHeight: 1 }}
                   >
                     +
                   </motion.span>
@@ -682,7 +682,7 @@ function BookingSection({ ev }) {
   const fieldStyle = (field) => ({
     width: "100%", padding: "13px 16px",
     background: "rgba(0,0,0,0.45)",
-    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(124,58,237,0.25)"}`,
+    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(139, 92, 246,0.25)"}`,
     borderRadius: 8, color: "#fff", fontSize: "0.88rem",
     fontFamily: "inherit", outline: "none",
     boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s",
@@ -699,7 +699,7 @@ function BookingSection({ ev }) {
           <motion.div
             initial={{ width: 0 }} whileInView={{ width: 48 }}
             transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #7c3aed, #06b6d4)", margin: "16px auto 0", borderRadius: 2 }}
+            style={{ height: 2, background: "linear-gradient(to right, #8B5CF6, #06b6d4)", margin: "16px auto 0", borderRadius: 2 }}
           />
         </div>
 
@@ -729,10 +729,10 @@ function BookingSection({ ev }) {
               </button>
             </GlassCard>
           ) : (
-          <GlassCard style={{ padding: "40px 36px", border: "1px solid rgba(124,58,237,0.35)", boxShadow: "0 25px 60px rgba(0,0,0,0.7), 0 0 50px rgba(124,58,237,0.12)" }}>
+          <GlassCard style={{ padding: "40px 36px", border: "1px solid rgba(139, 92, 246,0.35)", boxShadow: "0 25px 60px rgba(0,0,0,0.7), 0 0 50px rgba(139, 92, 246,0.12)" }}>
             {/* Event info banner */}
             <div style={{
-              background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)",
+              background: "rgba(139, 92, 246,0.1)", border: "1px solid rgba(139, 92, 246,0.25)",
               borderRadius: 10, padding: "14px 18px", marginBottom: 28,
               display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10,
             }}>
@@ -740,7 +740,7 @@ function BookingSection({ ev }) {
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.15rem", color: "#fff", letterSpacing: "0.06em" }}>{ev.name}</div>
                 <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.4)", marginTop: 2 }}>{ev.date} · {ev.location}</div>
               </div>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.5rem", color: "#7c3aed" }}>₹{ev.price.toLocaleString()}</div>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.5rem", color: "#8B5CF6" }}>₹{ev.price.toLocaleString()}</div>
             </div>
 
                         {/* Name */}
@@ -749,7 +749,7 @@ function BookingSection({ ev }) {
               <input
                 type="text" placeholder="Your full name"
                 value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: null })); }}
-                style={fieldStyle("name")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = errors.name ? "#ef4444" : "rgba(124,58,237,0.25)"; }}
+                style={fieldStyle("name")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = errors.name ? "#ef4444" : "rgba(139, 92, 246,0.25)"; }}
               />
               {errors.name && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.name}</div>}
             </div>
@@ -760,7 +760,7 @@ function BookingSection({ ev }) {
               <input
                 type="email" placeholder="your@email.com"
                 value={form.email} onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(er => ({ ...er, email: null })); }}
-                style={fieldStyle("email")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = errors.email ? "#ef4444" : "rgba(124,58,237,0.25)"; }}
+                style={fieldStyle("email")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = errors.email ? "#ef4444" : "rgba(139, 92, 246,0.25)"; }}
               />
               {errors.email && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.email}</div>}
             </div>
@@ -771,7 +771,7 @@ function BookingSection({ ev }) {
               <input
                 type="tel" placeholder="+91 98765 43210"
                 value={form.phone} onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setErrors(er => ({ ...er, phone: null })); }}
-                style={fieldStyle("phone")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = errors.phone ? "#ef4444" : "rgba(124,58,237,0.25)"; }}
+                style={fieldStyle("phone")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = errors.phone ? "#ef4444" : "rgba(139, 92, 246,0.25)"; }}
               />
               {errors.phone && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.phone}</div>}
             </div>
@@ -783,7 +783,7 @@ function BookingSection({ ev }) {
                 <input
                   type="text" placeholder="DD/MM/YYYY"
                   value={form.dob} onChange={e => setForm(f => ({ ...f, dob: e.target.value }))}
-                  style={fieldStyle("dob")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = "rgba(124,58,237,0.25)"; }}
+                  style={fieldStyle("dob")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = "rgba(139, 92, 246,0.25)"; }}
                 />
               </div>
               <div style={{ flex: "1 1 120px" }}>
@@ -807,7 +807,7 @@ function BookingSection({ ev }) {
                 <input
                   type="text" placeholder="e.g. Jubilee Hills"
                   value={form.cityPart} onChange={e => setForm(f => ({ ...f, cityPart: e.target.value }))}
-                  style={fieldStyle("cityPart")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = "rgba(124,58,237,0.25)"; }}
+                  style={fieldStyle("cityPart")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = "rgba(139, 92, 246,0.25)"; }}
                 />
               </div>
               <div style={{ flex: "1 1 120px" }}>
@@ -815,7 +815,7 @@ function BookingSection({ ev }) {
                 <input
                   type="text" placeholder="@username"
                   value={form.instagram} onChange={e => setForm(f => ({ ...f, instagram: e.target.value }))}
-                  style={fieldStyle("instagram")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = "rgba(124,58,237,0.25)"; }}
+                  style={fieldStyle("instagram")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = "rgba(139, 92, 246,0.25)"; }}
                 />
               </div>
             </div>
@@ -840,12 +840,12 @@ function BookingSection({ ev }) {
                 <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                   <button
                     onClick={() => setForm(f => ({ ...f, qty: Math.max(1, f.qty - 1) }))}
-                    style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.3)", color: "#fff", cursor: "pointer", fontSize: "1.3rem", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(139, 92, 246,0.12)", border: "1px solid rgba(139, 92, 246,0.3)", color: "#fff", cursor: "pointer", fontSize: "1.3rem", display: "flex", alignItems: "center", justifyContent: "center" }}
                   >−</button>
                   <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.2rem", color: "#fff", minWidth: 36, textAlign: "center", lineHeight: 1 }}>{form.qty}</div>
                   <button
                     onClick={() => setForm(f => ({ ...f, qty: Math.min(10, f.qty + 1) }))}
-                    style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.3)", color: "#fff", cursor: "pointer", fontSize: "1.3rem", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(139, 92, 246,0.12)", border: "1px solid rgba(139, 92, 246,0.3)", color: "#fff", cursor: "pointer", fontSize: "1.3rem", display: "flex", alignItems: "center", justifyContent: "center" }}
                   >+</button>
                 </div>
               </div>
@@ -854,7 +854,7 @@ function BookingSection({ ev }) {
                 <input
                   type="text" placeholder="Chairs/Mattress?"
                   value={form.seatingPreference} onChange={e => setForm(f => ({ ...f, seatingPreference: e.target.value }))}
-                  style={fieldStyle("seatingPreference")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = "rgba(124,58,237,0.25)"; }}
+                  style={fieldStyle("seatingPreference")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = "rgba(139, 92, 246,0.25)"; }}
                 />
               </div>
             </div>
@@ -866,7 +866,7 @@ function BookingSection({ ev }) {
                 placeholder="We love hearing your story!"
                 value={form.artistCollab} onChange={e => setForm(f => ({ ...f, artistCollab: e.target.value }))}
                 style={{ ...fieldStyle("artistCollab"), minHeight: "50px", resize: "vertical" }}
-                onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = "rgba(124,58,237,0.25)"; }}
+                onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = "rgba(139, 92, 246,0.25)"; }}
               />
             </div>
 
@@ -877,13 +877,13 @@ function BookingSection({ ev }) {
                 placeholder="Feedback, stories, etc..."
                 value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                 style={{ ...fieldStyle("notes"), minHeight: "50px", resize: "vertical" }}
-                onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = "rgba(124,58,237,0.25)"; }}
+                onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = "rgba(139, 92, 246,0.25)"; }}
               />
             </div>
 
             {/* Total price display */}            <div style={{
-              background: "rgba(124,58,237,0.08)",
-              border: "1px solid rgba(124,58,237,0.25)",
+              background: "rgba(139, 92, 246,0.08)",
+              border: "1px solid rgba(139, 92, 246,0.25)",
               borderRadius: 12, padding: "20px 22px", marginBottom: 26,
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", color: "rgba(255,255,255,0.45)", fontSize: "0.82rem", marginBottom: 10 }}>
@@ -894,7 +894,7 @@ function BookingSection({ ev }) {
                 <motion.span
                   key={total}
                   initial={{ scale: 1.2, color: "#a78bfa" }}
-                  animate={{ scale: 1, color: "#7c3aed" }}
+                  animate={{ scale: 1, color: "#8B5CF6" }}
                   transition={{ duration: 0.3 }}
                   style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.4rem", letterSpacing: "0.04em" }}
                 >
@@ -904,7 +904,7 @@ function BookingSection({ ev }) {
             </div>
 
                         {/* Payment Details Section */}
-            <div style={{ background: "rgba(124,58,237,0.05)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: 12, padding: "24px 20px", marginBottom: 26 }}>
+            <div style={{ background: "rgba(139, 92, 246,0.05)", border: "1px solid rgba(139, 92, 246,0.2)", borderRadius: 12, padding: "24px 20px", marginBottom: 26 }}>
               <h4 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.4rem", color: "#a78bfa", margin: "0 0 16px", letterSpacing: "0.05em" }}>Payment Details</h4>
               <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginBottom: 16, lineHeight: 1.5 }}>
                 Please make the payment of <strong>₹{total.toLocaleString()}</strong> to one of the following numbers and fill in the transaction details below.
@@ -927,7 +927,7 @@ function BookingSection({ ev }) {
                   <input
                     type="text" placeholder="Name on your UPI App"
                     value={form.upiName} onChange={e => { setForm(f => ({ ...f, upiName: e.target.value })); setErrors(er => ({ ...er, upiName: null })); }}
-                    style={fieldStyle("upiName")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = errors.upiName ? "#ef4444" : "rgba(124,58,237,0.25)"; }}
+                    style={fieldStyle("upiName")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = errors.upiName ? "#ef4444" : "rgba(139, 92, 246,0.25)"; }}
                   />
                   {errors.upiName && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.upiName}</div>}
                 </div>
@@ -950,7 +950,7 @@ function BookingSection({ ev }) {
                 <input
                   type="text" placeholder="12-35 digit reference number"
                   value={form.upiId} onChange={e => { setForm(f => ({ ...f, upiId: e.target.value })); setErrors(er => ({ ...er, upiId: null })); }}
-                  style={fieldStyle("upiId")} onFocus={e => { e.target.style.borderColor = "#7c3aed"; }} onBlur={e => { e.target.style.borderColor = errors.upiId ? "#ef4444" : "rgba(124,58,237,0.25)"; }}
+                  style={fieldStyle("upiId")} onFocus={e => { e.target.style.borderColor = "#8B5CF6"; }} onBlur={e => { e.target.style.borderColor = errors.upiId ? "#ef4444" : "rgba(139, 92, 246,0.25)"; }}
                 />
                 {errors.upiId && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.upiId}</div>}
               </div>
@@ -965,13 +965,13 @@ function BookingSection({ ev }) {
               whileTap={!isSubmitting ? { scale: 0.97 } : {}}
               style={{
                 width: "100%", padding: "17px 0",
-                background: isSubmitting ? "rgba(124,58,237,0.5)" : "#7c3aed", 
+                background: isSubmitting ? "rgba(139, 92, 246,0.5)" : "#8B5CF6", 
                 color: "#fff", border: "none",
                 borderRadius: 8, cursor: isSubmitting ? "not-allowed" : "pointer", 
                 fontFamily: "inherit",
                 letterSpacing: "0.14em", textTransform: "uppercase",
                 fontSize: "0.9rem", fontWeight: 700,
-                boxShadow: "0 0 40px rgba(124,58,237,0.4)",
+                boxShadow: "0 0 40px rgba(139, 92, 246,0.4)",
                 transition: "background 0.2s",
                 display: "flex", justifyContent: "center", alignItems: "center", gap: 10
               }}
@@ -1005,7 +1005,7 @@ function BookingSection({ ev }) {
 // ─── CONTACT STRIP ────────────────────────────────────────────────────────────
 function ContactStrip() {
   return (
-    <section style={{ padding: "60px 5vw", background: "rgba(124,58,237,0.04)", borderTop: "1px solid rgba(124,58,237,0.12)" }}>
+    <section style={{ padding: "60px 5vw", background: "rgba(139, 92, 246,0.04)", borderTop: "1px solid rgba(139, 92, 246,0.12)" }}>
       <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 28 }}>
         <div>
           <SectionLabel text="Contact" />
@@ -1023,14 +1023,14 @@ function ContactStrip() {
               href={href}
               style={{
                 padding: "12px 22px",
-                background: "rgba(124,58,237,0.1)",
-                border: "1px solid rgba(124,58,237,0.3)",
+                background: "rgba(139, 92, 246,0.1)",
+                border: "1px solid rgba(139, 92, 246,0.3)",
                 borderRadius: 8, color: "#c4b5fd",
                 textDecoration: "none", fontSize: "0.83rem",
                 transition: "all 0.2s", display: "block",
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.25)"; e.currentTarget.style.borderColor = "rgba(124,58,237,0.6)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "rgba(124,58,237,0.1)"; e.currentTarget.style.borderColor = "rgba(124,58,237,0.3)"; }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(139, 92, 246,0.25)"; e.currentTarget.style.borderColor = "rgba(139, 92, 246,0.6)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(139, 92, 246,0.1)"; e.currentTarget.style.borderColor = "rgba(139, 92, 246,0.3)"; }}
             >
               <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginBottom: 3 }}>{label}</div>
               {value}
@@ -1053,7 +1053,7 @@ export default function EventDetails() {
   if (!ev) {
     return (
       <div style={{
-        minHeight: "100vh", background: "#090909",
+        minHeight: "100vh", background: "#070707",
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
         fontFamily: "'DM Sans', sans-serif", color: "#fff", textAlign: "center", padding: 40,
@@ -1064,7 +1064,7 @@ export default function EventDetails() {
         <button
           onClick={() => navigate("/")}
           style={{
-            padding: "12px 28px", background: "#7c3aed", color: "#fff",
+            padding: "12px 28px", background: "#8B5CF6", color: "#fff",
             border: "none", borderRadius: 6, cursor: "pointer",
             fontFamily: "inherit", fontSize: "0.9rem", letterSpacing: "0.1em",
           }}
@@ -1077,7 +1077,7 @@ export default function EventDetails() {
 
   return (
     <div style={{
-      background: "#090909", minHeight: "100vh",
+      background: "#070707", minHeight: "100vh",
       fontFamily: "'DM Sans', system-ui, sans-serif", color: "#fff",
     }}>
       <style>{`
@@ -1086,10 +1086,10 @@ export default function EventDetails() {
         html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
         body { overflow-x: hidden; }
         input, button, select, textarea { font-family: inherit; }
-        ::selection { background: rgba(124,58,237,0.35); }
+        ::selection { background: rgba(139, 92, 246,0.35); }
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #090909; }
-        ::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 2px; }
+        ::-webkit-scrollbar-track { background: #070707; }
+        ::-webkit-scrollbar-thumb { background: #8B5CF6; border-radius: 2px; }
 
         .ed-about-grid {
           grid-template-columns: 1fr 1fr;
@@ -1109,7 +1109,7 @@ export default function EventDetails() {
       <nav className="ed-nav-bar" style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
         background: "rgba(9,9,9,0.95)", backdropFilter: "blur(16px)",
-        borderBottom: "1px solid rgba(124,58,237,0.15)",
+        borderBottom: "1px solid rgba(139, 92, 246,0.15)",
         padding: "0 5vw", height: 64,
         display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
       }}>
@@ -1136,14 +1136,14 @@ export default function EventDetails() {
           style={{
             padding: "8px 18px",
             background: "transparent",
-            border: "1px solid rgba(124,58,237,0.4)",
+            border: "1px solid rgba(139, 92, 246,0.4)",
             borderRadius: 6, color: "#a78bfa",
             cursor: "pointer", fontSize: "0.78rem",
             letterSpacing: "0.1em", textTransform: "uppercase",
             whiteSpace: "nowrap", transition: "all 0.2s",
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.15)"; e.currentTarget.style.borderColor = "#7c3aed"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(124,58,237,0.4)"; }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(139, 92, 246,0.15)"; e.currentTarget.style.borderColor = "#8B5CF6"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(139, 92, 246,0.4)"; }}
         >
           ← Back to Events
         </motion.button>
@@ -1164,7 +1164,7 @@ export default function EventDetails() {
       {/* ── Footer ───────────────────────────────────────────────────────────── */}
       <footer style={{
         background: "linear-gradient(135deg, rgba(6,6,10,0.9) 0%, rgba(8,8,16,0.8) 100%)",
-        borderTop: "1px solid rgba(124,58,237,0.12)",
+        borderTop: "1px solid rgba(139, 92, 246,0.12)",
         padding: "32px 5vw",
         display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16,
       }}>
