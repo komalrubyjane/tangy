@@ -149,7 +149,7 @@ export default function Volunteer() {
                 style={{
                   width: "100%",
                   height: "100%",
-                  backgroundImage: "url('https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80')",
+                  backgroundImage: "url('/gallery/tangy3.jpg')",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}

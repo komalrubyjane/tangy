@@ -269,7 +269,7 @@ export default function VolunteerDetails() {
         <motion.div style={{ position: "absolute", inset: 0, y: heroY, scale: 1.15 }}>
           <div style={{
             position: "absolute", inset: 0,
-            backgroundImage: "url('https://images.unsplash.com/photo-1470229722913-7c090b332da8?auto=format&fit=crop&w=2500&q=80')",
+            backgroundImage: "url('/gallery/tngy7.jpg')",
             backgroundSize: "cover", backgroundPosition: "center 30%",
           }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.72)" }} />
@@ -442,7 +442,7 @@ export default function VolunteerDetails() {
                 transition={{ duration: 0.8 }}
                 style={{
                   width: "100%", height: "100%",
-                  backgroundImage: "url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1400&q=80')",
+                  backgroundImage: "url('/gallery/tangy8.jpg')",
                   backgroundSize: "cover", backgroundPosition: "center",
                 }}
               />
@@ -534,17 +534,17 @@ export default function VolunteerDetails() {
           {[
             {
               id: "01", title: "BEHIND THE MUSIC", sub: "The moments before the music starts",
-              img: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=2000&q=80",
+              img: "/gallery/tangy10.jpg",
               accent: "#8B5CF6",
             },
             {
               id: "02", title: "THE PEOPLE", sub: "A community built on shared presence",
-              img: "https://images.unsplash.com/photo-1540039155733-d7696d4eb98e?auto=format&fit=crop&w=2000&q=80",
+              img: "/gallery/tangy3.jpg",
               accent: "#EC4899",
             },
             {
               id: "03", title: "THE PROCESS", sub: "Creation before the crowd arrives",
-              img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=2000&q=80",
+              img: "/gallery/tabgy2.jpg",
               accent: "#6D28D9",
             },
           ].map((panel, i) => (
@@ -753,7 +753,7 @@ export default function VolunteerDetails() {
         {/* Full-bleed bg image */}
         <div style={{
           position: "absolute", inset: 0,
-          backgroundImage: "url('https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=2500&q=80')",
+          backgroundImage: "url('/gallery/tangy4.jpg')",
           backgroundSize: "cover", backgroundPosition: "center",
           filter: "blur(50px) brightness(0.3)", opacity: 0.5, zIndex: 0,
         }} />
@@ -812,7 +812,7 @@ export default function VolunteerDetails() {
         <div style={{ position: "absolute", inset: 0 }}>
           <div style={{
             position: "absolute", inset: 0,
-            backgroundImage: "url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=2500&q=80')",
+            backgroundImage: "url('/gallery/tangy1.jpg')",
             backgroundSize: "cover", backgroundPosition: "center 40%",
           }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.78)" }} />
