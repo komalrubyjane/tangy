@@ -245,52 +245,81 @@ function EventHero({ ev }) {
             {ev.name}
           </h1>
 
-          {/* Meta row */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 28, marginBottom: 32 }}>
-            {[
-              { icon: "📅", label: "Date & Time", value: `${ev.date} · ${ev.time}` },
-              { icon: "📍", label: "Venue", value: `${ev.location}, ${ev.city}` },
-              { icon: "🎟", label: "From", value: `₹${ev.price.toLocaleString()}` },
-            ].map(({ icon, label, value }) => (
-              <div key={label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{
-                  width: 40, height: 40, borderRadius: 10,
-                  background: "rgba(139, 92, 246,0.18)",
-                  border: "1px solid rgba(139, 92, 246,0.35)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "1.1rem", flexShrink: 0,
-                }}>
-                  {icon}
+          {/* Meta row & Actions */}
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 32, marginBottom: 32 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 28 }}>
+              {[
+                { icon: "📅", label: "Date & Time", value: `${ev.date} · ${ev.time}` },
+                { icon: "📍", label: "Venue", value: `${ev.location}, ${ev.city}` },
+                { icon: "🎟", label: "From", value: `₹${ev.price.toLocaleString()}` },
+              ].map(({ icon, label, value }) => (
+                <div key={label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{
+                    width: 40, height: 40, borderRadius: 10,
+                    background: "rgba(139, 92, 246,0.18)",
+                    border: "1px solid rgba(139, 92, 246,0.35)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "1.1rem", flexShrink: 0,
+                  }}>
+                    {icon}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", fontFamily: "monospace" }}>{label}</div>
+                    <div style={{ fontSize: "0.88rem", color: "#fff", fontWeight: 500, marginTop: 2 }}>{value}</div>
+                  </div>
                 </div>
-                <div>
-                  <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", fontFamily: "monospace" }}>{label}</div>
-                  <div style={{ fontSize: "0.88rem", color: "#fff", fontWeight: 500, marginTop: 2 }}>{value}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Availability */}
-          <div style={{ maxWidth: 320 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "rgba(255,255,255,0.4)", marginBottom: 6, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-              <span>Availability</span>
-              <span style={{ color: isLow ? "#f59e0b" : "#10b981" }}>
-                {isLow ? `⚠ Only ${ev.available} left` : `${ev.available} remaining`}
-              </span>
+            {/* Availability */}
+            <div style={{ width: 280, minWidth: 240 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "rgba(255,255,255,0.4)", marginBottom: 6, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                <span>Availability</span>
+                <span style={{ color: isLow ? "#f59e0b" : "#10b981" }}>
+                  {isLow ? `⚠ Only ${ev.available} left` : `${ev.available} remaining`}
+                </span>
+              </div>
+              <div style={{ height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 4 }}>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${pct}%` }}
+                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                  style={{
+                    height: "100%", borderRadius: 4,
+                    background: isLow
+                      ? "linear-gradient(to right, #f59e0b, #ef4444)"
+                      : "linear-gradient(to right, #8B5CF6, #06b6d4)",
+                  }}
+                />
+              </div>
             </div>
-            <div style={{ height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 4 }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${pct}%` }}
-                transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                style={{
-                  height: "100%", borderRadius: 4,
-                  background: isLow
-                    ? "linear-gradient(to right, #f59e0b, #ef4444)"
-                    : "linear-gradient(to right, #8B5CF6, #06b6d4)",
-                }}
-              />
-            </div>
+
+            {/* Book Now Button */}
+            <motion.button
+              onClick={() => {
+                document.getElementById("book-tickets")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(139, 92, 246, 0.4)" }}
+              whileTap={{ scale: 0.95 }}
+              style={{
+                padding: "14px 36px",
+                background: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)",
+                border: "none",
+                borderRadius: 30,
+                color: "#fff",
+                fontSize: "0.88rem",
+                fontWeight: 700,
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                boxShadow: "0 6px 20px rgba(139, 92, 246, 0.25)",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              Book Tickets 🎟️
+            </motion.button>
           </div>
         </motion.div>
       </div>
