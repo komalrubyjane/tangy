@@ -281,7 +281,7 @@ export default function VolunteerDetails() {
 
         {/* Hero content */}
         <motion.div
-          style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 5vw", maxWidth: 1000, opacity: heroOpacity }}
+          style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "100px 5vw 0", maxWidth: 1000, opacity: heroOpacity }}
         >
           {/* Label */}
           <motion.div
