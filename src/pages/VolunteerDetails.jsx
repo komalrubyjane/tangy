@@ -244,7 +244,7 @@ export default function VolunteerDetails() {
               Home
             </span>
             <span style={{ margin: "0 10px", opacity: 0.3 }}>›</span>
-            <span style={{ color: "#a78bfa" }}>Community</span>
+            <span style={{ color: "#a78bfa" }}>Volunteer</span>
           </div>
         </div>
         <motion.button
