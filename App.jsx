@@ -151,7 +151,7 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const links = ["Home", "Why Tangy", "Events", "Artists", "Gallery", "Volunteer", "Contact"];
+  const links = ["Home", "Why Tangy", "Events", "Gallery", "Volunteer", "Contact"];
 
   const scrollTo = (id) => {
     if (id === "Volunteer") {
@@ -2326,8 +2326,6 @@ function LandingPage({ showArtistOverlay = false }) {
       <ErrorBoundary name="WhyTangy"><WhyTangy /></ErrorBoundary>
       <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Events"><Events /></ErrorBoundary>
-      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
-      <ErrorBoundary name="Artists"><Artists /></ErrorBoundary>
       <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Gallery"><Gallery /></ErrorBoundary>
       <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />

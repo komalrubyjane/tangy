@@ -146,7 +146,7 @@ function Navbar() {
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
-  const links = ["Home", "Events", "Artists", "Gallery", "Tickets", "Volunteer", "Contact"];
+  const links = ["Home", "Events", "Gallery", "Tickets", "Volunteer", "Contact"];
   const scrollTo = (id) => {
     if (location.pathname !== "/") {
       navigate("/");
@@ -959,9 +959,6 @@ function LandingPage() {
       </ErrorBoundary>
       <ErrorBoundary name="Events">
         <Events onBook={scrollToTickets} />
-      </ErrorBoundary>
-      <ErrorBoundary name="Artists">
-        <Artists />
       </ErrorBoundary>
       <ErrorBoundary name="Gallery">
         <Gallery />
