@@ -592,6 +592,7 @@ const HomePage = ({ setPage }) => {
           <button className="t-btn-primary" onClick={() => setPage('artists')}>Discover Artists</button>
           {!user && <button className="t-btn-ghost" onClick={() => setPage('apply')}>Apply as Artist</button>}
           {user && <button className="t-btn-ghost" onClick={() => setPage('dashboard')}>Go to Dashboard</button>}
+          <button className="t-btn-ghost" style={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }} onClick={() => window.location.href = '/'}>Go to Main Page</button>
         </div>
 
         {/* Events Section */}
