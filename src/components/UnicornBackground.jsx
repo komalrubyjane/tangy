@@ -7,26 +7,6 @@ const mem = navigator.deviceMemory;
 const isLowEnd = isMobile && (cores <= 4 || (mem !== undefined && mem < 4));
 
 export default function UnicornBackground() {
-  const [hidden, setHidden] = useState(false);
-
-  useEffect(() => {
-    // Hide video/effects entirely on very low-end devices to prevent frame drops
-    if (cores <= 2 || (mem !== undefined && mem < 2)) {
-      setHidden(true);
-    }
-  }, []);
-
-  if (hidden) {
-    // Fallback: pure CSS gradient — zero GPU overhead
-    return (
-      <div style={{
-        position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
-        zIndex: -1, pointerEvents: "none",
-        background: "radial-gradient(ellipse at 25% 40%, rgba(139,92,246,0.06), transparent 55%), radial-gradient(ellipse at 75% 60%, rgba(139,92,246,0.04), transparent 55%), #050505",
-      }} />
-    );
-  }
-
   return (
     <div style={{
       position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
@@ -37,6 +17,7 @@ export default function UnicornBackground() {
         loop
         muted
         playsInline
+        preload="auto"
         style={{
           position: "absolute",
           top: "50%",
@@ -44,8 +25,10 @@ export default function UnicornBackground() {
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          transform: "translate(-50%, -50%)",
-          opacity: 0.6, // maintain same atmospheric backdrop feel
+          transform: "translate(-50%, -50%) translateZ(0)",
+          opacity: 0.6,
+          pointerEvents: "none",
+          willChange: "transform",
         }}
       >
         <source src="/A_dreamy_hand_drawn_anime_styl.mp4" type="video/mp4" />
