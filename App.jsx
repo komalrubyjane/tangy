@@ -726,7 +726,7 @@ function WhyTangy() {
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "radial-gradient(circle at center, transparent 30%, #050505 95%), rgba(5, 5, 5, 0.85)",
+        background: "radial-gradient(circle at center, transparent 30%, rgba(5, 5, 5, 0.25) 95%), rgba(5, 5, 5, 0.15)",
         zIndex: 0,
         pointerEvents: "none",
       }} />
