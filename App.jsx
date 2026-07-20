@@ -623,9 +623,9 @@ function GrowingTypewriter({ delay = 0 }) {
 }
 
 const STATS = [
-  { type: "count", endStr: "1200+", label: "ATTENDEES",  duration: 2.5 },
-  { type: "count", endStr: "12",    label: "ARTISTS",    duration: 2.0 },
-  { type: "count", endStr: "3",     label: "SESSIONS",   duration: 1.8 },
+  { type: "count", endStr: "10000+", label: "ATTENDEES",  duration: 2.5 },
+  { type: "count", endStr: "50+",    label: "ARTISTS",    duration: 2.0 },
+  { type: "count", endStr: "25+",    label: "SESSIONS",   duration: 1.8 },
   { type: "grow",                   label: "COMMUNITY" },
 ];
 
@@ -936,9 +936,9 @@ function WhyTangy() {
         {/* STATISTICS ROW */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 32, marginTop: 88, width: "100%", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "48px 0" }}>
           {[
-            { endStr: "1200+", label: "ATTENDEES", duration: 2.5 },
-            { endStr: "12",    label: "ARTISTS",   duration: 2.0 },
-            { endStr: "3",     label: "SESSIONS",  duration: 1.8 },
+            { endStr: "10000+", label: "ATTENDEES", duration: 2.5 },
+            { endStr: "50+",    label: "ARTISTS",   duration: 2.0 },
+            { endStr: "25+",     label: "SESSIONS",  duration: 1.8 },
             { endStr: null,    label: "COMMUNITY" }
           ].map((stat, idx) => (
             <motion.div
@@ -1858,7 +1858,7 @@ function About() {
     },
   ];
 
-  const stats = [["3", "Sessions"], ["1200+", "Attendees"], ["12", "Artists"], ["1", "Stepwell"]];
+  const stats = [["25+", "Sessions"], ["10000+", "Attendees"], ["50+", "Artists"], ["1", "Stepwell"]];
 
   return (
     <section id="about" style={{ background: "transparent", padding: "clamp(140px, 15vw, 220px) 5vw", position: "relative", overflow: "hidden" }}>
