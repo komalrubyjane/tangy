@@ -739,20 +739,89 @@ function BookingSection({ ev }) {
           transition={{ type: "spring", bounce: 0.3 }}
         >
           {submitSuccess ? (
-            <GlassCard style={{ padding: "60px 36px", textAlign: "center", border: "1px solid rgba(16, 185, 129, 0.4)", boxShadow: "0 25px 60px rgba(0,0,0,0.7), 0 0 50px rgba(16, 185, 129, 0.15)" }}>
-              <div style={{ fontSize: "3.5rem", marginBottom: 20 }}>🎉</div>
-              <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.5rem", color: "#10b981", margin: "0 0 16px", letterSpacing: "0.06em" }}>Booking Confirmed</h3>
-              <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, marginBottom: 30 }}>
-                Your tickets for <strong>{ev.name}</strong> have been secured successfully! 
-                Your response has been saved. We'll send the details to <strong>{form.email}</strong> shortly.
+            <GlassCard style={{ padding: "40px 32px", textAlign: "center", border: "1px solid rgba(16, 185, 129, 0.4)", boxShadow: "0 25px 60px rgba(0,0,0,0.7), 0 0 50px rgba(16, 185, 129, 0.15)" }}>
+              <div style={{ fontSize: "3rem", marginBottom: 14 }}>🎉</div>
+              <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.2rem", color: "#10b981", margin: "0 0 8px", letterSpacing: "0.06em" }}>Booking Confirmed</h3>
+              <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem", lineHeight: 1.6, marginBottom: 28 }}>
+                Your tickets for <strong>{ev.name}</strong> have been secured! A confirmation email containing your entry pass has been sent to your inbox.
               </p>
+
+              {/* Redesigned Premium Ticket Mockup with QR Code */}
+              <div style={{
+                background: "linear-gradient(135deg, #111 0%, #050505 100%)",
+                border: "1px dashed rgba(255, 255, 255, 0.15)",
+                borderRadius: 16,
+                padding: "24px",
+                margin: "0 auto 28px",
+                maxWidth: 420,
+                textAlign: "left",
+                position: "relative",
+                overflow: "hidden",
+                boxShadow: "0 15px 30px rgba(0,0,0,0.4)"
+              }}>
+                <div style={{ position: "absolute", top: 0, right: 0, width: 120, height: 120, background: "radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 75%)", pointerEvents: "none" }} />
+                
+                {/* Ticket Header */}
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px dashed rgba(255,255,255,0.1)", paddingBottom: 14, marginBottom: 14 }}>
+                  <div>
+                    <div style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#8B5CF6", textTransform: "uppercase", fontWeight: 700 }}>Tangy Sessions Entry Pass</div>
+                    <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.3rem", color: "#fff", marginTop: 4 }}>{ev.name}</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: "0.58rem", color: "rgba(255,255,255,0.3)" }}>QTY</div>
+                    <div style={{ fontSize: "1.2rem", fontWeight: 700, color: "#fff" }}>{form.qty}x</div>
+                  </div>
+                </div>
+
+                {/* Ticket Details & QR Code */}
+                <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
+                  <div style={{ flex: 1, minWidth: 160 }}>
+                    <div style={{ marginBottom: 10 }}>
+                      <span style={{ display: "block", fontSize: "0.55rem", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Attendee</span>
+                      <span style={{ fontSize: "0.85rem", color: "#fff", fontWeight: 500 }}>{form.name || "Guest"}</span>
+                    </div>
+                    <div style={{ marginBottom: 10 }}>
+                      <span style={{ display: "block", fontSize: "0.55rem", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Date & Time</span>
+                      <span style={{ fontSize: "0.82rem", color: "#fff" }}>{ev.date} · {ev.time}</span>
+                    </div>
+                    <div>
+                      <span style={{ display: "block", fontSize: "0.55rem", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Venue</span>
+                      <span style={{ fontSize: "0.82rem", color: "#06b6d4" }}>📍 {ev.location}</span>
+                    </div>
+                  </div>
+
+                  {/* QR Code Container */}
+                  <div style={{
+                    width: 90,
+                    height: 90,
+                    background: "#fff",
+                    borderRadius: 8,
+                    padding: 6,
+                    boxSizing: "border-box",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 10px 20px rgba(0,0,0,0.3)"
+                  }}>
+                    <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`TANGY_TICKET_${ev.id}_${form.email}_${form.qty}`)}`}
+                      alt="Ticket Entry QR Code" 
+                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <button
                 onClick={() => setSubmitSuccess(false)}
                 style={{
                   padding: "12px 24px", background: "transparent", border: "1px solid rgba(16, 185, 129, 0.5)",
                   color: "#10b981", borderRadius: 8, cursor: "pointer", fontFamily: "inherit",
-                  textTransform: "uppercase", letterSpacing: "0.1em", fontSize: "0.8rem"
+                  textTransform: "uppercase", letterSpacing: "0.1em", fontSize: "0.8rem",
+                  transition: "all 0.2s"
                 }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(16, 185, 129, 0.15)"}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
               >
                 Book Another Ticket
               </button>
