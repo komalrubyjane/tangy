@@ -1,46 +1,14 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
-export default function ArtistRegister({ toast }) {
-  const [form, setForm] = useState({ name: "", email: "", genre: "", link: "", description: "" });
-  const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+export default function ArtistRegister() {
+  const navigate = useNavigate();
 
-  const validate = () => {
-    const errs = {};
-    if (!form.name.trim()) errs.name = "Artist/Band Name is required";
-    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = "Valid email address is required";
-    if (!form.genre.trim()) errs.genre = "Genre/Performance Type is required";
-    if (!form.link.trim()) errs.link = "Music/Portfolio link is required";
-    return errs;
+  const handleNavigate = () => {
+    navigate("/artist");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const handleRegister = async () => {
-    const errs = validate();
-    setErrors(errs);
-    if (Object.keys(errs).length) {
-      if (toast) toast({ message: "Check the registration form for errors", type: "error" });
-      return;
-    }
-    setLoading(true);
-    // Simulate API registration call
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-      if (toast) toast({ message: "Artist application submitted! 🎵", type: "success" });
-      setForm({ name: "", email: "", genre: "", link: "", description: "" });
-      setTimeout(() => setSuccess(false), 6000);
-    }, 1200);
-  };
-
-  const inp = field => ({
-    width: "100%", padding: "14px 18px",
-    background: "rgba(0,0,0,0.55)",
-    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(139, 92, 246, 0.25)"}`,
-    borderRadius: 8, color: "#fff", fontSize: "0.88rem", fontFamily: "inherit",
-    outline: "none", boxSizing: "border-box", marginBottom: 4, transition: "all 0.25s",
-  });
 
   return (
     <section id="artist-register" style={{ background: "transparent", padding: "clamp(120px, 14vw, 200px) 5vw", position: "relative", overflow: "hidden" }}>
@@ -70,7 +38,7 @@ export default function ArtistRegister({ toast }) {
       <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1.1fr", gap: "5vw", alignItems: "center" }} className="artist-register-grid">
           
-          {/* Left: Info details */}
+          {/* Left Column: Info & CTA */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -79,7 +47,7 @@ export default function ArtistRegister({ toast }) {
             style={{ display: "flex", flexDirection: "column", gap: 24 }}
           >
             <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#8B5CF6", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "600" }}>
-              Join the Lineup • Perform at Tangy
+              JOIN THE LINEUP • PERFORM AT TANGY
             </div>
 
             <h2 style={{
@@ -108,112 +76,139 @@ export default function ArtistRegister({ toast }) {
               borderLeft: "2px solid #8B5CF6",
               paddingLeft: 24,
             }}>
-              "Where raw talent meets historical architectural resonance."
+              "Where raw talent meets unforgettable experiences."
             </p>
 
-            <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}>
-              Are you an electronic music producer, ambient sound architect, visual designer, or classical-fusion instrumentalist looking to share your sounds in Hyderabad's premier acoustic stepwell sanctuary? Fill out your information to connect with our booking curators.
-            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}>
+                Tangy Sessions is always looking for artists who create meaningful live experiences. Whether you're a solo musician, band, instrumentalist, singer-songwriter, producer, or spoken-word artist, we'd love to hear your story.
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}>
+                Every application is personally reviewed by our curation team. Selected artists will be invited to perform at our intimate music sessions across Hyderabad's most iconic heritage venues.
+              </p>
+            </div>
+
+            {/* Feature Points with Modern Icons */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 8 }}>
+              {[
+                { icon: "🎤", label: "Curated Live Performances" },
+                { icon: "🏛", label: "Perform at Heritage Venues" },
+                { icon: "🌍", label: "Join a Growing Artist Community" }
+              ].map((feat, idx) => (
+                <div key={idx} style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <span style={{ fontSize: "1.3rem" }}>{feat.icon}</span>
+                  <span style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.92rem", fontWeight: "500", fontFamily: "inherit" }}>
+                    {feat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 12 }}>
+              <motion.button
+                onClick={handleNavigate}
+                whileHover={{ scale: 1.03, boxShadow: "0 0 35px rgba(139, 92, 246, 0.45)", backgroundColor: "#7C3AED" }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  padding: "16px 44px",
+                  background: "#8B5CF6",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 30,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  fontSize: "0.88rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  boxShadow: "0 10px 30px rgba(139, 92, 246, 0.25)",
+                  transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+                }}
+              >
+                Apply as an Artist →
+              </motion.button>
+            </div>
           </motion.div>
 
-          {/* Right: Registration Form */}
+          {/* Right Column: Visually Appealing Collage */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            style={{
-              background: "linear-gradient(135deg, rgba(8,8,12,0.7) 0%, rgba(8,8,12,0.45) 100%)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 24,
-              padding: "40px",
-              boxShadow: "0 30px 60px rgba(0,0,0,0.8)",
-              position: "relative",
-            }}
+            style={{ position: "relative", height: 500, width: "100%" }}
+            className="artist-collage-container"
           >
-            <AnimatePresence mode="wait">
-              {success ? (
-                <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
-                  style={{ textAlign: "center", padding: "40px 20px" }}>
-                  <div style={{ fontSize: "3rem", marginBottom: 20 }}>🎵</div>
-                  <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", color: "#fff", margin: "0 0 10px", letterSpacing: "0.06em" }}>Application Received!</h3>
-                  <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", lineHeight: 1.6 }}>
-                    Thank you for applying. Our curation team will listen to your work and get in touch if your sound matches our upcoming session vibes.
-                  </p>
-                </motion.div>
-              ) : (
-                <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <div style={{ marginBottom: 14 }}>
-                    <input
-                      placeholder="Artist / Band Name"
-                      value={form.name}
-                      onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
-                      style={inp("name")}
-                    />
-                    {errors.name && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 4 }}>⚠ {errors.name}</div>}
-                  </div>
+            {/* Card 1: Artist Performing */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              whileHover={{ scale: 1.05, zIndex: 10, rotate: -2 }}
+              style={{
+                position: "absolute",
+                top: "5%",
+                left: "5%",
+                width: "55%",
+                height: "55%",
+                borderRadius: 20,
+                overflow: "hidden",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+                background: "rgba(10,8,18,0.5)",
+                backdropFilter: "blur(8px)",
+                cursor: "pointer",
+              }}
+            >
+              <img src="/gallery/tangy5.jpg" alt="Artist Performing" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </motion.div>
 
-                  <div style={{ marginBottom: 14 }}>
-                    <input
-                      placeholder="Email Address"
-                      type="email"
-                      value={form.email}
-                      onChange={e => setForm(prev => ({ ...prev, email: e.target.value }))}
-                      style={inp("email")}
-                    />
-                    {errors.email && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 4 }}>⚠ {errors.email}</div>}
-                  </div>
+            {/* Card 2: Audience Enjoying */}
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              whileHover={{ scale: 1.05, zIndex: 10, rotate: 2 }}
+              style={{
+                position: "absolute",
+                bottom: "5%",
+                right: "5%",
+                width: "52%",
+                height: "52%",
+                borderRadius: 20,
+                overflow: "hidden",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+                background: "rgba(10,8,18,0.5)",
+                backdropFilter: "blur(8px)",
+                zIndex: 2,
+                cursor: "pointer",
+              }}
+            >
+              <img src="/gallery/tangy1.jpg" alt="Audience Enjoying" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </motion.div>
 
-                  <div style={{ marginBottom: 14 }}>
-                    <input
-                      placeholder="Genre (e.g. Deep House, Dark Ambient, Modular)"
-                      value={form.genre}
-                      onChange={e => setForm(prev => ({ ...prev, genre: e.target.value }))}
-                      style={inp("genre")}
-                    />
-                    {errors.genre && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 4 }}>⚠ {errors.genre}</div>}
-                  </div>
-
-                  <div style={{ marginBottom: 14 }}>
-                    <input
-                      placeholder="Music Link (SoundCloud, Spotify, Mixcloud, YouTube)"
-                      value={form.link}
-                      onChange={e => setForm(prev => ({ ...prev, link: e.target.value }))}
-                      style={inp("link")}
-                    />
-                    {errors.link && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 4 }}>⚠ {errors.link}</div>}
-                  </div>
-
-                  <div style={{ marginBottom: 20 }}>
-                    <textarea
-                      placeholder="Tell us about your live setup, instruments, or general musical path..."
-                      value={form.description}
-                      onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
-                      rows={4}
-                      style={{ ...inp("description"), resize: "vertical" }}
-                    />
-                  </div>
-
-                  <motion.button
-                    onClick={handleRegister}
-                    disabled={loading}
-                    whileHover={{ scale: 1.02, backgroundColor: "#7C3AED" }}
-                    whileTap={{ scale: 0.98 }}
-                    style={{
-                      width: "100%", padding: 15, background: "#8B5CF6", color: "#fff",
-                      border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "inherit",
-                      letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.85rem",
-                      fontWeight: 700, boxShadow: "0 10px 25px rgba(139, 92, 246, 0.25)",
-                      transition: "background-color 0.3s ease",
-                    }}
-                  >
-                    {loading ? "Submitting..." : "Apply to Perform"}
-                  </motion.button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Card 3: Heritage Architecture / lighting */}
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              whileHover={{ scale: 1.05, zIndex: 10, rotate: -4 }}
+              style={{
+                position: "absolute",
+                top: "40%",
+                left: "-5%",
+                width: "42%",
+                height: "42%",
+                borderRadius: 20,
+                overflow: "hidden",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 15px 30px rgba(0,0,0,0.5)",
+                background: "rgba(10,8,18,0.5)",
+                backdropFilter: "blur(8px)",
+                zIndex: 3,
+                cursor: "pointer",
+              }}
+            >
+              <img src="/gallery/tngy7.jpg" alt="Heritage Venue Lighting" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </motion.div>
           </motion.div>
 
         </div>
@@ -224,6 +219,11 @@ export default function ArtistRegister({ toast }) {
           .artist-register-grid {
             grid-template-columns: 1fr !important;
             gap: 48px !important;
+          }
+          .artist-collage-container {
+            height: 380px !important;
+            max-width: 480px;
+            margin: 0 auto;
           }
         }
       `}</style>
