@@ -972,7 +972,7 @@ function WhyTangy() {
             fontSize: "clamp(2.5rem, 9.5vw, 11rem)",
             lineHeight: 0.85,
             letterSpacing: "0.02em",
-            color: "rgba(255, 255, 255, 0.03)",
+            color: "rgba(255, 255, 255, 0.45)",
             margin: 0,
             textTransform: "uppercase",
           }}>
