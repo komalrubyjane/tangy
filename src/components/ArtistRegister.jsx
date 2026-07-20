@@ -163,16 +163,17 @@ export default function ArtistRegister() {
             </div>
 
             <h2 style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: "clamp(3rem, 5.5vw, 5rem)",
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              fontSize: "clamp(2.5rem, 4.5vw, 4rem)",
               color: "#fff",
-              lineHeight: 0.95,
+              lineHeight: 1.1,
               margin: 0,
               letterSpacing: "0.02em",
             }}>
-              YOUR MUSIC<br />
-              <span style={{ WebkitTextStroke: "1px rgba(139, 92, 246, 0.6)", WebkitTextFillColor: "transparent" }}>
-                BELONGS HERE.
+              Your Music<br />
+              <span style={{ color: "#8B5CF6" }}>
+                Belongs Here.
               </span>
             </h2>
 
