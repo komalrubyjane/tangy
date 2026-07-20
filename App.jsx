@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import UnicornBackground from "./src/components/UnicornBackground";
 import Volunteer from "./src/components/Volunteer";
+import ArtistRegister from "./src/components/ArtistRegister";
 import AdminDashboard from "./src/components/AdminDashboard";
 import ArtistPortal from "./TangyArtistPortal";
 import { ModalProvider, useModal } from "./src/components/ModalProvider";
@@ -160,7 +161,8 @@ function Navbar() {
       setMenuOpen(false);
       return;
     }
-    const target = id.toLowerCase().replace(" ", "-");
+    let target = id.toLowerCase().replace(" ", "-");
+    if (target === "contact") target = "get-in-touch";
     if (location.pathname !== "/") {
       navigate("/");
       setTimeout(() => document.getElementById(target)?.scrollIntoView({ behavior: "smooth" }), 120);
@@ -1844,9 +1846,9 @@ function About() {
   const founders = [
     {
       role: "Founder",
-      name: "Arjun\nVisionary & Creator",
+      name: "Arjuna\nVisionary & Creator",
       image: "/arjun.png",
-      bio: "Born from an obsession with underground sound and ancient spaces. Tangy Sessions exists because Arjun refused to let music stay ordinary.",
+      bio: "Born from an obsession with underground sound and ancient spaces. Tangy Sessions exists because Arjuna refused to let music stay ordinary.",
       color: "#8B5CF6",
     },
     {
@@ -2026,7 +2028,7 @@ function About() {
             "We are not building events.<br />We are creating spaces where people can feel something real."
           </p>
           <div style={{ marginTop: 24, fontSize: "0.82rem", letterSpacing: "0.25em", color: "#8B5CF6", textTransform: "uppercase", fontWeight: "600", fontFamily: "monospace" }}>
-            — Arjun & Deepa
+            — Arjuna & Deepa
           </div>
         </motion.div>
       </div>
@@ -2046,123 +2048,138 @@ function About() {
 
 // ─── CONTACT ──────────────────────────────────────────────────────────────────
 function Contact({ toast }) {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [errors, setErrors] = useState({});
-  const [sent, setSent] = useState(false);
-  const [isFormFocused, setIsFormFocused] = useState(false);
-
-  const validate = () => {
-    const errs = {};
-    if (!form.name.trim()) errs.name = "Name is required";
-    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = "Invalid email address";
-    if (!form.message.trim()) errs.message = "Message is required";
-    return errs;
-  };
-
-  const handleSend = () => {
-    const errs = validate();
-    setErrors(errs);
-    if (Object.keys(errs).length) { toast({ message: "Check the form for errors", type: "error" }); return; }
-    setSent(true);
-    toast({ message: "Message sent! We'll be in touch. 🎵", type: "success" });
-    setForm({ name: "", email: "", message: "" });
-    setTimeout(() => setSent(false), 5000);
-  };
-
-  const inp = field => ({
-    width: "100%", padding: "14px 18px",
-    background: "rgba(0,0,0,0.55)",
-    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(139, 92, 246,0.2)"}`,
-    borderRadius: 8, color: "#fff", fontSize: "0.88rem", fontFamily: "inherit",
-    outline: "none", boxSizing: "border-box", marginBottom: 4, transition: "all 0.25s",
-  });
-
-  return (
-    <section id="contact" style={{ background: "transparent", padding: "clamp(140px, 15vw, 220px) 5vw", position: "relative", overflow: "hidden" }}>
-      <SectionBackgroundText text="TANGY" />
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <SectionHeader label="Connect" title="Get In Touch" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 48, marginTop: 60, maxWidth: 900, margin: "60px auto 0" }}>
-
-          {/* Left */}
-          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-            style={{
-              background: "linear-gradient(135deg, rgba(8,8,12,0.7) 0%, rgba(8,8,12,0.45) 100%)",
-              backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 16, padding: "32px",
-              boxShadow: "0 12px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)",
-            }}>
-            {[["Location", "Bansilal Stepwell", "Hyderabad, Telangana, India"], ["Contact", "hello@tangysessions.in", ""]].map(([title, line1, line2]) => (
-              <div key={title} style={{ marginBottom: 24 }}>
-                <div style={{ color: "#8B5CF6", fontSize: "0.72rem", letterSpacing: "0.25em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8, fontWeight: "600" }}>{title}</div>
-                <div style={{ color: "#fff", fontSize: "0.95rem" }}>{line1}</div>
-                {line2 && <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem" }}>{line2}</div>}
-              </div>
-            ))}
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}>
-              {["Instagram", "Spotify", "SoundCloud"].map(s => (
-                <motion.button key={s} onClick={() => toast({ message: `Opening ${s}...`, type: "info" })}
-                  whileHover={{ scale: 1.05, borderColor: "#8B5CF6", color: "#8B5CF6" }} whileTap={{ scale: 0.95 }}
-                  style={{ padding: "9px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em", transition: "all 0.2s" }}>
-                  {s}
-                </motion.button>
+    const [form, setForm] = useState({ name: "", email: "", message: "", subscribe: false });
+    const [errors, setErrors] = useState({});
+    const [sent, setSent] = useState(false);
+    const [isFormFocused, setIsFormFocused] = useState(false);
+  
+    const validate = () => {
+      const errs = {};
+      if (!form.name.trim()) errs.name = "Name is required";
+      if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = "Invalid email address";
+      if (!form.subscribe && !form.message.trim()) errs.message = "Message is required if not subscribing to the newsletter";
+      return errs;
+    };
+  
+    const handleSend = () => {
+      const errs = validate();
+      setErrors(errs);
+      if (Object.keys(errs).length) { toast({ message: "Check the form for errors", type: "error" }); return; }
+      setSent(true);
+      if (form.subscribe && !form.message.trim()) {
+        toast({ message: "Subscribed to Tangy Letter! ✉️", type: "success" });
+      } else {
+        toast({ message: "Message sent! We'll be in touch. 🎵", type: "success" });
+      }
+      setForm({ name: "", email: "", message: "", subscribe: false });
+      setTimeout(() => setSent(false), 5000);
+    };
+  
+    const inp = field => ({
+      width: "100%", padding: "14px 18px",
+      background: "rgba(0,0,0,0.55)",
+      border: `1px solid ${errors[field] ? "#ef4444" : "rgba(139, 92, 246,0.2)"}`,
+      borderRadius: 8, color: "#fff", fontSize: "0.88rem", fontFamily: "inherit",
+      outline: "none", boxSizing: "border-box", marginBottom: 4, transition: "all 0.25s",
+    });
+  
+    return (
+      <section id="get-in-touch" style={{ background: "transparent", padding: "clamp(140px, 15vw, 220px) 5vw", position: "relative", overflow: "hidden" }}>
+        <SectionBackgroundText text="TANGY" />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <SectionHeader label="Connect" title="Get In Touch" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 48, marginTop: 60, maxWidth: 900, margin: "60px auto 0" }}>
+  
+            {/* Left */}
+            <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+              style={{
+                background: "linear-gradient(135deg, rgba(8,8,12,0.7) 0%, rgba(8,8,12,0.45) 100%)",
+                backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 16, padding: "32px",
+                boxShadow: "0 12px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)",
+              }}>
+              {[["Location", "Bansilal Stepwell", "Hyderabad, Telangana, India"], ["Contact", "hello@tangysessions.in", ""]].map(([title, line1, line2]) => (
+                <div key={title} style={{ marginBottom: 24 }}>
+                  <div style={{ color: "#8B5CF6", fontSize: "0.72rem", letterSpacing: "0.25em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8, fontWeight: "600" }}>{title}</div>
+                  <div style={{ color: "#fff", fontSize: "0.95rem" }}>{line1}</div>
+                  {line2 && <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem" }}>{line2}</div>}
+                </div>
               ))}
-            </div>
-            <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(139, 92, 246,0.2)", height: 200 }}>
-              <iframe title="Bansilal Stepwell" src="https://maps.google.com/maps?q=Bansilal+Baoli+Stepwell+Hyderabad+Telangana&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) saturate(0.8) contrast(0.9)" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-            </div>
-          </motion.div>
-
-          {/* Right */}
-          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-            style={{
-              background: "linear-gradient(135deg, rgba(8,8,12,0.7) 0%, rgba(8,8,12,0.45) 100%)",
-              backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-              border: isFormFocused ? "1px solid rgba(139, 92, 246,0.45)" : "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 16, padding: "32px",
-              boxShadow: isFormFocused
-                ? "0 24px 60px rgba(0,0,0,0.85), 0 0 30px rgba(139, 92, 246,0.18), inset 0 1px 0 rgba(255,255,255,0.1)"
-                : "0 12px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)",
-              transition: "all 0.4s ease",
-            }}>
-            <AnimatePresence mode="wait">
-              {sent ? (
-                <motion.div key="sent" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
-                  style={{ textAlign: "center", padding: "60px 20px", background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 12 }}>
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} style={{ fontSize: "3rem", marginBottom: 16 }}>✅</motion.div>
-                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#fff" }}>Message Sent</div>
-                  <div style={{ color: "rgba(255,255,255,0.45)", marginTop: 8 }}>We'll get back to you shortly.</div>
-                </motion.div>
-              ) : (
-                <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {["name", "email"].map(f => (
-                    <div key={f} style={{ marginBottom: 14 }}>
-                      <input placeholder={f.charAt(0).toUpperCase() + f.slice(1)} value={form[f]}
-                        onChange={e => { setForm(x => ({ ...x, [f]: e.target.value })); setErrors(er => ({ ...er, [f]: null })); }}
-                        style={inp(f)}
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}>
+                {["Instagram", "Spotify", "SoundCloud"].map(s => (
+                  <motion.button key={s} onClick={() => toast({ message: `Opening ${s}...`, type: "info" })}
+                    whileHover={{ scale: 1.05, borderColor: "#8B5CF6", color: "#8B5CF6" }} whileTap={{ scale: 0.95 }}
+                    style={{ padding: "9px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em", transition: "all 0.2s" }}>
+                    {s}
+                  </motion.button>
+                ))}
+              </div>
+              <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(139, 92, 246,0.2)", height: 200 }}>
+                <iframe title="Bansilal Stepwell" src="https://maps.google.com/maps?q=Bansilal+Baoli+Stepwell+Hyderabad+Telangana&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) saturate(0.8) contrast(0.9)" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+              </div>
+            </motion.div>
+  
+            {/* Right */}
+            <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+              style={{
+                background: "linear-gradient(135deg, rgba(8,8,12,0.7) 0%, rgba(8,8,12,0.45) 100%)",
+                backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+                border: isFormFocused ? "1px solid rgba(139, 92, 246,0.45)" : "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 16, padding: "32px",
+                boxShadow: isFormFocused
+                  ? "0 24px 60px rgba(0,0,0,0.85), 0 0 30px rgba(139, 92, 246,0.18), inset 0 1px 0 rgba(255,255,255,0.1)"
+                  : "0 12px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)",
+                transition: "all 0.4s ease",
+              }}>
+              <AnimatePresence mode="wait">
+                {sent ? (
+                  <motion.div key="sent" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+                    style={{ textAlign: "center", padding: "60px 20px", background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 12 }}>
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} style={{ fontSize: "3rem", marginBottom: 16 }}>✅</motion.div>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#fff" }}>{form.subscribe ? "Subscribed!" : "Message Sent"}</div>
+                    <div style={{ color: "rgba(255,255,255,0.45)", marginTop: 8 }}>{form.subscribe ? "You are now on the list for Tangy Sessions updates." : "We'll get back to you shortly."}</div>
+                  </motion.div>
+                ) : (
+                  <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    {["name", "email"].map(f => (
+                      <div key={f} style={{ marginBottom: 14 }}>
+                        <input placeholder={f.charAt(0).toUpperCase() + f.slice(1)} value={form[f]}
+                          onChange={e => { setForm(x => ({ ...x, [f]: e.target.value })); setErrors(er => ({ ...er, [f]: null })); }}
+                          style={inp(f)}
+                          onFocus={e => { setIsFormFocused(true); e.target.style.borderColor = "#8B5CF6"; e.target.style.background = "rgba(139, 92, 246,0.06)"; e.target.style.boxShadow = "0 0 0 3px rgba(139, 92, 246,0.12)"; }}
+                          onBlur={e => { setIsFormFocused(false); e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(139, 92, 246,0.2)"; e.target.style.background = "rgba(0,0,0,0.55)"; e.target.style.boxShadow = "none"; }}
+                        />
+                        {errors[f] && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>⚠ {errors[f]}</div>}
+                      </div>
+                    ))}
+                    <div style={{ marginBottom: 14 }}>
+                      <textarea placeholder="Your message (optional if subscribing to Tangy Letter)" value={form.message} rows={4}
+                        onChange={e => { setForm(x => ({ ...x, message: e.target.value })); setErrors(er => ({ ...er, message: null })); }}
+                        style={{ ...inp("message"), resize: "vertical" }}
                         onFocus={e => { setIsFormFocused(true); e.target.style.borderColor = "#8B5CF6"; e.target.style.background = "rgba(139, 92, 246,0.06)"; e.target.style.boxShadow = "0 0 0 3px rgba(139, 92, 246,0.12)"; }}
-                        onBlur={e => { setIsFormFocused(false); e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(139, 92, 246,0.2)"; e.target.style.background = "rgba(0,0,0,0.55)"; e.target.style.boxShadow = "none"; }}
+                        onBlur={e => { setIsFormFocused(false); e.target.style.borderColor = errors.message ? "#ef4444" : "rgba(139, 92, 246,0.2)"; e.target.style.background = "rgba(0,0,0,0.55)"; e.target.style.boxShadow = "none"; }}
                       />
-                      {errors[f] && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>⚠ {errors[f]}</div>}
+                      {errors.message && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>⚠ {errors.message}</div>}
                     </div>
-                  ))}
-                  <div style={{ marginBottom: 20 }}>
-                    <textarea placeholder="Your message" value={form.message} rows={5}
-                      onChange={e => { setForm(x => ({ ...x, message: e.target.value })); setErrors(er => ({ ...er, message: null })); }}
-                      style={{ ...inp("message"), resize: "vertical" }}
-                      onFocus={e => { setIsFormFocused(true); e.target.style.borderColor = "#8B5CF6"; e.target.style.background = "rgba(139, 92, 246,0.06)"; e.target.style.boxShadow = "0 0 0 3px rgba(139, 92, 246,0.12)"; }}
-                      onBlur={e => { setIsFormFocused(false); e.target.style.borderColor = errors.message ? "#ef4444" : "rgba(139, 92, 246,0.2)"; e.target.style.background = "rgba(0,0,0,0.55)"; e.target.style.boxShadow = "none"; }}
-                    />
-                    {errors.message && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>⚠ {errors.message}</div>}
-                  </div>
-                  <MagneticButton onClick={handleSend}
-                    style={{ width: "100%", padding: 15, background: "#8B5CF6", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700, boxShadow: "0 0 20px rgba(139, 92, 246,0.25)" }}>
-                    Send Message
-                  </MagneticButton>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    
+                    {/* Newsletter Checkbox */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, cursor: "pointer", userSelect: "none" }}
+                      onClick={() => setForm(x => ({ ...x, subscribe: !x.subscribe }))}>
+                      <input type="checkbox" checked={form.subscribe} onChange={() => {}} 
+                        style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#8B5CF6" }} />
+                      <span style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.78)" }}>
+                        Subscribe to <strong>Tangy Letter</strong> for session updates
+                      </span>
+                    </div>
+
+                    <MagneticButton onClick={handleSend}
+                      style={{ width: "100%", padding: 15, background: "#8B5CF6", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700, boxShadow: "0 0 20px rgba(139, 92, 246,0.25)" }}>
+                      {form.subscribe && !form.message.trim() ? "Subscribe" : "Send Message"}
+                    </MagneticButton>
+                  </motion.div>
+                )}
+              </AnimatePresence>
           </motion.div>
         </div>
       </div>
@@ -2332,6 +2349,8 @@ function LandingPage({ showArtistOverlay = false }) {
       <ErrorBoundary name="About"><About /></ErrorBoundary>
       <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Volunteer"><Volunteer /></ErrorBoundary>
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <ErrorBoundary name="ArtistRegister"><ArtistRegister toast={toast} /></ErrorBoundary>
       <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Contact"><Contact toast={toast} /></ErrorBoundary>
       <Footer />
