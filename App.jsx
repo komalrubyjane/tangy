@@ -156,8 +156,14 @@ function Navbar() {
 
   const scrollTo = (id) => {
     if (id === "Community") {
-      navigate("/volunteer");
-      window.scrollTo(0, 0);
+      let target = "volunteer";
+      if (location.pathname !== "/") {
+        navigate("/");
+        setTimeout(() => document.getElementById(target)?.scrollIntoView({ behavior: "smooth" }), 120);
+        setMenuOpen(false);
+        return;
+      }
+      document.getElementById(target)?.scrollIntoView({ behavior: "smooth" });
       setMenuOpen(false);
       return;
     }

@@ -8,13 +8,13 @@ const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body, #root { margin: 0; padding: 0; overflow-x: hidden; background: #050505; }
+    html, body, #root { margin: 0; padding: 0; overflow-x: hidden; background: #0A0A0A; }
     body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    .vol-page { background: #050505; min-height: 100vh; color: #fff; overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; }
-    ::selection { background: rgba(139,92,246,0.4); }
+    .vol-page { background: #0A0A0A; min-height: 100vh; color: #fff; overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; }
+    ::selection { background: rgba(242, 109, 79,0.4); }
     ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: #050505; }
-    ::-webkit-scrollbar-thumb { background: #8B5CF6; border-radius: 2px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #F26D4F; border-radius: 2px; }
     
     @keyframes floatUp {
       0% { transform: translateY(0) translateX(0); opacity: 0; }
@@ -62,7 +62,7 @@ const Particles = ({ count = 18 }) => {
           width: p.size, height: p.size, borderRadius: "50%",
           background: "#a78bfa", filter: "blur(1px)",
           animation: `floatUp ${p.duration}s linear ${p.delay}s infinite`,
-          boxShadow: "0 0 6px #8B5CF6",
+          boxShadow: "0 0 6px #F26D4F",
         }} />
       ))}
     </div>
@@ -80,7 +80,7 @@ const MouseGlow = () => {
   return (
     <div style={{
       position: "fixed", inset: 0, pointerEvents: "none", zIndex: 2,
-      background: `radial-gradient(700px circle at ${pos.x}px ${pos.y}px, rgba(139,92,246,0.06), transparent 40%)`,
+      background: `radial-gradient(700px circle at ${pos.x}px ${pos.y}px, rgba(242, 109, 79,0.06), transparent 40%)`,
     }} />
   );
 };
@@ -136,12 +136,12 @@ const StatNumber = ({ target, suffix = "+", label, delay = 0 }) => {
         animate={triggered ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          fontFamily: "'Bebas Neue', sans-serif",
+          fontFamily: "'Instrument Serif', sans-serif",
           fontSize: "clamp(5rem, 10vw, 9rem)",
           lineHeight: 1,
           background: "linear-gradient(135deg, #fff 30%, #a78bfa 100%)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-          filter: "drop-shadow(0 0 30px rgba(139,92,246,0.3))",
+          filter: "drop-shadow(0 0 30px rgba(242, 109, 79,0.3))",
         }}
       >
         {count}{suffix}
@@ -168,13 +168,13 @@ const TypewriterStat = ({ text, delay = 0 }) => {
   return (
     <div ref={ref} style={{ textAlign: "center" }}>
       <div style={{
-        fontFamily: "'Bebas Neue', sans-serif",
+        fontFamily: "'Instrument Serif', sans-serif",
         fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
         lineHeight: 1,
         background: "linear-gradient(135deg, #fff 30%, #a78bfa 100%)",
         WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         minHeight: "1.2em", display: "flex", alignItems: "center", justifyContent: "center",
-        filter: "drop-shadow(0 0 20px rgba(139,92,246,0.25))",
+        filter: "drop-shadow(0 0 20px rgba(242, 109, 79,0.25))",
       }}>
         {displayed}
         {!done && (
@@ -194,7 +194,7 @@ const TypewriterStat = ({ text, delay = 0 }) => {
 
 /* ─── SECTION DIVIDER ────────────────────────────────────────────────────────── */
 const Divider = () => (
-  <div style={{ width: "100%", height: 1, background: "linear-gradient(to right, transparent, rgba(139,92,246,0.15) 50%, transparent)" }} />
+  <div style={{ width: "100%", height: 1, background: "linear-gradient(to right, transparent, rgba(242, 109, 79,0.15) 50%, transparent)" }} />
 );
 
 /* ─── MAIN COMPONENT ─────────────────────────────────────────────────────────── */
@@ -244,7 +244,7 @@ export default function VolunteerDetails() {
               Home
             </span>
             <span style={{ margin: "0 10px", opacity: 0.3 }}>›</span>
-            <span style={{ color: "#a78bfa" }}>Volunteer</span>
+            <span style={{ color: "#a78bfa" }}>Community</span>
           </div>
         </div>
         <motion.button
@@ -252,7 +252,7 @@ export default function VolunteerDetails() {
           whileHover={{ scale: 1.03, backgroundColor: "#6D28D9" }}
           whileTap={{ scale: 0.97 }}
           style={{
-            padding: "10px 24px", background: "#8B5CF6", color: "#fff", border: "none",
+            padding: "10px 24px", background: "#F26D4F", color: "#fff", border: "none",
             borderRadius: 30, cursor: "pointer", fontSize: "0.78rem", fontWeight: 700,
             letterSpacing: "0.12em", textTransform: "uppercase",
           }}
@@ -273,8 +273,8 @@ export default function VolunteerDetails() {
             backgroundSize: "cover", backgroundPosition: "center 30%",
           }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.72)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, transparent 40%, rgba(5,5,5,0.6) 80%, #050505 100%)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 60% 50%, rgba(139,92,246,0.12) 0%, transparent 65%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, transparent 40%, rgba(5,5,5,0.6) 80%, #0A0A0A 100%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 60% 50%, rgba(242, 109, 79,0.12) 0%, transparent 65%)" }} />
         </motion.div>
 
         <Particles count={20} />
@@ -306,11 +306,11 @@ export default function VolunteerDetails() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               style={{
-                fontFamily: "'Bebas Neue', sans-serif",
+                fontFamily: "'Instrument Serif', sans-serif",
                 fontSize: "clamp(5rem, 14vw, 13rem)",
                 lineHeight: 0.88, letterSpacing: "0.02em",
                 margin: 0, color: "#fff",
-                textShadow: "0 0 80px rgba(139,92,246,0.15)",
+                textShadow: "0 0 80px rgba(242, 109, 79,0.15)",
               }}
             >
               NOT EVERYONE<br />
@@ -323,7 +323,7 @@ export default function VolunteerDetails() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.8 }}
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
+              fontFamily: "'Instrument Serif', sans-serif",
               fontSize: "clamp(2rem, 5vw, 4.5rem)",
               letterSpacing: "0.06em", color: "#a78bfa",
               margin: "8px 0 32px",
@@ -354,13 +354,13 @@ export default function VolunteerDetails() {
           >
             <motion.button
               onClick={scrollToApply}
-              whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(139,92,246,0.5)" }}
+              whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(242, 109, 79,0.5)" }}
               whileTap={{ scale: 0.97 }}
               style={{
-                padding: "18px 48px", background: "#8B5CF6", color: "#fff", border: "none",
+                padding: "18px 48px", background: "#F26D4F", color: "#fff", border: "none",
                 borderRadius: 40, cursor: "pointer", fontFamily: "inherit", fontSize: "0.9rem",
                 fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase",
-                boxShadow: "0 8px 30px rgba(139,92,246,0.35)",
+                boxShadow: "0 8px 30px rgba(242, 109, 79,0.35)",
               }}
             >
               Join The Collective
@@ -409,7 +409,7 @@ export default function VolunteerDetails() {
         <div style={{
           position: "absolute", top: "50%", left: "50%",
           transform: "translate(-50%, -50%)",
-          fontFamily: "'Bebas Neue', sans-serif",
+          fontFamily: "'Instrument Serif', sans-serif",
           fontSize: "clamp(10rem, 30vw, 40rem)",
           color: "#fff", opacity: 0.025, pointerEvents: "none",
           whiteSpace: "nowrap", userSelect: "none", lineHeight: 1,
@@ -446,7 +446,7 @@ export default function VolunteerDetails() {
                   backgroundSize: "cover", backgroundPosition: "center",
                 }}
               />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(139,92,246,0.15), transparent 60%)" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(242, 109, 79,0.15), transparent 60%)" }} />
             </div>
             {/* Floating accent card */}
             <motion.div
@@ -458,12 +458,12 @@ export default function VolunteerDetails() {
                 position: "absolute", bottom: -28, right: -28,
                 background: "rgba(11,11,15,0.9)",
                 backdropFilter: "blur(20px)",
-                border: "1px solid rgba(139,92,246,0.2)",
+                border: "1px solid rgba(242, 109, 79,0.2)",
                 borderRadius: 16, padding: "24px 28px",
                 boxShadow: "0 20px 50px rgba(0,0,0,0.7)",
               }}
             >
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.4rem", color: "#a78bfa", lineHeight: 1 }}>3+</div>
+              <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.4rem", color: "#a78bfa", lineHeight: 1 }}>3+</div>
               <div style={{ fontSize: "0.7rem", letterSpacing: "0.25em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginTop: 4 }}>Sessions</div>
             </motion.div>
           </motion.div>
@@ -483,7 +483,7 @@ export default function VolunteerDetails() {
               fontSize: "clamp(2rem, 4vw, 3.2rem)",
               fontStyle: "italic", fontWeight: 300, lineHeight: 1.35,
               color: "#fff", margin: "0 0 36px",
-              borderLeft: "2px solid rgba(139,92,246,0.4)", paddingLeft: 32,
+              borderLeft: "2px solid rgba(242, 109, 79,0.4)", paddingLeft: 32,
             }}>
               "We don't build events.<br />We build moments people remember."
             </blockquote>
@@ -509,7 +509,7 @@ export default function VolunteerDetails() {
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 3 — INSIDE THE MOVEMENT (Horizontal panels)
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "160px 0", background: "#050505" }}>
+      <section style={{ padding: "160px 0", background: "#0A0A0A" }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -521,7 +521,7 @@ export default function VolunteerDetails() {
             Exclusive Access
           </div>
           <h2 style={{
-            fontFamily: "'Bebas Neue', sans-serif",
+            fontFamily: "'Instrument Serif', sans-serif",
             fontSize: "clamp(3rem, 8vw, 7rem)",
             letterSpacing: "0.04em", color: "#fff",
             lineHeight: 0.9, margin: 0,
@@ -535,7 +535,7 @@ export default function VolunteerDetails() {
             {
               id: "01", title: "BEHIND THE MUSIC", sub: "The moments before the music starts",
               img: "/gallery/tangy10.jpg",
-              accent: "#8B5CF6",
+              accent: "#F26D4F",
             },
             {
               id: "02", title: "THE PEOPLE", sub: "A community built on shared presence",
@@ -586,7 +586,7 @@ export default function VolunteerDetails() {
               }}>
                 <div>
                   <div style={{
-                    fontFamily: "'Bebas Neue', sans-serif", fontSize: "5rem",
+                    fontFamily: "'Instrument Serif', sans-serif", fontSize: "5rem",
                     color: panel.accent, opacity: 0.3, lineHeight: 1,
                     position: "absolute", left: "5vw", top: "50%",
                     transform: "translateY(-50%)", userSelect: "none",
@@ -595,7 +595,7 @@ export default function VolunteerDetails() {
                   </div>
                   <div style={{ position: "relative", zIndex: 1 }}>
                     <h3 style={{
-                      fontFamily: "'Bebas Neue', sans-serif",
+                      fontFamily: "'Instrument Serif', sans-serif",
                       fontSize: "clamp(2rem, 5vw, 4rem)",
                       letterSpacing: "0.08em", color: "#fff", margin: "0 0 8px",
                     }}>
@@ -635,9 +635,9 @@ export default function VolunteerDetails() {
         <div style={{
           position: "absolute", top: "50%", left: "50%",
           transform: "translate(-50%, -50%)",
-          fontFamily: "'Bebas Neue', sans-serif",
+          fontFamily: "'Instrument Serif', sans-serif",
           fontSize: "clamp(8rem, 20vw, 30rem)",
-          color: "#8B5CF6", opacity: 0.04,
+          color: "#F26D4F", opacity: 0.04,
           pointerEvents: "none", whiteSpace: "nowrap", userSelect: "none",
           filter: "blur(4px)",
         }}>
@@ -651,7 +651,7 @@ export default function VolunteerDetails() {
           style={{
             position: "absolute", top: "20%", left: "10%",
             width: "40vw", height: "40vw",
-            background: "radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(242, 109, 79,0.25) 0%, transparent 70%)",
             filter: "blur(60px)", pointerEvents: "none",
           }}
         />
@@ -697,7 +697,7 @@ export default function VolunteerDetails() {
               No Prerequisites
             </div>
             <h2 style={{
-              fontFamily: "'Bebas Neue', sans-serif",
+              fontFamily: "'Instrument Serif', sans-serif",
               fontSize: "clamp(3rem, 7vw, 6rem)",
               letterSpacing: "0.04em", color: "#fff", lineHeight: 0.95, margin: 0,
             }}>
@@ -724,7 +724,7 @@ export default function VolunteerDetails() {
                   }}
                 >
                   <span style={{
-                    fontFamily: isAccent ? "'Bebas Neue', sans-serif" : "'Cormorant Garamond', serif",
+                    fontFamily: isAccent ? "'Instrument Serif', sans-serif" : "'Cormorant Garamond', serif",
                     fontSize: isAccent ? "clamp(2rem, 4vw, 3rem)" : "clamp(1.5rem, 3vw, 2.2rem)",
                     fontStyle: isAccent ? "normal" : "italic",
                     letterSpacing: isAccent ? "0.06em" : "0",
@@ -757,7 +757,7 @@ export default function VolunteerDetails() {
           backgroundSize: "cover", backgroundPosition: "center",
           filter: "blur(50px) brightness(0.3)", opacity: 0.5, zIndex: 0,
         }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #050505, rgba(5,5,5,0.5) 40%, rgba(5,5,5,0.5) 60%, #050505)", zIndex: 0 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0A0A0A, rgba(5,5,5,0.5) 40%, rgba(5,5,5,0.5) 60%, #0A0A0A)", zIndex: 0 }} />
 
         <div style={{ maxWidth: 860, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <motion.div
@@ -770,7 +770,7 @@ export default function VolunteerDetails() {
               Join The Collective
             </div>
             <h2 style={{
-              fontFamily: "'Bebas Neue', sans-serif",
+              fontFamily: "'Instrument Serif', sans-serif",
               fontSize: "clamp(3rem, 7vw, 5.5rem)",
               letterSpacing: "0.04em", color: "#fff", lineHeight: 0.95, margin: "0 0 24px",
             }}>
@@ -793,7 +793,7 @@ export default function VolunteerDetails() {
             style={{
               background: "rgba(8,8,12,0.7)",
               backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
-              border: "1px solid rgba(139,92,246,0.2)",
+              border: "1px solid rgba(242, 109, 79,0.2)",
               borderRadius: 24,
               boxShadow: "0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03)",
               overflow: "hidden",
@@ -816,8 +816,8 @@ export default function VolunteerDetails() {
             backgroundSize: "cover", backgroundPosition: "center 40%",
           }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.78)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #050505 0%, transparent 25%, transparent 75%, #050505 100%)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at center, rgba(139,92,246,0.1) 0%, transparent 65%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0A0A0A 0%, transparent 25%, transparent 75%, #0A0A0A 100%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at center, rgba(242, 109, 79,0.1) 0%, transparent 65%)" }} />
         </div>
 
         <Particles count={12} />
@@ -830,11 +830,11 @@ export default function VolunteerDetails() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2 style={{
-              fontFamily: "'Bebas Neue', sans-serif",
+              fontFamily: "'Instrument Serif', sans-serif",
               fontSize: "clamp(5rem, 18vw, 16rem)",
               lineHeight: 0.88, letterSpacing: "0.02em", color: "#fff",
               margin: "0 0 32px",
-              textShadow: "0 0 80px rgba(139,92,246,0.2)",
+              textShadow: "0 0 80px rgba(242, 109, 79,0.2)",
             }}>
               SEE YOU<br />
               <span style={{ WebkitTextStroke: "1px rgba(167,139,250,0.6)", WebkitTextFillColor: "transparent" }}>
@@ -864,15 +864,15 @@ export default function VolunteerDetails() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(139,92,246,0.5)" }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(242, 109, 79,0.5)" }}
             whileTap={{ scale: 0.97 }}
             style={{
               padding: "20px 56px",
-              background: "linear-gradient(135deg, #8B5CF6, #6D28D9)",
+              background: "linear-gradient(135deg, #F26D4F, #6D28D9)",
               color: "#fff", border: "none", borderRadius: 40,
               cursor: "pointer", fontFamily: "inherit", fontSize: "0.95rem",
               fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase",
-              boxShadow: "0 12px 40px rgba(139,92,246,0.3)",
+              boxShadow: "0 12px 40px rgba(242, 109, 79,0.3)",
             }}
           >
             Begin Your Journey
