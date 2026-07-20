@@ -151,10 +151,10 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const links = ["Home", "Why Tangy", "Events", "Gallery", "Volunteer", "Contact"];
+  const links = ["Home", "Why Tangy", "Events", "Gallery", "Community", "Contact"];
 
   const scrollTo = (id) => {
-    if (id === "Volunteer") {
+    if (id === "Community") {
       navigate("/volunteer");
       window.scrollTo(0, 0);
       setMenuOpen(false);

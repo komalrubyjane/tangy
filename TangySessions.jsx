@@ -146,7 +146,7 @@ function Navbar() {
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
-  const links = ["Home", "Events", "Gallery", "Tickets", "Volunteer", "Contact"];
+  const links = ["Home", "Events", "Gallery", "Tickets", "Community", "Contact"];
   const scrollTo = (id) => {
     if (location.pathname !== "/") {
       navigate("/");
