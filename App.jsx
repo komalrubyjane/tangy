@@ -346,11 +346,11 @@ function Hero() {
           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "clamp(0.6rem, 1.2vw, 0.78rem)", letterSpacing: "0.5em", color: "#C8FF2B", textTransform: "uppercase", marginBottom: 12 }}>
             — LIVE MUSIC UNDERGROUND
           </div>
-          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(5rem, 18vw, 16rem)", lineHeight: 0.88, letterSpacing: "0.02em", color: "#fff", margin: 0, textShadow: "0 0 120px rgba(200,255,43,0.08)" }}>
+          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.4rem, 16vw, 16rem)", lineHeight: 0.88, letterSpacing: "0.02em", color: "#fff", margin: 0, textShadow: "0 0 120px rgba(200,255,43,0.08)" }}>
             TANGY
           </h1>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "3vw" }}>
-            <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(5rem, 18vw, 16rem)", lineHeight: 0.88, letterSpacing: "0.02em", margin: 0, WebkitTextStroke: "2px #C8FF2B", WebkitTextFillColor: "transparent" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "3vw", flexWrap: "wrap" }}>
+            <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.4rem, 16vw, 16rem)", lineHeight: 0.88, letterSpacing: "0.02em", margin: 0, WebkitTextStroke: "2px #C8FF2B", WebkitTextFillColor: "transparent" }}>
               SESSIONS
             </h1>
             {/* Mini ticket element beside headline */}
@@ -2289,23 +2289,23 @@ function LandingPage({ showArtistOverlay = false }) {
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
         
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        @keyframes marqueeFast { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes marqueeScroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+        @keyframes marqueeFast { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
         @keyframes shineSwipe { 0% { left: -80%; } 100% { left: 120%; } }
         @keyframes clipReveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0% 0 0); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translate3d(0, 40px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes ticketFloat { 0%,100% { transform: translateY(0) rotate(-0.5deg); } 50% { transform: translateY(-6px) rotate(0.5deg); } }
+        @keyframes ticketFloat { 0%,100% { transform: translate3d(0, 0, 0) rotate(-0.5deg); } 50% { transform: translate3d(0, -6px, 0) rotate(0.5deg); } }
         @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px rgba(200,255,43,0.2); } 50% { box-shadow: 0 0 40px rgba(200,255,43,0.5); } }
         @keyframes blinkCursor { 50% { opacity: 0; } }
-        @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
+        @keyframes scanline { 0% { transform: translate3d(0, -100%, 0); } 100% { transform: translate3d(0, 100vh, 0); } }
         @keyframes textFlicker { 0%,100% { opacity:1; } 92% { opacity:1; } 93% { opacity:0.4; } 94% { opacity:1; } 96% { opacity:0.7; } 97% { opacity:1; } }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-        body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; background: #080808; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-size-adjust: 100%; }
+        body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; width: 100%; background: #080808; }
         
-        section { scroll-margin-top: 80px; }
+        section { scroll-margin-top: 80px; overflow-x: hidden; position: relative; }
 
         .unicorn-error-box,
         [class*="unicorn-error"],
@@ -2325,11 +2325,11 @@ function LandingPage({ showArtistOverlay = false }) {
 
         img { content-visibility: auto; }
 
-        .marquee-track { display: flex; width: max-content; animation: marqueeScroll 18s linear infinite; }
-        .marquee-track-fast { display: flex; width: max-content; animation: marqueeFast 10s linear infinite; }
-        .marquee-track-rev { display: flex; width: max-content; animation: marqueeScroll 22s linear infinite reverse; }
+        .marquee-track { display: flex; width: max-content; animation: marqueeScroll 22s linear infinite; will-change: transform; transform: translateZ(0); }
+        .marquee-track-fast { display: flex; width: max-content; animation: marqueeFast 12s linear infinite; will-change: transform; transform: translateZ(0); }
+        .marquee-track-rev { display: flex; width: max-content; animation: marqueeScroll 26s linear infinite reverse; will-change: transform; transform: translateZ(0); }
 
-        .ticket-card { transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s, border-color 0.35s; }
+        .ticket-card { transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s, border-color 0.35s; will-change: transform; }
         .ticket-card:hover { transform: translateY(-8px) rotate(0deg) !important; box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 40px rgba(200,255,43,0.15) !important; border-color: rgba(200,255,43,0.5) !important; }
 
         .polaroid-photo { transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease; }
@@ -2341,18 +2341,37 @@ function LandingPage({ showArtistOverlay = false }) {
         .founder-img { filter: grayscale(0.6) contrast(1.1); transition: filter 0.4s ease, transform 0.4s ease; }
         .founder-img:hover { filter: grayscale(0) contrast(1.1); transform: scale(1.02) rotate(0deg) !important; }
 
-        @media (max-width: 700px) {
-          .nav-links, .nav-admin { display: none !important; }
-          .hamburger { display: block !important; }
-          .ticket-full-width { flex-direction: column !important; }
-          .ticket-stub-left { width: 100% !important; flex-direction: row !important; min-width: unset !important; }
-          .ticket-main-body { padding: 24px 18px !important; }
+        /* Hardware acceleration for mobile performance */
+        motion-div, [style*="position: absolute"] { transform: translateZ(0); }
+
+        /* Responsive Breakpoints for Mobile & Tablet */
+        @media (max-width: 868px) {
+          .nav-links { display: none !important; }
+          .hamburger { display: flex !important; }
+          .ticket-card { flex-direction: column !important; transform: none !important; }
+          .ticket-stub-right { border-left: none !important; border-top: 1px dashed rgba(255,255,255,0.08) !important; flex-direction: row !important; width: 100% !important; padding: 14px 20px !important; }
           .about-founder-grid { flex-direction: column !important; }
           .contact-grid { grid-template-columns: 1fr !important; }
-          .footer-brand { font-size: clamp(4rem, 18vw, 7rem) !important; }
+          .footer-brand { font-size: clamp(3.5rem, 15vw, 6rem) !important; }
+          
+          /* Gallery masonry responsive 1 column on small phones, 2 on tablets */
+          #gallery > div:nth-child(2) { grid-template-columns: repeat(2, 1fr) !important; }
+
+          /* Responsive Decal Scaling */
+          [src*="radio.png"], [src*="vinyl.png"], [src*="gramophone.png"], [src*="violin.png"] {
+            max-width: 110px !important;
+            opacity: 0.75 !important;
+          }
         }
-        @media (max-width: 400px) {
-          .ticket-stub-right { display: none !important; }
+
+        @media (max-width: 580px) {
+          #gallery > div:nth-child(2) { grid-template-columns: 1fr !important; }
+          .editorial-val-block { flex-direction: column !important; align-items: flex-start !important; }
+          
+          [src*="radio.png"], [src*="vinyl.png"], [src*="gramophone.png"], [src*="violin.png"] {
+            max-width: 80px !important;
+            opacity: 0.65 !important;
+          }
         }
 
         #events, #artists, #gallery, #tickets, #about, #volunteer, #contact {
@@ -2362,7 +2381,7 @@ function LandingPage({ showArtistOverlay = false }) {
         body { -webkit-overflow-scrolling: touch; }
         #unicorn-bg { transform: translateZ(0); }
 
-        .masonry-col { display: flex; flex-direction: column; gap: 20px; }
+        .masonry-col { display: flex; flex-direction: column; gap: 16px; }
       `}</style>
 
       <Navbar />

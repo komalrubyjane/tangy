@@ -25,11 +25,19 @@ export default function UnicornBackground() {
     };
     window.addEventListener("resize", resize);
 
-    let raf;
-    const draw = () => {
-      t += 0.003;
-      ctx.clearRect(0, 0, w, h);
+    // Low-end / mobile optimization check
+    const isMobileOrLowEnd = (() => {
+      if (typeof window === "undefined") return false;
+      const mem = navigator.deviceMemory;
+      const cores = navigator.hardwareConcurrency || 4;
+      const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      const isMob = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      return prefersReduced || cores <= 2 || (mem !== undefined && mem < 2) || isMob;
+    })();
 
+    let raf;
+    const renderFrame = (time) => {
+      ctx.clearRect(0, 0, w, h);
       orbs.forEach((o, i) => {
         const ox = o.x * w + Math.sin(t * 0.7 + i * 1.3) * w * 0.04;
         const oy = o.y * h + Math.cos(t * 0.5 + i * 1.7) * h * 0.04;
@@ -40,14 +48,27 @@ export default function UnicornBackground() {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, w, h);
       });
-
-      raf = requestAnimationFrame(draw);
     };
-    draw();
+
+    if (isMobileOrLowEnd) {
+      // Draw once for static low-power performance
+      renderFrame(0);
+    } else {
+      let lastTime = 0;
+      const draw = (time) => {
+        if (time - lastTime >= 33) { // Cap at ~30 FPS for desktop smooth efficiency
+          t += 0.003;
+          lastTime = time;
+          renderFrame(time);
+        }
+        raf = requestAnimationFrame(draw);
+      };
+      raf = requestAnimationFrame(draw);
+    }
 
     return () => {
       window.removeEventListener("resize", resize);
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
     };
   }, []);
 
