@@ -131,7 +131,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
         transition={{ type: "spring", damping: 22, stiffness: 260 }}
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#0d0d0d", border: "1px solid rgba(242, 109, 79,0.25)",
+          background: "#111111", border: "1px solid rgba(242, 109, 79,0.25)",
           borderRadius: 24, width: "100%", maxWidth: 520,
           maxHeight: "90vh", overflowY: "auto",
           boxShadow: "0 0 80px rgba(242, 109, 79,0.2), 0 40px 80px rgba(0,0,0,0.6)",
@@ -142,7 +142,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
         <div style={{
           padding: "24px 28px", borderBottom: "1px solid rgba(255,255,255,0.06)",
           display: "flex", justifyContent: "space-between", alignItems: "center",
-          position: "sticky", top: 0, background: "#0d0d0d", zIndex: 10, borderRadius: "24px 24px 0 0"
+          position: "sticky", top: 0, background: "#111111", zIndex: 10, borderRadius: "24px 24px 0 0"
         }}>
           <div>
             <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "#F26D4F", textTransform: "uppercase", fontFamily: "monospace" }}>Secure Checkout</div>

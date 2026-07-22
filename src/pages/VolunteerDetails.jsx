@@ -8,12 +8,12 @@ const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body, #root { margin: 0; padding: 0; overflow-x: hidden; background: #0A0A0A; }
+    html, body, #root { margin: 0; padding: 0; overflow-x: hidden; background: #080808; }
     body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    .vol-page { background: #0A0A0A; min-height: 100vh; color: #fff; overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; }
+    .vol-page { background: #080808; min-height: 100vh; color: #fff; overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; }
     ::selection { background: rgba(242, 109, 79,0.4); }
     ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-track { background: #080808; }
     ::-webkit-scrollbar-thumb { background: #F26D4F; border-radius: 2px; }
     
     @keyframes floatUp {
@@ -60,7 +60,7 @@ const Particles = ({ count = 18 }) => {
         <div key={i} style={{
           position: "absolute", bottom: "-5%", left: p.left,
           width: p.size, height: p.size, borderRadius: "50%",
-          background: "#F3E5AB", filter: "blur(1px)",
+          background: "#2A593E", filter: "blur(1px)",
           animation: `floatUp ${p.duration}s linear ${p.delay}s infinite`,
           boxShadow: "0 0 6px #F26D4F",
         }} />
@@ -139,7 +139,7 @@ const StatNumber = ({ target, suffix = "+", label, delay = 0 }) => {
           fontFamily: "'Instrument Serif', sans-serif",
           fontSize: "clamp(5rem, 10vw, 9rem)",
           lineHeight: 1,
-          background: "linear-gradient(135deg, #fff 30%, #F3E5AB 100%)",
+          background: "linear-gradient(135deg, #fff 30%, #2A593E 100%)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
           filter: "drop-shadow(0 0 30px rgba(242, 109, 79,0.3))",
         }}
@@ -171,7 +171,7 @@ const TypewriterStat = ({ text, delay = 0 }) => {
         fontFamily: "'Instrument Serif', sans-serif",
         fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
         lineHeight: 1,
-        background: "linear-gradient(135deg, #fff 30%, #F3E5AB 100%)",
+        background: "linear-gradient(135deg, #fff 30%, #2A593E 100%)",
         WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         minHeight: "1.2em", display: "flex", alignItems: "center", justifyContent: "center",
         filter: "drop-shadow(0 0 20px rgba(242, 109, 79,0.25))",
@@ -180,7 +180,7 @@ const TypewriterStat = ({ text, delay = 0 }) => {
         {!done && (
           <span style={{
             display: "inline-block", width: 3, height: "0.85em",
-            background: "#F3E5AB", marginLeft: 4, verticalAlign: "middle",
+            background: "#2A593E", marginLeft: 4, verticalAlign: "middle",
             animation: "pulseGlow 0.7s ease-in-out infinite",
           }} />
         )}
@@ -244,7 +244,7 @@ export default function VolunteerDetails() {
               Home
             </span>
             <span style={{ margin: "0 10px", opacity: 0.3 }}>›</span>
-            <span style={{ color: "#F3E5AB" }}>Community</span>
+            <span style={{ color: "#2A593E" }}>Community</span>
           </div>
         </div>
         <motion.button
@@ -273,7 +273,7 @@ export default function VolunteerDetails() {
             backgroundSize: "cover", backgroundPosition: "center 30%",
           }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.72)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, transparent 40%, rgba(5,5,5,0.6) 80%, #0A0A0A 100%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, transparent 40%, rgba(5,5,5,0.6) 80%, #080808 100%)" }} />
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 60% 50%, rgba(242, 109, 79,0.12) 0%, transparent 65%)" }} />
         </motion.div>
 
@@ -289,7 +289,7 @@ export default function VolunteerDetails() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             style={{
-              fontSize: "0.72rem", letterSpacing: "0.45em", color: "#F3E5AB",
+              fontSize: "0.72rem", letterSpacing: "0.45em", color: "#2A593E",
               textTransform: "uppercase", fontFamily: "monospace", marginBottom: 32,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 16,
             }}
@@ -325,7 +325,7 @@ export default function VolunteerDetails() {
             style={{
               fontFamily: "'Instrument Serif', sans-serif",
               fontSize: "clamp(2rem, 5vw, 4.5rem)",
-              letterSpacing: "0.06em", color: "#F3E5AB",
+              letterSpacing: "0.06em", color: "#2A593E",
               margin: "8px 0 32px",
             }}
           >
@@ -463,7 +463,7 @@ export default function VolunteerDetails() {
                 boxShadow: "0 20px 50px rgba(0,0,0,0.7)",
               }}
             >
-              <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.4rem", color: "#F3E5AB", lineHeight: 1 }}>3+</div>
+              <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.4rem", color: "#2A593E", lineHeight: 1 }}>3+</div>
               <div style={{ fontSize: "0.7rem", letterSpacing: "0.25em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginTop: 4 }}>Sessions</div>
             </motion.div>
           </motion.div>
@@ -475,7 +475,7 @@ export default function VolunteerDetails() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#F3E5AB", textTransform: "uppercase", marginBottom: 24, fontFamily: "monospace" }}>
+            <div style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#2A593E", textTransform: "uppercase", marginBottom: 24, fontFamily: "monospace" }}>
               The Manifesto
             </div>
             <blockquote style={{
@@ -509,7 +509,7 @@ export default function VolunteerDetails() {
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 3 — INSIDE THE MOVEMENT (Horizontal panels)
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "160px 0", background: "#0A0A0A" }}>
+      <section style={{ padding: "160px 0", background: "#080808" }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -517,7 +517,7 @@ export default function VolunteerDetails() {
           transition={{ duration: 0.8 }}
           style={{ textAlign: "center", marginBottom: 80, padding: "0 5vw" }}
         >
-          <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#F3E5AB", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
+          <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#2A593E", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
             Exclusive Access
           </div>
           <h2 style={{
@@ -693,7 +693,7 @@ export default function VolunteerDetails() {
             viewport={{ once: true }}
             style={{ marginBottom: 80 }}
           >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#F3E5AB", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
+            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#2A593E", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
               No Prerequisites
             </div>
             <h2 style={{
@@ -733,7 +733,7 @@ export default function VolunteerDetails() {
                     display: "block",
                   }}>
                     {isAccent && (
-                      <span style={{ color: "#F3E5AB", marginRight: 16 }}>—</span>
+                      <span style={{ color: "#2A593E", marginRight: 16 }}>—</span>
                     )}
                     {line}
                   </span>
@@ -757,7 +757,7 @@ export default function VolunteerDetails() {
           backgroundSize: "cover", backgroundPosition: "center",
           filter: "blur(50px) brightness(0.3)", opacity: 0.5, zIndex: 0,
         }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0A0A0A, rgba(5,5,5,0.5) 40%, rgba(5,5,5,0.5) 60%, #0A0A0A)", zIndex: 0 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #080808, rgba(5,5,5,0.5) 40%, rgba(5,5,5,0.5) 60%, #080808)", zIndex: 0 }} />
 
         <div style={{ maxWidth: 860, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <motion.div
@@ -766,7 +766,7 @@ export default function VolunteerDetails() {
             viewport={{ once: true }}
             style={{ textAlign: "center", marginBottom: 64 }}
           >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#F3E5AB", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
+            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#2A593E", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
               Join The Collective
             </div>
             <h2 style={{
@@ -791,7 +791,7 @@ export default function VolunteerDetails() {
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.1 }}
             style={{
-              background: "rgba(8,8,12,0.7)",
+              background: "rgba(24,24,24,0.7)",
               backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
               border: "1px solid rgba(242, 109, 79,0.2)",
               borderRadius: 24,
@@ -816,7 +816,7 @@ export default function VolunteerDetails() {
             backgroundSize: "cover", backgroundPosition: "center 40%",
           }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.78)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #0A0A0A 0%, transparent 25%, transparent 75%, #0A0A0A 100%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #080808 0%, transparent 25%, transparent 75%, #080808 100%)" }} />
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at center, rgba(242, 109, 79,0.1) 0%, transparent 65%)" }} />
         </div>
 

@@ -43,7 +43,7 @@ export default function Volunteer() {
         transform: "translate(-50%, -50%)",
         fontFamily: "'Bebas Neue', sans-serif",
         fontSize: "clamp(8rem, 22vw, 32rem)",
-        color: "#E5C07B",
+        color: "#C8FF2B",
         opacity: 0.02,
         pointerEvents: "none",
         whiteSpace: "nowrap",
@@ -64,7 +64,7 @@ export default function Volunteer() {
             transition={{ duration: 0.8 }}
             style={{ display: "flex", flexDirection: "column", gap: 24 }}
           >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#F3E5AB", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "600" }}>
+            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#2A593E", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "600" }}>
               The Collective • Co-Create the Ritual
             </div>
             
@@ -82,7 +82,7 @@ export default function Volunteer() {
               </span>
             </h2>
 
-            <div style={{ height: 2, width: 48, background: "linear-gradient(to right, #E5C07B, #EC4899)", borderRadius: 1 }} />
+            <div style={{ height: 2, width: 48, background: "linear-gradient(to right, #C8FF2B, #EC4899)", borderRadius: 1 }} />
 
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
@@ -91,7 +91,7 @@ export default function Volunteer() {
               color: "rgba(255,255,255,0.9)",
               lineHeight: 1.6,
               margin: 0,
-              borderLeft: "2px solid #E5C07B",
+              borderLeft: "2px solid #C8FF2B",
               paddingLeft: 24,
             }}>
               "Some attend the sessions. Others co-create the magic."
@@ -108,7 +108,7 @@ export default function Volunteer() {
                 whileTap={{ scale: 0.97 }}
                 style={{
                   padding: "16px 44px",
-                  background: "#E5C07B",
+                  background: "#C8FF2B",
                   color: "#fff",
                   border: "none",
                   borderRadius: 30,
@@ -176,7 +176,7 @@ export default function Volunteer() {
               gap: 12,
               boxShadow: "0 15px 30px rgba(0,0,0,0.5)",
             }}>
-              <span style={{ color: "#F3E5AB", fontSize: "1.2rem" }}>✦</span>
+              <span style={{ color: "#2A593E", fontSize: "1.2rem" }}>✦</span>
               <span style={{
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: "1.1rem",

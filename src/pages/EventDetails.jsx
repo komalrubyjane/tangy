@@ -209,7 +209,7 @@ function EventHero({ ev }) {
       }} />
       {/* Overlays */}
       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #0A0A0A 0%, transparent 65%)", zIndex: 2 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #080808 0%, transparent 65%)", zIndex: 2 }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(242, 109, 79,0.08), transparent 60%)", zIndex: 2 }} />
 
       {/* Content */}
@@ -227,7 +227,7 @@ function EventHero({ ev }) {
                 background: "rgba(242, 109, 79,0.18)",
                 border: "1px solid rgba(242, 109, 79,0.4)",
                 borderRadius: 20, fontSize: "0.68rem",
-                color: "#F3E5AB", letterSpacing: "0.1em", textTransform: "uppercase",
+                color: "#2A593E", letterSpacing: "0.1em", textTransform: "uppercase",
               }}>
                 {tag}
               </span>
@@ -517,7 +517,7 @@ function GallerySection({ ev }) {
               whileHover={{ scale: 1.03 }}
               style={{
                 aspectRatio: "4/3", borderRadius: 24, cursor: "pointer",
-                overflow: "hidden", background: "#0a0a0a",
+                overflow: "hidden", background: "#080808",
                 border: "1px solid rgba(255,255,255,0.06)",
                 position: "relative",
               }}
@@ -554,7 +554,7 @@ function GallerySection({ ev }) {
               initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }}
               transition={{ type: "spring", damping: 22 }}
               onClick={e => e.stopPropagation()}
-              style={{ background: "#0d0d0d", border: "1px solid rgba(242, 109, 79,0.3)", borderRadius: 24, overflow: "hidden", boxShadow: "0 0 120px rgba(242, 109, 79,0.18)", maxWidth: "90vw", maxHeight: "85vh" }}
+              style={{ background: "#111111", border: "1px solid rgba(242, 109, 79,0.3)", borderRadius: 24, overflow: "hidden", boxShadow: "0 0 120px rgba(242, 109, 79,0.18)", maxWidth: "90vw", maxHeight: "85vh" }}
             >
               <img src={lightbox.img} alt={lightbox.label} style={{ display: "block", maxWidth: "90vw", maxHeight: "75vh", objectFit: "contain", borderRadius: "24px 24px 0 0" }} />
               <div style={{ padding: "18px 28px", textAlign: "center" }}>
@@ -748,7 +748,7 @@ function BookingSection({ ev }) {
 
               {/* Redesigned Premium Ticket Mockup with QR Code */}
               <div style={{
-                background: "linear-gradient(135deg, #111 0%, #050505 100%)",
+                background: "linear-gradient(135deg, #111 0%, #080808 100%)",
                 border: "1px dashed rgba(255, 255, 255, 0.15)",
                 borderRadius: 16,
                 padding: "24px",
@@ -764,7 +764,7 @@ function BookingSection({ ev }) {
                 {/* Ticket Header */}
                 <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px dashed rgba(255,255,255,0.1)", paddingBottom: 14, marginBottom: 14 }}>
                   <div>
-                    <div style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#E5C07B", textTransform: "uppercase", fontWeight: 700 }}>Tangy Sessions Entry Pass</div>
+                    <div style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#C8FF2B", textTransform: "uppercase", fontWeight: 700 }}>Tangy Sessions Entry Pass</div>
                     <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.3rem", color: "#fff", marginTop: 4 }}>{ev.name}</div>
                   </div>
                   <div style={{ textAlign: "right" }}>
@@ -991,7 +991,7 @@ function BookingSection({ ev }) {
                 <span style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.2rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em" }}>TOTAL</span>
                 <motion.span
                   key={total}
-                  initial={{ scale: 1.2, color: "#F3E5AB" }}
+                  initial={{ scale: 1.2, color: "#2A593E" }}
                   animate={{ scale: 1, color: "#F26D4F" }}
                   transition={{ duration: 0.3 }}
                   style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.4rem", letterSpacing: "0.04em" }}
@@ -1003,7 +1003,7 @@ function BookingSection({ ev }) {
 
                         {/* Payment Details Section */}
             <div style={{ background: "rgba(242, 109, 79,0.05)", border: "1px solid rgba(242, 109, 79,0.2)", borderRadius: 12, padding: "24px 20px", marginBottom: 26 }}>
-              <h4 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.4rem", color: "#F3E5AB", margin: "0 0 16px", letterSpacing: "0.05em" }}>Payment Details</h4>
+              <h4 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.4rem", color: "#2A593E", margin: "0 0 16px", letterSpacing: "0.05em" }}>Payment Details</h4>
               <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginBottom: 16, lineHeight: 1.5 }}>
                 Please make the payment of <strong>₹{total.toLocaleString()}</strong> to one of the following numbers and fill in the transaction details below.
               </p>
@@ -1151,7 +1151,7 @@ export default function EventDetails() {
   if (!ev) {
     return (
       <div style={{
-        minHeight: "100vh", background: "#0A0A0A",
+        minHeight: "100vh", background: "#080808",
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
         fontFamily: "'DM Sans', sans-serif", color: "#fff", textAlign: "center", padding: 40,
@@ -1175,7 +1175,7 @@ export default function EventDetails() {
 
   return (
     <div style={{
-      background: "#0A0A0A", minHeight: "100vh",
+      background: "#080808", minHeight: "100vh",
       fontFamily: "'DM Sans', system-ui, sans-serif", color: "#fff",
     }}>
       <style>{`
@@ -1186,7 +1186,7 @@ export default function EventDetails() {
         input, button, select, textarea { font-family: inherit; }
         ::selection { background: rgba(242, 109, 79,0.35); }
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0A0A0A; }
+        ::-webkit-scrollbar-track { background: #080808; }
         ::-webkit-scrollbar-thumb { background: #F26D4F; border-radius: 2px; }
 
         .ed-about-grid {
@@ -1238,7 +1238,7 @@ export default function EventDetails() {
             padding: "8px 18px",
             background: "transparent",
             border: "1px solid rgba(242, 109, 79,0.4)",
-            borderRadius: 6, color: "#F3E5AB",
+            borderRadius: 6, color: "#2A593E",
             cursor: "pointer", fontSize: "0.78rem",
             letterSpacing: "0.1em", textTransform: "uppercase",
             whiteSpace: "nowrap", transition: "all 0.2s",

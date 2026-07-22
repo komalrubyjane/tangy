@@ -15,7 +15,7 @@ const GlobalStyles = () => (
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body { 
-      background: #070707; 
+      background: #080808; 
       color: #ffffff; 
       font-family: 'DM Sans', sans-serif;
       overflow-x: hidden;
@@ -23,23 +23,23 @@ const GlobalStyles = () => (
     }
 
     :root {
-      --tangy-black:    #070707;
-      --tangy-deep:     #050505;
+      --tangy-black:    #080808;
+      --tangy-deep:     #080808;
       --tangy-card:     rgba(8,8,12,0.72);
-      --tangy-border:   rgba(229, 192, 123,0.22);
-      --tangy-amber:    #E5C07B;
-      --tangy-amber-dim:#D4AF37;
+      --tangy-border:   rgba(200, 255, 43,0.22);
+      --tangy-amber:    #C8FF2B;
+      --tangy-amber-dim:#2A593E;
       --tangy-rust:     #06b6d4;
       --tangy-cream:    #ffffff;
       --tangy-muted:    rgba(255,255,255,0.65);
-      --tangy-glow:     rgba(229, 192, 123,0.2);
+      --tangy-glow:     rgba(200, 255, 43,0.2);
       --glass-bg:       linear-gradient(135deg, rgba(8,8,12,0.82) 0%, rgba(8,8,12,0.62) 100%);
-      --glass-border:   rgba(229, 192, 123,0.28);
+      --glass-border:   rgba(200, 255, 43,0.28);
       --glass-blur:     24px;
-      --glass-shadow:   0 20px 40px rgba(0,0,0,0.7), 0 0 30px rgba(229, 192, 123,0.12), inset 0 1px 1px rgba(255,255,255,0.05);
+      --glass-shadow:   0 20px 40px rgba(0,0,0,0.7), 0 0 30px rgba(200, 255, 43,0.12), inset 0 1px 1px rgba(255,255,255,0.05);
     }
 
-    ::selection { background: var(--tangy-amber); color: #070707; }
+    ::selection { background: var(--tangy-amber); color: #080808; }
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--tangy-black); }
@@ -69,12 +69,6 @@ const GlobalStyles = () => (
     @keyframes rotateSlow { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
     @keyframes slideIn  { from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;} }
     @keyframes ambientPulse { 0%,100%{opacity:0.3;transform:scale(1);} 50%{opacity:0.6;transform:scale(1.08);} }
-    @keyframes goldShine {
-      0% { left: -150%; }
-      50% { left: 150%; }
-      100% { left: 150%; }
-    }
-
     @keyframes subtleZoom {
       0% { transform: scale(1); }
       100% { transform: scale(1.1); }
@@ -97,7 +91,7 @@ const GlobalStyles = () => (
     /* Lighter glass for nested elements */
     .glass-sm {
       background: rgba(8,8,12,0.55);
-      border: 1px solid rgba(229, 192, 123,0.18);
+      border: 1px solid rgba(200, 255, 43,0.18);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
@@ -106,16 +100,16 @@ const GlobalStyles = () => (
     /* Card component — for dashboard cards, artist cards etc. */
     .t-card {
       background: linear-gradient(135deg, rgba(8,8,12,0.78) 0%, rgba(8,8,12,0.55) 100%);
-      border: 1px solid rgba(229, 192, 123,0.22);
+      border: 1px solid rgba(200, 255, 43,0.22);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 16px 32px rgba(0,0,0,0.6), 0 0 20px rgba(229, 192, 123,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.6), 0 0 20px rgba(200, 255, 43,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
       border-radius: 12px;
       transition: box-shadow 0.3s, border-color 0.3s;
     }
     .t-card:hover {
-      border-color: rgba(229, 192, 123,0.38);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 30px rgba(229, 192, 123,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+      border-color: rgba(200, 255, 43,0.38);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 30px rgba(200, 255, 43,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     /* Amber glow text */
@@ -127,7 +121,7 @@ const GlobalStyles = () => (
     .t-input {
       width: 100%;
       background: rgba(0,0,0,0.45);
-      border: 1px solid rgba(229, 192, 123,0.2);
+      border: 1px solid rgba(200, 255, 43,0.2);
       border-radius: 6px;
       padding: 0.85rem 1rem;
       color: var(--tangy-cream);
@@ -140,15 +134,15 @@ const GlobalStyles = () => (
     }
     .t-input:focus {
       border-color: var(--tangy-amber);
-      background: rgba(229, 192, 123,0.08);
-      box-shadow: 0 0 0 3px rgba(229, 192, 123,0.12), 0 0 16px rgba(229, 192, 123,0.1);
+      background: rgba(200, 255, 43,0.08);
+      box-shadow: 0 0 0 3px rgba(200, 255, 43,0.12), 0 0 16px rgba(200, 255, 43,0.1);
     }
     .t-input::placeholder { color: rgba(255,255,255,0.3); }
 
     /* Button */
     .t-btn-primary {
       background: var(--tangy-amber);
-      color: #070707;
+      color: #080808;
       border: none;
       padding: 0.9rem 2rem;
       font-family: 'DM Sans', sans-serif;
@@ -162,7 +156,7 @@ const GlobalStyles = () => (
       position: relative;
       overflow: hidden;
     }
-    .t-btn-primary:hover { background: #F9E0A2; transform: translateY(-1px); box-shadow: 0 8px 32px rgba(229, 192, 123,0.3); }
+    .t-btn-primary:hover { background: #C8FF2B; transform: translateY(-1px); box-shadow: 0 8px 32px rgba(200, 255, 43,0.3); }
     .t-btn-primary:active { transform: translateY(0); }
 
     .t-btn-ghost {
@@ -177,25 +171,8 @@ const GlobalStyles = () => (
       cursor: pointer;
       border-radius: 3px;
       transition: all 0.25s;
-      position: relative;
-      overflow: hidden;
     }
-    .t-btn-ghost:hover { border-color: var(--tangy-amber); color: var(--tangy-amber); background: rgba(229, 192, 123,0.05); }
-
-    .t-btn-primary::after, .t-btn-ghost::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -150%;
-      width: 150%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-      transform: skewX(-25deg);
-      pointer-events: none;
-    }
-    .t-btn-primary:hover::after, .t-btn-ghost:hover::after {
-      animation: goldShine 1.8s infinite ease-in-out;
-    }
+    .t-btn-ghost:hover { border-color: var(--tangy-amber); color: var(--tangy-amber); background: rgba(200, 255, 43,0.05); }
 
     /* Nav */
     .nav-link {
@@ -242,22 +219,22 @@ const GlobalStyles = () => (
       border: 1px solid transparent;
       position: relative;
     }
-    .cal-cell:hover { border-color: rgba(229, 192, 123,0.3); background: rgba(229, 192, 123,0.06); }
+    .cal-cell:hover { border-color: rgba(200, 255, 43,0.3); background: rgba(200, 255, 43,0.06); }
     .cal-cell.today { border-color: var(--tangy-amber); color: var(--tangy-amber); font-weight: 700; }
-    .cal-cell.selected { background: var(--tangy-amber); color: #070707; font-weight: 700; border-color: var(--tangy-amber); }
+    .cal-cell.selected { background: var(--tangy-amber); color: #080808; font-weight: 700; border-color: var(--tangy-amber); }
 
     /* Tag */
     .tag {
       display: inline-flex; align-items: center;
       padding: 0.3rem 0.75rem;
       background: rgba(8,8,12,0.6);
-      border: 1px solid rgba(229, 192, 123,0.3);
+      border: 1px solid rgba(200, 255, 43,0.3);
       border-radius: 999px;
       font-size: 0.65rem;
       font-family: 'DM Sans', sans-serif;
       letter-spacing: 0.08em;
       color: var(--tangy-amber);
-      background: rgba(229, 192, 123,0.06);
+      background: rgba(200, 255, 43,0.06);
     }
 
     /* Scroll reveal */
@@ -302,7 +279,7 @@ const useRouter = () => useContext(RouterContext);
 // ── Ambient Background ───────────────────────────────────────
 const AmbientBg = ({ variant = 'default' }) => {
   const configs = {
-    default: { c1: '#E5C07B', c2: '#06b6d4', c3: '#1a0f2e' },
+    default: { c1: '#C8FF2B', c2: '#06b6d4', c3: '#1a0f2e' },
     blue:    { c1: '#2a4a8a', c2: '#1a2a5a', c3: '#0a0f1e' },
     green:   { c1: '#1a4a2a', c2: '#0a2a1a', c3: '#050f0a' },
   };
@@ -357,7 +334,7 @@ const Nav = ({ page, setPage }) => {
       background: 'linear-gradient(to bottom, rgba(5,5,8,0.92) 0%, rgba(5,5,8,0.6) 100%)',
       backdropFilter: 'blur(24px)',
       WebkitBackdropFilter: 'blur(24px)',
-      borderBottom: '1px solid rgba(229, 192, 123,0.12)',
+      borderBottom: '1px solid rgba(200, 255, 43,0.12)',
       boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
     }}>
       {/* Logo */}
@@ -391,7 +368,7 @@ const Nav = ({ page, setPage }) => {
               background: 'linear-gradient(135deg, var(--tangy-amber), var(--tangy-rust))',
               border: 'none', cursor: 'pointer',
               fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: '0.85rem',
-              color: '#070707', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#080808', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               {user.name[0]}
             </button>
@@ -446,7 +423,7 @@ const NotificationBell = ({ setPage }) => {
           {notifs.map(n => (
             <div key={n.id} onClick={() => { setShow(false); setPage('dashboard'); modal.toast({ message: `Navigating to: ${n.title}` }); }} style={{
               padding: '0.75rem', borderRadius: 6,
-              background: n.unread ? 'rgba(229, 192, 123,0.06)' : 'transparent',
+              background: n.unread ? 'rgba(200, 255, 43,0.06)' : 'transparent',
               borderLeft: n.unread ? '2px solid var(--tangy-amber)' : '2px solid transparent',
               marginBottom: '0.5rem', cursor: 'pointer',
             }}>
@@ -505,16 +482,16 @@ const ArtistCard = ({ artist, setPage, setSelectedArtist }) => {
           : 'linear-gradient(135deg, rgba(8,8,12,0.80) 0%, rgba(8,8,12,0.60) 100%)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        border: `1px solid ${hov ? 'rgba(229, 192, 123,0.45)' : 'rgba(229, 192, 123,0.2)'}`,
+        border: `1px solid ${hov ? 'rgba(200, 255, 43,0.45)' : 'rgba(200, 255, 43,0.2)'}`,
         transform: hov ? 'translateY(-6px)' : 'translateY(0)',
         transition: 'all 0.35s cubic-bezier(0.16,1,0.3,1)',
         boxShadow: hov
-          ? '0 24px 60px rgba(0,0,0,0.75), 0 0 40px rgba(229, 192, 123,0.18), inset 0 1px 0 rgba(255,255,255,0.06)'
-          : '0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(229, 192, 123,0.06), inset 0 1px 0 rgba(255,255,255,0.03)',
+          ? '0 24px 60px rgba(0,0,0,0.75), 0 0 40px rgba(200, 255, 43,0.18), inset 0 1px 0 rgba(255,255,255,0.06)'
+          : '0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(200, 255, 43,0.06), inset 0 1px 0 rgba(255,255,255,0.03)',
       }}
     >
       {/* Image area */}
-      <div style={{ position: 'relative', height: 220, overflow: 'hidden', background: '#0a0a0a' }}>
+      <div style={{ position: 'relative', height: 220, overflow: 'hidden', background: '#080808' }}>
         {artist.avatar ? (
           <img 
             src={artist.avatar} 
@@ -561,7 +538,7 @@ const ArtistCard = ({ artist, setPage, setSelectedArtist }) => {
           padding: '0.35rem 0.8rem', borderRadius: 999,
           background: 'rgba(5,5,8,0.65)', backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid rgba(229, 192, 123,0.2)',
+          border: '1px solid rgba(200, 255, 43,0.2)',
           zIndex: 2,
         }}>
           <div className={`dot-${artist.status}`} style={{ width: 6, height: 6, borderRadius: '50%', boxShadow: `0 0 8px var(--tangy-${artist.status === 'available' ? 'green' : 'amber'})` }} />
@@ -575,7 +552,7 @@ const ArtistCard = ({ artist, setPage, setSelectedArtist }) => {
       <div style={{
         padding: '1.4rem', position: 'relative', zIndex: 2,
         background: 'transparent',
-        borderTop: '1px solid rgba(229, 192, 123,0.1)',
+        borderTop: '1px solid rgba(200, 255, 43,0.1)',
       }}>
         <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.3rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '0.3rem', letterSpacing: '0.04em' }}>{artist.name}</h3>
         <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-amber)', letterSpacing: '0.1em', marginBottom: '0.8rem', textTransform: 'uppercase' }}>{artist.genre}</p>
@@ -824,7 +801,7 @@ const SignupPage = ({ setPage }) => {
                     background: i + 1 <= step ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.08)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem',
-                    color: i + 1 <= step ? '#070707' : 'var(--tangy-muted)',
+                    color: i + 1 <= step ? '#080808' : 'var(--tangy-muted)',
                     transition: 'all 0.3s',
                   }}>{i + 1 < step ? '✓' : i + 1}</div>
                   <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.55rem', color: i + 1 === step ? 'var(--tangy-amber)' : 'var(--tangy-muted)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t}</span>
@@ -875,7 +852,7 @@ const SignupPage = ({ setPage }) => {
                     padding: '0.4rem 0.9rem', borderRadius: 999, cursor: 'pointer',
                     fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem',
                     border: `1px solid ${form.genre.includes(g) ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.12)'}`,
-                    background: form.genre.includes(g) ? 'rgba(229, 192, 123,0.15)' : 'transparent',
+                    background: form.genre.includes(g) ? 'rgba(200, 255, 43,0.15)' : 'transparent',
                     color: form.genre.includes(g) ? 'var(--tangy-amber)' : 'var(--tangy-muted)',
                     transition: 'all 0.2s',
                   }}>{g}</button>
@@ -916,7 +893,7 @@ const SignupPage = ({ setPage }) => {
                   <input className="t-input" placeholder={placeholder} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} />
                 </div>
               ))}
-              <div style={{ border: '2px dashed rgba(255,255,255,0.1)', borderRadius: 8, padding: '2rem', textAlign: 'center', cursor: 'pointer', transition: 'border-color 0.2s' }} onMouseEnter={e => e.target.style.borderColor = 'rgba(229, 192, 123,0.3)'} onMouseLeave={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}>
+              <div style={{ border: '2px dashed rgba(255,255,255,0.1)', borderRadius: 8, padding: '2rem', textAlign: 'center', cursor: 'pointer', transition: 'border-color 0.2s' }} onMouseEnter={e => e.target.style.borderColor = 'rgba(200, 255, 43,0.3)'} onMouseLeave={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}>
                 <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em' }}>↑ UPLOAD PROFILE IMAGE</p>
                 <p style={{ fontSize: '0.7rem', color: 'var(--tangy-muted)', marginTop: '0.4rem' }}>JPG, PNG up to 10MB</p>
               </div>
@@ -980,7 +957,7 @@ const ArtistsPage = ({ setPage, setSelectedArtist }) => {
               padding: '0.5rem 1rem', borderRadius: 999, cursor: 'pointer',
               fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', letterSpacing: '0.06em',
               border: `1px solid ${filter === g ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.1)'}`,
-              background: filter === g ? 'rgba(229, 192, 123,0.12)' : 'transparent',
+              background: filter === g ? 'rgba(200, 255, 43,0.12)' : 'transparent',
               color: filter === g ? 'var(--tangy-amber)' : 'var(--tangy-muted)',
               transition: 'all 0.2s',
             }}>{g}</button>
@@ -1015,7 +992,7 @@ const ArtistProfilePage = ({ setPage, artist: propArtist }) => {
     avatar: '/artists/artist1.jpg',
     bio: `KALI is a sonic architect whose sets descend like ancient rituals — dark, ceremonial, and utterly consuming. Drawing from Hyderabad's layered history, their music weaves threads of industrial texture with hypnotic techno rhythms, creating something that feels both ancestral and futuristic.\n\nBorn in the shadow of the Charminar, KALI's journey into electronic music began as an act of sonic rebellion — finding signal in noise, finding presence in abstraction. Each performance is a meditation; each track a prayer to the underground.`,
     tags: ['Techno', 'Dark Ambient', 'Industrial', 'Ritual'],
-    color: '#E5C07B',
+    color: '#C8FF2B',
     status: 'available',
   };
 
@@ -1039,7 +1016,7 @@ const ArtistProfilePage = ({ setPage, artist: propArtist }) => {
       <div style={{
         minHeight: '75vh', position: 'relative', overflow: 'hidden',
         display: 'flex', alignItems: 'flex-end',
-        background: '#050505',
+        background: '#080808',
       }}>
         {/* Full-bleed background image */}
         {artist.avatar && (
@@ -1070,7 +1047,7 @@ const ArtistProfilePage = ({ setPage, artist: propArtist }) => {
         {/* Shadow overlays for readability & seamless blending */}
         <div style={{ 
           position: 'absolute', inset: 0, 
-          background: 'linear-gradient(to right, #070707 5%, rgba(9,9,9,0.4) 50%, transparent 100%)',
+          background: 'linear-gradient(to right, #080808 5%, rgba(9,9,9,0.4) 50%, transparent 100%)',
           zIndex: 1 
         }} />
         <div style={{ 
@@ -1116,7 +1093,7 @@ const ArtistProfilePage = ({ setPage, artist: propArtist }) => {
               <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1rem' }}>Gallery</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem' }}>
                 {artist.gallery.map((c, i) => (
-                  <div key={i} style={{ aspectRatio: '1', borderRadius: 6, background: `linear-gradient(135deg, ${c}, #070707)`, border: '1px solid var(--tangy-border)' }} />
+                  <div key={i} style={{ aspectRatio: '1', borderRadius: 6, background: `linear-gradient(135deg, ${c}, #080808)`, border: '1px solid var(--tangy-border)' }} />
                 ))}
               </div>
             </div>
@@ -1239,9 +1216,9 @@ const DashboardPage = ({ setPage }) => {
                     <span style={{
                       padding: '0.25rem 0.65rem', borderRadius: 999, fontSize: '0.6rem',
                       fontFamily: "'DM Sans', sans-serif",
-                      background: s.status === 'confirmed' ? 'rgba(74,222,128,0.12)' : 'rgba(229, 192, 123,0.12)',
+                      background: s.status === 'confirmed' ? 'rgba(74,222,128,0.12)' : 'rgba(200, 255, 43,0.12)',
                       color: s.status === 'confirmed' ? '#4ade80' : 'var(--tangy-amber)',
-                      border: `1px solid ${s.status === 'confirmed' ? 'rgba(74,222,128,0.3)' : 'rgba(229, 192, 123,0.3)'}`,
+                      border: `1px solid ${s.status === 'confirmed' ? 'rgba(74,222,128,0.3)' : 'rgba(200, 255, 43,0.3)'}`,
                     }}>{s.status}</span>
                   </div>
                 </div>
@@ -1252,7 +1229,7 @@ const DashboardPage = ({ setPage }) => {
             <div className="glass" style={{ borderRadius: 10, padding: '1.8rem', animation: 'fadeUp 0.6s 0.4s ease both' }}>
               <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Event Invitations</p>
               {invites.map((inv, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem', background: 'rgba(229, 192, 123,0.05)', borderRadius: 8, border: '1px solid rgba(229, 192, 123,0.15)', flexWrap: 'wrap', gap: '1rem' }}>
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem', background: 'rgba(200, 255, 43,0.05)', borderRadius: 8, border: '1px solid rgba(200, 255, 43,0.15)', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
                     <p style={{ fontWeight: 600, color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{inv.event}</p>
                     <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)' }}>{inv.organizer} · {inv.date}</p>
@@ -1309,7 +1286,7 @@ const DashboardPage = ({ setPage }) => {
                     transition: 'all 0.2s', color: 'var(--tangy-muted)', fontSize: '0.72rem',
                     fontFamily: "'DM Sans', sans-serif",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(229, 192, 123,0.3)'; e.currentTarget.style.background = 'rgba(229, 192, 123,0.05)'; e.currentTarget.style.color = 'var(--tangy-cream)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(200, 255, 43,0.3)'; e.currentTarget.style.background = 'rgba(200, 255, 43,0.05)'; e.currentTarget.style.color = 'var(--tangy-cream)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--tangy-border)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = 'var(--tangy-muted)'; }}
                   >
                     <span style={{ fontSize: '1.2rem' }}>{qa.icon}</span>
@@ -1333,7 +1310,7 @@ const DashboardPage = ({ setPage }) => {
                   <div key={d} className="cal-cell" style={{
                     fontSize: '0.62rem',
                     background: d === 14 ? 'var(--tangy-amber)' : d === 2 ? 'rgba(196,92,42,0.3)' : 'transparent',
-                    color: d === 14 ? '#070707' : d === 2 ? 'var(--tangy-rust)' : 'var(--tangy-muted)',
+                    color: d === 14 ? '#080808' : d === 2 ? 'var(--tangy-rust)' : 'var(--tangy-muted)',
                     border: d === 14 ? '1px solid var(--tangy-amber)' : '1px solid transparent',
                   }}>{d}</div>
                 ))}
@@ -1350,7 +1327,7 @@ const DashboardPage = ({ setPage }) => {
               ].map((a, i) => (
                 <div key={i} style={{ padding: '0.6rem 0', borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
                   <p style={{ fontSize: '0.75rem', color: 'var(--tangy-muted)', lineHeight: 1.5, marginBottom: '0.2rem' }}>{a.msg}</p>
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'rgba(229, 192, 123,0.5)' }}>{a.time}</p>
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'rgba(200, 255, 43,0.5)' }}>{a.time}</p>
                 </div>
               ))}
             </div>
@@ -1395,7 +1372,7 @@ const CalendarPage = () => {
   const bgForStatus = s => ({
     available: 'rgba(74,222,128,0.15)',
     booked: 'rgba(196,92,42,0.2)',
-    tentative: 'rgba(229, 192, 123,0.15)',
+    tentative: 'rgba(200, 255, 43,0.15)',
     unavailable: 'rgba(255,255,255,0.04)',
   }[s] || 'transparent');
 
@@ -1458,7 +1435,7 @@ const CalendarPage = () => {
                       fontWeight: isToday ? 700 : 400,
                       transition: 'all 0.15s',
                     }}
-                    onMouseEnter={e => { if (!status) e.currentTarget.style.background = 'rgba(229, 192, 123,0.06)'; }}
+                    onMouseEnter={e => { if (!status) e.currentTarget.style.background = 'rgba(200, 255, 43,0.06)'; }}
                     onMouseLeave={e => { if (!status) e.currentTarget.style.background = 'transparent'; }}
                   >
                     {day}
@@ -1541,8 +1518,8 @@ const ProfilePage = ({ setPage }) => {
             width: 90, height: 90, borderRadius: '50%', flexShrink: 0,
             background: 'linear-gradient(135deg, var(--tangy-amber), var(--tangy-rust))',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.2rem', fontWeight: 700, color: '#070707',
-            boxShadow: '0 0 40px rgba(229, 192, 123,0.3)', cursor: 'pointer', position: 'relative', overflow: 'hidden'
+            fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.2rem', fontWeight: 700, color: '#080808',
+            boxShadow: '0 0 40px rgba(200, 255, 43,0.3)', cursor: 'pointer', position: 'relative', overflow: 'hidden'
           }} title="Click to change photo" onClick={() => document.getElementById('photoUpload').click()}>
             {user?.avatar ? <img src={user.avatar} alt={user.name} style={{width:'100%', height:'100%', objectFit:'cover'}} /> : user?.name[0]}
             <div style={{position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '0.6rem'}} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>CHANGE</div>
@@ -1603,7 +1580,7 @@ const ProfilePage = ({ setPage }) => {
         {tab === 'media' && (
           <div className="glass" style={{ borderRadius: 12, padding: '2rem' }}>
             <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Media Upload</p>
-            <div style={{ border: '2px dashed rgba(229, 192, 123,0.2)', borderRadius: 10, padding: '3rem', textAlign: 'center', marginBottom: '1.5rem', cursor: 'pointer' }}>
+            <div style={{ border: '2px dashed rgba(200, 255, 43,0.2)', borderRadius: 10, padding: '3rem', textAlign: 'center', marginBottom: '1.5rem', cursor: 'pointer' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🎵</div>
               <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', marginBottom: '0.4rem' }}>DROP FILES HERE</p>
               <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.25)' }}>MP3, WAV, FLAC · Images · Videos</p>
@@ -1611,7 +1588,7 @@ const ProfilePage = ({ setPage }) => {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
               {['#1a1225','#0f1a2e','#2a0f1e','#1a2a0f'].map((c, i) => (
-                <div key={i} style={{ aspectRatio: '1', borderRadius: 8, background: `linear-gradient(135deg, ${c}, #070707)`, border: '1px solid var(--tangy-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', cursor: 'pointer' }}>🖼</div>
+                <div key={i} style={{ aspectRatio: '1', borderRadius: 8, background: `linear-gradient(135deg, ${c}, #080808)`, border: '1px solid var(--tangy-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', cursor: 'pointer' }}>🖼</div>
               ))}
             </div>
           </div>
@@ -1646,7 +1623,7 @@ const ProfilePage = ({ setPage }) => {
                   background: s.on ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.1)',
                   position: 'relative', transition: 'background 0.2s',
                 }}>
-                  <div style={{ position: 'absolute', top: 3, left: s.on ? 20 : 3, width: 16, height: 16, borderRadius: '50%', background: s.on ? '#070707' : 'rgba(255,255,255,0.4)', transition: 'left 0.2s' }} />
+                  <div style={{ position: 'absolute', top: 3, left: s.on ? 20 : 3, width: 16, height: 16, borderRadius: '50%', background: s.on ? '#080808' : 'rgba(255,255,255,0.4)', transition: 'left 0.2s' }} />
                 </div>
               </div>
             ))}

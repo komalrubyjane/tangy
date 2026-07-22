@@ -91,7 +91,7 @@ export default function ArtistRegister() {
                 boxShadow: "0 15px 30px rgba(0,0,0,0.5)",
               }}
             >
-              <span style={{ color: "#E5C07B" }}>🎤</span>
+              <span style={{ color: "#C8FF2B" }}>🎤</span>
               <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", fontWeight: 600, color: "#fff", letterSpacing: "0.05em" }}>
                 Live Music
               </span>
@@ -117,7 +117,7 @@ export default function ArtistRegister() {
                 zIndex: 2,
               }}
             >
-              <span style={{ color: "#E5C07B" }}>🏛</span>
+              <span style={{ color: "#C8FF2B" }}>🏛</span>
               <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", fontWeight: 600, color: "#fff", letterSpacing: "0.05em" }}>
                 Heritage Venues
               </span>
@@ -143,7 +143,7 @@ export default function ArtistRegister() {
                 zIndex: 2,
               }}
             >
-              <span style={{ color: "#E5C07B" }}>✦</span>
+              <span style={{ color: "#C8FF2B" }}>✦</span>
               <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", fontWeight: 600, color: "#fff", letterSpacing: "0.05em" }}>
                 Curated Performances
               </span>
@@ -158,7 +158,7 @@ export default function ArtistRegister() {
             transition={{ duration: 0.8 }}
             style={{ display: "flex", flexDirection: "column", gap: 24 }}
           >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.3em", color: "#E5C07B", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "700" }}>
+            <div style={{ fontSize: "0.72rem", letterSpacing: "0.3em", color: "#C8FF2B", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "700" }}>
               PERFORM WITH TANGY • ARTIST OPPORTUNITIES
             </div>
 
@@ -172,12 +172,12 @@ export default function ArtistRegister() {
               letterSpacing: "0.02em",
             }}>
               Your Music<br />
-              <span style={{ color: "#E5C07B" }}>
+              <span style={{ color: "#C8FF2B" }}>
                 Belongs Here.
               </span>
             </h2>
 
-            <div style={{ height: 2, width: 48, background: "linear-gradient(to right, #E5C07B, #06b6d4)", borderRadius: 1 }} />
+            <div style={{ height: 2, width: 48, background: "linear-gradient(to right, #C8FF2B, #06b6d4)", borderRadius: 1 }} />
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}>
@@ -212,7 +212,7 @@ export default function ArtistRegister() {
                   whileTap={{ scale: 0.97 }}
                   style={{
                     padding: "16px 44px",
-                    background: "#E5C07B",
+                    background: "#C8FF2B",
                     color: "#fff",
                     border: "none",
                     borderRadius: 30,

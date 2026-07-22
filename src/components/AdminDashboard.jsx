@@ -29,7 +29,7 @@ const EVENTS_DATA = [
 ];
 
 // ─── MINI CHART (sparkline) ───────────────────────────────────────────────────
-function Sparkline({ data, color = "#E5C07B", width = 120, height = 40 }) {
+function Sparkline({ data, color = "#C8FF2B", width = 120, height = 40 }) {
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min || 1;
@@ -55,7 +55,7 @@ function Sparkline({ data, color = "#E5C07B", width = 120, height = 40 }) {
         const x = (i / (data.length - 1)) * width;
         const y = height - ((v - min) / range) * (height - 6) - 3;
         return i === data.length - 1 ? (
-          <circle key={i} cx={x} cy={y} r={4} fill={color} stroke="#0d0d0d" strokeWidth={2} />
+          <circle key={i} cx={x} cy={y} r={4} fill={color} stroke="#111111" strokeWidth={2} />
         ) : null;
       })}
     </svg>
@@ -139,19 +139,19 @@ function AdminLogin({ onLogin }) {
 
   return (
     <div style={{
-      minHeight: "100vh", background: "#0a0a0a", display: "flex", alignItems: "center",
+      minHeight: "100vh", background: "#080808", display: "flex", alignItems: "center",
       justifyContent: "center", fontFamily: "'DM Sans', system-ui, sans-serif",
     }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap'); @keyframes spin { to { transform: rotate(360deg); } }`}</style>
       <motion.div
         initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
         style={{
-          background: "#0d0d0d", border: "1px solid rgba(229, 192, 123,0.2)",
+          background: "#111111", border: "1px solid rgba(229, 192, 123,0.2)",
           borderRadius: 20, padding: "48px 40px", width: "100%", maxWidth: 380,
           boxShadow: "0 0 80px rgba(229, 192, 123,0.12)",
         }}>
         <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "#E5C07B", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8 }}>Tangy Sessions</div>
+          <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "#C8FF2B", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8 }}>Tangy Sessions</div>
           <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.4rem", color: "#fff", letterSpacing: "0.05em", margin: 0 }}>Admin Portal</h1>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -172,7 +172,7 @@ function AdminLogin({ onLogin }) {
           {error && <div style={{ color: "#ef4444", fontSize: "0.78rem", textAlign: "center" }}>⚠ {error}</div>}
           <motion.button onClick={handleLogin} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
             style={{
-              padding: "14px", background: "#E5C07B", color: "#fff", border: "none", borderRadius: 8,
+              padding: "14px", background: "#C8FF2B", color: "#fff", border: "none", borderRadius: 8,
               cursor: "pointer", fontFamily: "inherit", fontSize: "0.9rem", fontWeight: 600,
               letterSpacing: "0.08em", marginTop: 4, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
             }}>
@@ -257,9 +257,9 @@ export default function AdminDashboard() {
     <button onClick={() => setter(val)}
       style={{
         padding: "6px 14px", fontSize: "0.75rem", letterSpacing: "0.08em",
-        background: active === val ? "#E5C07B" : "rgba(255,255,255,0.04)",
+        background: active === val ? "#C8FF2B" : "rgba(255,255,255,0.04)",
         color: active === val ? "#fff" : "rgba(255,255,255,0.5)",
-        border: `1px solid ${active === val ? "#E5C07B" : "rgba(255,255,255,0.08)"}`,
+        border: `1px solid ${active === val ? "#C8FF2B" : "rgba(255,255,255,0.08)"}`,
         borderRadius: 20, cursor: "pointer", transition: "all 0.2s",
       }}>
       {label}
@@ -268,15 +268,15 @@ export default function AdminDashboard() {
 
   return (
     <div style={{
-      minHeight: "100vh", background: "#070707", color: "#fff",
+      minHeight: "100vh", background: "#080808", color: "#fff",
       fontFamily: "'DM Sans', system-ui, sans-serif",
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
         @keyframes spin { to { transform: rotate(360deg); } }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: #0d0d0d; }
-        ::-webkit-scrollbar-thumb { background: #E5C07B; border-radius: 2px; }
+        ::-webkit-scrollbar-track { background: #111111; }
+        ::-webkit-scrollbar-thumb { background: #C8FF2B; border-radius: 2px; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
       `}</style>
 
@@ -298,12 +298,12 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <div style={{ display: "flex", minHeight: "100vh" }}>
         <aside style={{
-          width: 220, background: "#0d0d0d", borderRight: "1px solid rgba(255,255,255,0.06)",
+          width: 220, background: "#111111", borderRight: "1px solid rgba(255,255,255,0.06)",
           padding: "28px 0", display: "flex", flexDirection: "column", flexShrink: 0,
           position: "sticky", top: 0, height: "100vh",
         }}>
           <div style={{ padding: "0 24px 28px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "#E5C07B", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 4 }}>Dashboard</div>
+            <div style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "#C8FF2B", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 4 }}>Dashboard</div>
             <img
               src="/logo.svg"
               alt="Tangy Sessions Logo"
@@ -326,7 +326,7 @@ export default function AdminDashboard() {
                   <span style={{ marginLeft: "auto", background: "#f59e0b", color: "#000", borderRadius: 10, padding: "1px 7px", fontSize: "0.65rem", fontWeight: 700 }}>{pendingVols}</span>
                 )}
                 {t.id === "artists" && pendingArtists > 0 && (
-                  <span style={{ marginLeft: "auto", background: "#E5C07B", color: "#fff", borderRadius: 10, padding: "1px 7px", fontSize: "0.65rem", fontWeight: 700 }}>{pendingArtists}</span>
+                  <span style={{ marginLeft: "auto", background: "#C8FF2B", color: "#fff", borderRadius: 10, padding: "1px 7px", fontSize: "0.65rem", fontWeight: 700 }}>{pendingArtists}</span>
                 )}
               </button>
             ))}
@@ -367,7 +367,7 @@ export default function AdminDashboard() {
             {tab === "overview" && (
               <motion.div key="overview" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 32 }}>
-                  <StatCard label="Total Revenue" value={`₹${(totalRevenue / 1000).toFixed(1)}K`} sub={`From ${bookings.filter(b => b.status === "confirmed").length} bookings`} color="#E5C07B" icon="💰" sparkData={[42, 58, 71, 65, 83, 91, 105, 98, 120, 115, 132, 142]} trend="+24%" />
+                  <StatCard label="Total Revenue" value={`₹${(totalRevenue / 1000).toFixed(1)}K`} sub={`From ${bookings.filter(b => b.status === "confirmed").length} bookings`} color="#C8FF2B" icon="💰" sparkData={[42, 58, 71, 65, 83, 91, 105, 98, 120, 115, 132, 142]} trend="+24%" />
                   <StatCard label="Tickets Sold" value={totalTickets} sub="Across 3 events" color="#06b6d4" icon="🎟️" sparkData={[12, 18, 22, 19, 28, 34, 29, 38, 45, 41, 52, 58]} trend="+18%" />
                   <StatCard label="Volunteers" value={volunteers.length} sub={`${pendingVols} pending review`} color="#F9E0A2" icon="🤝" sparkData={[2, 3, 3, 4, 4, 5, 6, 6, 7, 8, 8, 9]} trend="+3" />
                   <StatCard label="Upcoming Events" value="3" sub="Next: Aug 15, 2025" color="#f59e0b" icon="📅" sparkData={[1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3]} />
@@ -377,7 +377,7 @@ export default function AdminDashboard() {
                 <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, overflow: "hidden" }}>
                   <div style={{ padding: "18px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase" }}>Recent Bookings</div>
-                    <button onClick={() => setTab("bookings")} style={{ background: "none", border: "none", color: "#E5C07B", cursor: "pointer", fontSize: "0.78rem" }}>View all →</button>
+                    <button onClick={() => setTab("bookings")} style={{ background: "none", border: "none", color: "#C8FF2B", cursor: "pointer", fontSize: "0.78rem" }}>View all →</button>
                   </div>
                   <div style={{ overflowX: "auto" }}>
                     <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.83rem" }}>
@@ -394,7 +394,7 @@ export default function AdminDashboard() {
                             style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
                             onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
                             onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                            <td style={{ padding: "14px 20px", fontFamily: "monospace", fontSize: "0.75rem", color: "#E5C07B" }}>{b.id}</td>
+                            <td style={{ padding: "14px 20px", fontFamily: "monospace", fontSize: "0.75rem", color: "#C8FF2B" }}>{b.id}</td>
                             <td style={{ padding: "14px 20px" }}><div>{b.name}</div><div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)" }}>{b.email}</div></td>
                             <td style={{ padding: "14px 20px", color: "rgba(255,255,255,0.6)" }}>{b.event}</td>
                             <td style={{ padding: "14px 20px", color: "rgba(255,255,255,0.6)" }}>{b.tickets}</td>
@@ -422,7 +422,7 @@ export default function AdminDashboard() {
                           transition={{ duration: 0.8, delay: i * 0.15, ease: "easeOut" }}
                           style={{
                             height: "100%", borderRadius: 3,
-                            background: ev.sold / ev.capacity > 0.8 ? "#ef4444" : ev.sold / ev.capacity > 0.5 ? "#f59e0b" : "#E5C07B"
+                            background: ev.sold / ev.capacity > 0.8 ? "#ef4444" : ev.sold / ev.capacity > 0.5 ? "#f59e0b" : "#C8FF2B"
                           }} />
                       </div>
                     </div>
@@ -457,7 +457,7 @@ export default function AdminDashboard() {
                               style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
                               onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
                               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                              <td style={{ padding: "14px 18px", fontFamily: "monospace", fontSize: "0.73rem", color: "#E5C07B", whiteSpace: "nowrap" }}>{b.id}</td>
+                              <td style={{ padding: "14px 18px", fontFamily: "monospace", fontSize: "0.73rem", color: "#C8FF2B", whiteSpace: "nowrap" }}>{b.id}</td>
                               <td style={{ padding: "14px 18px", whiteSpace: "nowrap" }}>
                                 <div style={{ fontWeight: 500 }}>{b.name}</div>
                                 <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)" }}>{b.email}</div>
@@ -500,7 +500,7 @@ export default function AdminDashboard() {
                           borderRadius: 12, padding: "18px 22px",
                           display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
                         }}>
-                        <div style={{ width: 44, height: 44, borderRadius: "50%", background: "rgba(229, 192, 123,0.15)", border: "1px solid rgba(229, 192, 123,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", color: "#E5C07B", flexShrink: 0 }}>
+                        <div style={{ width: 44, height: 44, borderRadius: "50%", background: "rgba(229, 192, 123,0.15)", border: "1px solid rgba(229, 192, 123,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", color: "#C8FF2B", flexShrink: 0 }}>
                           {v.name.split(" ").map(n => n[0]).join("")}
                         </div>
                         <div style={{ flex: 1, minWidth: 160 }}>
@@ -560,7 +560,7 @@ export default function AdminDashboard() {
                         </div>
                         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                           <Badge status={ev.status} />
-                          <button style={{ padding: "7px 16px", background: "rgba(229, 192, 123,0.1)", border: "1px solid rgba(229, 192, 123,0.25)", borderRadius: 6, color: "#E5C07B", cursor: "pointer", fontSize: "0.78rem", fontFamily: "inherit", transition: "all 0.2s" }}
+                          <button style={{ padding: "7px 16px", background: "rgba(229, 192, 123,0.1)", border: "1px solid rgba(229, 192, 123,0.25)", borderRadius: 6, color: "#C8FF2B", cursor: "pointer", fontSize: "0.78rem", fontFamily: "inherit", transition: "all 0.2s" }}
                             onClick={() => { setEditingEvent(i); setEditForm({ ...ev }); }}
                             onMouseEnter={e => { e.currentTarget.style.background = "rgba(229, 192, 123,0.2)"; e.currentTarget.style.borderColor = "rgba(229, 192, 123,0.4)"; }}
                             onMouseLeave={e => { e.currentTarget.style.background = "rgba(229, 192, 123,0.1)"; e.currentTarget.style.borderColor = "rgba(229, 192, 123,0.25)"; }}>
@@ -570,7 +570,7 @@ export default function AdminDashboard() {
                       </div>
                       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 16, marginBottom: 20 }}>
                         {[
-                          ["Revenue", `₹${ev.revenue.toLocaleString("en-IN")}`, "#E5C07B"],
+                          ["Revenue", `₹${ev.revenue.toLocaleString("en-IN")}`, "#C8FF2B"],
                           ["Tickets Sold", ev.sold, "#06b6d4"],
                           ["Capacity", ev.capacity, "#F9E0A2"],
                           ["Available", ev.capacity - ev.sold, ev.capacity - ev.sold < 30 ? "#ef4444" : "#10b981"],
@@ -592,7 +592,7 @@ export default function AdminDashboard() {
                             transition={{ duration: 0.8, delay: i * 0.15 }}
                             style={{
                               height: "100%", borderRadius: 4,
-                              background: `linear-gradient(to right, #E5C07B, ${ev.sold / ev.capacity > 0.8 ? "#ef4444" : "#06b6d4"})`,
+                              background: `linear-gradient(to right, #C8FF2B, ${ev.sold / ev.capacity > 0.8 ? "#ef4444" : "#06b6d4"})`,
                             }} />
                         </div>
                       </div>
@@ -625,11 +625,11 @@ export default function AdminDashboard() {
                         }}>
                         
                         {/* Avatar */}
-                        <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", border: `2px solid ${a.color || "#E5C07B"}`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.03)" }}>
+                        <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", border: `2px solid ${a.color || "#C8FF2B"}`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.03)" }}>
                           {a.avatar ? (
                             <img src={a.avatar} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
                           ) : null}
-                          <span style={{ display: a.avatar ? "none" : "flex", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2rem", color: a.color || "#E5C07B" }}>
+                          <span style={{ display: a.avatar ? "none" : "flex", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2rem", color: a.color || "#C8FF2B" }}>
                             {a.name.split(" ").map(n => n[0]).join("")}
                           </span>
                         </div>
@@ -913,7 +913,7 @@ export default function AdminDashboard() {
                     style={{
                       flex: 1,
                       padding: "12px",
-                      background: "#E5C07B",
+                      background: "#C8FF2B",
                       border: "none",
                       borderRadius: 8,
                       color: "#fff",

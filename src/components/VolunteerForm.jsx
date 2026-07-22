@@ -173,7 +173,7 @@ export default function VolunteerForm() {
         ))}
       </div>
       
-      <div style={{ fontSize: "0.8rem", color: "#F3E5AB", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Step {step} of 5</div>
+      <div style={{ fontSize: "0.8rem", color: "#2A593E", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Step {step} of 5</div>
 
       <AnimatePresence mode="wait">
         <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
@@ -241,7 +241,7 @@ export default function VolunteerForm() {
               {/* CONDITIONALS */}
               {form.primaryDept === "Creative Direction & Show Design" && (
                 <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#F3E5AB" }}>Creative Direction Section</h4>
+                  <h4 style={{ margin: 0, color: "#2A593E" }}>Creative Direction Section</h4>
                   <div><label style={LABEL_STYLE}>Role *</label>
                     <select value={form.cdRole} onChange={e => handleChange("cdRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Show Director">Show Director</option><option value="Show Crew">Show Crew</option></select>
                   </div>
@@ -255,7 +255,7 @@ export default function VolunteerForm() {
 
               {form.primaryDept === "Stage Designer & Decor Lead" && (
                 <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#F3E5AB" }}>Stage Design Section</h4>
+                  <h4 style={{ margin: 0, color: "#2A593E" }}>Stage Design Section</h4>
                   <div><label style={LABEL_STYLE}>Background *</label><select value={form.sdBg} onChange={e => handleChange("sdBg", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Interior Design">Interior Design</option><option value="Architecture">Architecture</option><option value="Event Decor">Event Decor</option><option value="Fashion / Set Design">Fashion / Set Design</option><option value="Self Taught">Self Taught</option><option value="Beginner">Beginner</option></select></div>
                   <div><label style={LABEL_STYLE}>Role *</label><select value={form.sdRole} onChange={e => handleChange("sdRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Decor Lead">Decor Lead</option><option value="Decor Crew">Decor Crew</option><option value="Either">Either</option></select></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><select value={form.sdExp} onChange={e => handleChange("sdExp", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Professional">Professional</option><option value="Independent">Independent</option><option value="Idea-based">Idea-based</option><option value="No experience">No experience</option></select></div>
@@ -268,7 +268,7 @@ export default function VolunteerForm() {
               {/* Add other conditionals similarly */}
               {form.primaryDept === "Costume Design" && (
                 <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#F3E5AB" }}>Costume Design Section</h4>
+                  <h4 style={{ margin: 0, color: "#2A593E" }}>Costume Design Section</h4>
                   <div><label style={LABEL_STYLE}>Role *</label><select value={form.csRole} onChange={e => handleChange("csRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Costume Head">Costume Head</option><option value="Costume Crew">Costume Crew</option></select></div>
                   <div><label style={LABEL_STYLE}>Background *</label><input type="text" value={form.csBg} onChange={e => handleChange("csBg", e.target.value)} style={INPUT_STYLE} /></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><input type="text" value={form.csExp} onChange={e => handleChange("csExp", e.target.value)} style={INPUT_STYLE} /></div>
@@ -278,7 +278,7 @@ export default function VolunteerForm() {
 
               {form.primaryDept === "Visual & Content" && (
                 <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#F3E5AB" }}>Visual & Content Section</h4>
+                  <h4 style={{ margin: 0, color: "#2A593E" }}>Visual & Content Section</h4>
                   <div><label style={LABEL_STYLE}>Skills *</label><select value={form.vcSkills} onChange={e => handleChange("vcSkills", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Photographer">Photographer</option><option value="Videographer">Videographer</option><option value="Editor">Editor</option><option value="Reels Creator">Reels Creator</option><option value="Colourist">Colourist</option><option value="Graphic Designer">Graphic Designer</option><option value="Motion Designer">Motion Designer</option></select></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><input type="text" value={form.vcExp} onChange={e => handleChange("vcExp", e.target.value)} style={INPUT_STYLE} /></div>
                   <div><label style={LABEL_STYLE}>Equipment & Software *</label><input type="text" value={form.vcEquip} onChange={e => handleChange("vcEquip", e.target.value)} style={INPUT_STYLE} /></div>
