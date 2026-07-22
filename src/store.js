@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 const INITIAL_ARTISTS = [
-  { id: 1, name: 'KALI', genre: 'Techno / Dark Ambient', bio: 'Sonic architect from Hyderabad weaving dark rituals in sound.', status: 'available', color: '#FFDF00', tags: ['Techno', 'Ambient'], avatar: '/artists/artist1.jpg', appStatus: 'approved' },
-  { id: 2, name: 'Zephyr Rao', genre: 'Deep House / Afrobeat', bio: 'Blending Carnatic roots with underground club culture.', status: 'booked', color: '#FFDF00', tags: ['House', 'Afrobeat'], avatar: '/artists/artist2.jpg', appStatus: 'approved' },
+  { id: 1, name: 'KALI', genre: 'Techno / Dark Ambient', bio: 'Sonic architect from Hyderabad weaving dark rituals in sound.', status: 'available', color: '#E5C07B', tags: ['Techno', 'Ambient'], avatar: '/artists/artist1.jpg', appStatus: 'approved' },
+  { id: 2, name: 'Zephyr Rao', genre: 'Deep House / Afrobeat', bio: 'Blending Carnatic roots with underground club culture.', status: 'booked', color: '#E5C07B', tags: ['House', 'Afrobeat'], avatar: '/artists/artist2.jpg', appStatus: 'approved' },
   { id: 3, name: 'Neon Sufi', genre: 'Psytrance / World', bio: 'Spiritual frequencies meet electronic ecstasy.', status: 'tentative', color: '#22d3ee', tags: ['Psytrance', 'World'], avatar: '/artists/artist3.jpg', appStatus: 'approved' },
   { id: 4, name: 'Arka Singh', genre: 'Jazz Fusion / Electronic', bio: 'Jazz improvisations dissolved into digital ether.', status: 'available', color: '#4ade80', tags: ['Jazz', 'Electronic'], avatar: '/artists/artist4.jpg', appStatus: 'approved' },
   { id: 5, name: 'MIRA', genre: 'Drum & Bass / Industrial', bio: 'Mechanical rhythms, human emotion. Precision in chaos.', status: 'available', color: '#f87171', tags: ['D&B', 'Industrial'], avatar: '/artists/artist5.jpg', appStatus: 'approved' },

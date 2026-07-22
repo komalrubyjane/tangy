@@ -304,7 +304,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                 {method && (
                   <motion.button
                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    whileHover={{ scale: 1.02, backgroundColor: "#E5A93C" }}
+                    whileHover={{ scale: 1.02, backgroundColor: "#D4AF37" }}
                     whileTap={{ scale: 0.97 }}
                     onClick={validateAndPay}
                     style={{

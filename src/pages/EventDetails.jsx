@@ -227,7 +227,7 @@ function EventHero({ ev }) {
                 background: "rgba(242, 109, 79,0.18)",
                 border: "1px solid rgba(242, 109, 79,0.4)",
                 borderRadius: 20, fontSize: "0.68rem",
-                color: "#FFF275", letterSpacing: "0.1em", textTransform: "uppercase",
+                color: "#F3E5AB", letterSpacing: "0.1em", textTransform: "uppercase",
               }}>
                 {tag}
               </span>
@@ -303,7 +303,7 @@ function EventHero({ ev }) {
               whileTap={{ scale: 0.95 }}
               style={{
                 padding: "14px 36px",
-                background: "linear-gradient(135deg, #F26D4F 0%, #E5A93C 100%)",
+                background: "linear-gradient(135deg, #F26D4F 0%, #D4AF37 100%)",
                 border: "none",
                 borderRadius: 30,
                 color: "#fff",
@@ -759,12 +759,12 @@ function BookingSection({ ev }) {
                 overflow: "hidden",
                 boxShadow: "0 15px 30px rgba(0,0,0,0.4)"
               }}>
-                <div style={{ position: "absolute", top: 0, right: 0, width: 120, height: 120, background: "radial-gradient(circle, rgba(255, 223, 0, 0.1) 0%, transparent 75%)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", top: 0, right: 0, width: 120, height: 120, background: "radial-gradient(circle, rgba(229, 192, 123, 0.1) 0%, transparent 75%)", pointerEvents: "none" }} />
                 
                 {/* Ticket Header */}
                 <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px dashed rgba(255,255,255,0.1)", paddingBottom: 14, marginBottom: 14 }}>
                   <div>
-                    <div style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#FFDF00", textTransform: "uppercase", fontWeight: 700 }}>Tangy Sessions Entry Pass</div>
+                    <div style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#E5C07B", textTransform: "uppercase", fontWeight: 700 }}>Tangy Sessions Entry Pass</div>
                     <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.3rem", color: "#fff", marginTop: 4 }}>{ev.name}</div>
                   </div>
                   <div style={{ textAlign: "right" }}>
@@ -991,7 +991,7 @@ function BookingSection({ ev }) {
                 <span style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.2rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em" }}>TOTAL</span>
                 <motion.span
                   key={total}
-                  initial={{ scale: 1.2, color: "#FFF275" }}
+                  initial={{ scale: 1.2, color: "#F3E5AB" }}
                   animate={{ scale: 1, color: "#F26D4F" }}
                   transition={{ duration: 0.3 }}
                   style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.4rem", letterSpacing: "0.04em" }}
@@ -1003,7 +1003,7 @@ function BookingSection({ ev }) {
 
                         {/* Payment Details Section */}
             <div style={{ background: "rgba(242, 109, 79,0.05)", border: "1px solid rgba(242, 109, 79,0.2)", borderRadius: 12, padding: "24px 20px", marginBottom: 26 }}>
-              <h4 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.4rem", color: "#FFF275", margin: "0 0 16px", letterSpacing: "0.05em" }}>Payment Details</h4>
+              <h4 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.4rem", color: "#F3E5AB", margin: "0 0 16px", letterSpacing: "0.05em" }}>Payment Details</h4>
               <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginBottom: 16, lineHeight: 1.5 }}>
                 Please make the payment of <strong>₹{total.toLocaleString()}</strong> to one of the following numbers and fill in the transaction details below.
               </p>
@@ -1059,7 +1059,7 @@ function BookingSection({ ev }) {
               id="proceed-to-payment"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              whileHover={!isSubmitting ? { scale: 1.02, backgroundColor: "#E5A93C" } : {}}
+              whileHover={!isSubmitting ? { scale: 1.02, backgroundColor: "#D4AF37" } : {}}
               whileTap={!isSubmitting ? { scale: 0.97 } : {}}
               style={{
                 width: "100%", padding: "17px 0",
@@ -1238,7 +1238,7 @@ export default function EventDetails() {
             padding: "8px 18px",
             background: "transparent",
             border: "1px solid rgba(242, 109, 79,0.4)",
-            borderRadius: 6, color: "#FFF275",
+            borderRadius: 6, color: "#F3E5AB",
             cursor: "pointer", fontSize: "0.78rem",
             letterSpacing: "0.1em", textTransform: "uppercase",
             whiteSpace: "nowrap", transition: "all 0.2s",
