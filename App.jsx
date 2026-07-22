@@ -61,9 +61,9 @@ const EVENTS = [
 ];
 
 const ARTISTS = [
-  { id: 1, name: "KRYZEN",   role: "Deep House DJ",       img: "/artists/artist1.jpg", color: "#8B5CF6", bio: "Architect of hypnotic, 4-hour deep house journeys. Influenced by Berlin minimalism and classical structure, KRYZEN's sets blur the boundary between time and trance.",   genre: "Deep House / Hypnotic Techno", location: "Mumbai, India",     followers: "24.5K", performances: "140+" },
+  { id: 1, name: "KRYZEN",   role: "Deep House DJ",       img: "/artists/artist1.jpg", color: "#D4AF37", bio: "Architect of hypnotic, 4-hour deep house journeys. Influenced by Berlin minimalism and classical structure, KRYZEN's sets blur the boundary between time and trance.",   genre: "Deep House / Hypnotic Techno", location: "Mumbai, India",     followers: "24.5K", performances: "140+" },
   { id: 2, name: "Aura.wav", role: "Ambient Producer",     img: "/artists/artist2.jpg", color: "#06b6d4", bio: "Crafts breathtaking sonic landscapes from field recordings, modular synths, and processing algorithms. Aura.wav's work translates nature's chaos into crystalline sound.",   genre: "Ambient / IDM",               location: "Bangalore, India",  followers: "18.2K", performances: "98+" },
-  { id: 3, name: "SONDER",   role: "Live Electronic",     img: "/artists/artist3.jpg", color: "#a855f7", bio: "Live modular synthesis meets rhythm machines — every performance built entirely from patch cables and analog hardware. No presets. No laptops. Pure human emotion.",        genre: "Live Modular / Experimental", location: "New Delhi, India",  followers: "31.0K", performances: "165+" },
+  { id: 3, name: "SONDER",   role: "Live Electronic",     img: "/artists/artist3.jpg", color: "#FFD700", bio: "Live modular synthesis meets rhythm machines — every performance built entirely from patch cables and analog hardware. No presets. No laptops. Pure human emotion.",        genre: "Live Modular / Experimental", location: "New Delhi, India",  followers: "31.0K", performances: "165+" },
   { id: 4, name: "Ritvik",   role: "Classical Fusion",    img: "/artists/artist4.jpg", color: "#06b6d4", bio: "Carnatic ragas reimagined through electronic processing. Ritvik bridges centuries-old devotion with underground club dynamics — vocal purity meets synthesis power.",    genre: "Classical Fusion / Electronic", location: "Chennai, India",  followers: "42.1K", performances: "210+" },
   { id: 5, name: "ZEPH",    role: "Techno DJ",            img: "/artists/artist5.jpg", color: "#f59e0b", bio: "Berlin-inspired techno fused with South Asian percussion. ZEPH's high-energy mechanical rituals push subwoofers to their limits with mridangam-meets-modular madness.",  genre: "Techno / Experimental",       location: "Kochi, India",      followers: "15.7K", performances: "78+" },
   { id: 6, name: "Noctis",  role: "Dark Ambient",         img: "/artists/artist6.jpg", color: "#ef4444", bio: "Sonic architect of midnight soundscapes and drone textures. Noctis creates monolithic walls of sub-drone and processed industrial feedback — music felt as physical weight.", genre: "Dark Ambient / Drone",         location: "Kolkata, India",    followers: "12.8K", performances: "60+" },
@@ -184,7 +184,7 @@ function Navbar() {
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
       background: scrolled ? "rgba(9,9,9,0.96)" : "transparent",
       backdropFilter: scrolled ? "blur(12px)" : "none",
-      borderBottom: scrolled ? "1px solid rgba(139, 92, 246,0.15)" : "none",
+      borderBottom: scrolled ? "1px solid rgba(212, 175, 55,0.15)" : "none",
       transition: "all 0.35s ease", padding: "0 5vw",
       display: "flex", alignItems: "center", justifyContent: "space-between", height: 64,
     }}>
@@ -200,7 +200,7 @@ function Navbar() {
         {links.map(l => (
           <button key={l} onClick={() => scrollTo(l)}
             style={{ background: "none", border: "none", color: "rgba(255,255,255,0.65)", cursor: "pointer", fontSize: "0.78rem", letterSpacing: "0.14em", fontFamily: "inherit", textTransform: "uppercase", transition: "color 0.2s, transform 0.2s", padding: "4px 0" }}
-            onMouseEnter={e => { e.target.style.color = "#8B5CF6"; e.target.style.transform = "translateY(-1px)"; }}
+            onMouseEnter={e => { e.target.style.color = "#D4AF37"; e.target.style.transform = "translateY(-1px)"; }}
             onMouseLeave={e => { e.target.style.color = "rgba(255,255,255,0.65)"; e.target.style.transform = "none"; }}>
             {l}
           </button>
@@ -339,7 +339,7 @@ function Hero() {
           style={{
             position: "absolute", zIndex: 3, pointerEvents: "none",
             width: "40vw", height: "40vw", borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(139, 92, 246,0.08) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(212, 175, 55,0.08) 0%, transparent 70%)",
             transform: "translate(-50%, -50%)",
             top: "50%", left: "50%",
             willChange: "transform",
@@ -365,7 +365,7 @@ function Hero() {
           transform: "translate(-50%, -50%)",
           width: "80vw",
           height: "60vh",
-          background: "radial-gradient(circle, rgba(139, 92, 246,0.12) 0%, rgba(139,92,246,0.03) 50%, transparent 80%)",
+          background: "radial-gradient(circle, rgba(212, 175, 55,0.12) 0%, rgba(212, 175, 55,0.03) 50%, transparent 80%)",
           filter: "blur(100px)",
           zIndex: 3,
           pointerEvents: "none",
@@ -376,7 +376,7 @@ function Hero() {
       <div style={{ position: "relative", zIndex: 4, textAlign: "center", padding: "0 24px", maxWidth: 800, margin: "0 auto" }}>
         
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.0, ease: "easeOut" }}
-          style={{ fontSize: "clamp(0.65rem, 1.4vw, 0.85rem)", letterSpacing: "0.55em", color: "#8B5CF6", textTransform: "uppercase", marginBottom: 24, fontFamily: "monospace" }}>
+          style={{ fontSize: "clamp(0.65rem, 1.4vw, 0.85rem)", letterSpacing: "0.55em", color: "#D4AF37", textTransform: "uppercase", marginBottom: 24, fontFamily: "monospace" }}>
           Est. 2025 · Hyderabad
         </motion.div>
 
@@ -404,7 +404,7 @@ function Hero() {
               letterSpacing: "0.04em",
               color: "#fff",
               margin: 0,
-              textShadow: "0 0 100px rgba(139, 92, 246,0.2)",
+              textShadow: "0 0 100px rgba(212, 175, 55,0.2)",
             }}
           >
             TANGY<br />
@@ -430,10 +430,10 @@ function Hero() {
           <MagneticButton
             onClick={() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" })}
             style={{
-              padding: "15px 40px", background: "#8B5CF6", color: "#fff", border: "none",
+              padding: "15px 40px", background: "#D4AF37", color: "#fff", border: "none",
               borderRadius: 30, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.12em",
               textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700,
-              boxShadow: "0 0 30px rgba(139, 92, 246,0.35)", transition: "background-color 0.3s ease",
+              boxShadow: "0 0 30px rgba(212, 175, 55,0.35)", transition: "background-color 0.3s ease",
             }}
           >
             Explore Events
@@ -447,7 +447,7 @@ function Hero() {
               textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700,
               transition: "border-color 0.3s ease, color 0.3s ease",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#c084fc"; e.currentTarget.style.color = "#c084fc"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#E6CA65"; e.currentTarget.style.color = "#E6CA65"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "#fff"; }}
           >
             Join Community
@@ -481,8 +481,8 @@ function Hero() {
       <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2.5 }}
         style={{ position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)", zIndex: 4, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, opacity: 0.4, cursor: "pointer" }}
         onClick={() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" })}>
-        <div style={{ width: 1, height: 48, background: "linear-gradient(to bottom, transparent, #8B5CF6)" }} />
-        <div style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "#8B5CF6", textTransform: "uppercase" }}>Scroll</div>
+        <div style={{ width: 1, height: 48, background: "linear-gradient(to bottom, transparent, #D4AF37)" }} />
+        <div style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "#D4AF37", textTransform: "uppercase" }}>Scroll</div>
       </motion.div>
     </section>
   );
@@ -530,7 +530,7 @@ function TypewriterLabel({ text, delay = 0, speed = 50 }) {
           display: "inline-block",
           width: "1px",
           height: "0.7em",
-          background: "rgba(139,92,246,0.8)",
+          background: "rgba(212, 175, 55,0.8)",
           marginLeft: "1px",
           verticalAlign: "middle",
           animation: "blinkCursor 0.7s step-end infinite",
@@ -620,7 +620,7 @@ function GrowingTypewriter({ delay = 0 }) {
           display: "inline-block",
           width: "1px",
           height: "0.85em",
-          background: "rgba(139,92,246,0.8)",
+          background: "rgba(212, 175, 55,0.8)",
           marginLeft: "2px",
           verticalAlign: "middle",
           animation: "blinkCursor 0.7s step-end infinite",
@@ -691,7 +691,7 @@ function HeroStats() {
                   color: "#fff",
                   letterSpacing: "0.04em",
                   lineHeight: 1,
-                  textShadow: isHov ? "0 0 20px rgba(139,92,246,0.55)" : "none",
+                  textShadow: isHov ? "0 0 20px rgba(212, 175, 55,0.55)" : "none",
                   transition: "text-shadow 0.3s ease",
                   whiteSpace: "nowrap",
                 }}>
@@ -748,7 +748,7 @@ function WhyTangy() {
           transform: "translate(-50%, -50%)",
           width: "60vw",
           height: "60vh",
-          background: "radial-gradient(circle, rgba(139, 92, 246,0.06) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(212, 175, 55,0.06) 0%, transparent 70%)",
           filter: "blur(80px)",
           zIndex: 0,
           pointerEvents: "none",
@@ -765,7 +765,7 @@ function WhyTangy() {
           transition={{ duration: 0.8 }}
           style={{ marginBottom: 64 }}
         >
-          <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#8B5CF6", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 14, fontWeight: "600" }}>
+          <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#D4AF37", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 14, fontWeight: "600" }}>
             Our Philosophy
           </div>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "rgba(255,255,255,0.92)", margin: 0, letterSpacing: "0.05em", textTransform: "uppercase" }}>
@@ -776,7 +776,7 @@ function WhyTangy() {
             whileInView={{ width: 48 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #8B5CF6, #A855F7)", marginTop: 18, borderRadius: 2 }}
+            style={{ height: 2, background: "linear-gradient(to right, #D4AF37, #FFD700)", marginTop: 18, borderRadius: 2 }}
           />
         </motion.div>
 
@@ -798,7 +798,7 @@ function WhyTangy() {
               color: "rgba(255,255,255,0.95)",
               lineHeight: 1.6,
               marginBottom: 10,
-              borderLeft: "2px solid #8B5CF6",
+              borderLeft: "2px solid #D4AF37",
               paddingLeft: 24,
             }}>
               "Tangy Sessions was born from a simple belief: The most meaningful experiences happen when people slow down."
@@ -820,7 +820,7 @@ function WhyTangy() {
                 "We believe the most beautiful moments are often the ones that cannot be captured by a screen."
               ].map((belief, idx) => (
                 <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                  <span style={{ color: "#8B5CF6", fontSize: "1.2rem", lineHeight: 1.1 }}>✦</span>
+                  <span style={{ color: "#D4AF37", fontSize: "1.2rem", lineHeight: 1.1 }}>✦</span>
                   <span style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.9rem", lineHeight: 1.5, fontWeight: "500" }}>{belief}</span>
                 </div>
               ))}
@@ -911,7 +911,7 @@ function WhyTangy() {
           ].map((val, idx) => (
             <motion.div
               key={val.title}
-              whileHover={{ y: -6, borderColor: "rgba(139, 92, 246, 0.3)", boxShadow: "0 20px 40px rgba(0,0,0,0.7)" }}
+              whileHover={{ y: -6, borderColor: "rgba(212, 175, 55, 0.3)", boxShadow: "0 20px 40px rgba(0,0,0,0.7)" }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
@@ -930,9 +930,9 @@ function WhyTangy() {
               }}
             >
               {/* Purple top accent line */}
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "#8B5CF6" }} />
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "#D4AF37" }} />
 
-              <div style={{ fontSize: "0.72rem", color: "#8B5CF6", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 12, fontFamily: "monospace", fontWeight: "600" }}>
+              <div style={{ fontSize: "0.72rem", color: "#D4AF37", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 12, fontFamily: "monospace", fontWeight: "600" }}>
                 0{idx + 1} // Value
               </div>
               <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "rgba(255,255,255,0.92)", margin: "0 0 14px", letterSpacing: "0.06em" }}>{val.title}</h3>
@@ -957,7 +957,7 @@ function WhyTangy() {
               viewport={{ once: true }}
               transition={{ delay: idx * 0.15, duration: 0.6 }}
             >
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3.5rem", color: "#8B5CF6", lineHeight: 1 }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3.5rem", color: "#D4AF37", lineHeight: 1 }}>
                 {stat.endStr === null
                   ? <GrowingTypewriter delay={idx * 150} />
                   : <CountUpNumber endStr={stat.endStr} delay={idx * 150} duration={stat.duration} />}
@@ -1022,21 +1022,21 @@ function EventCard({ ev, delay }) {
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       style={{
         background: hovered
-          ? "linear-gradient(135deg, rgba(8,8,12,0.95) 0%, rgba(139, 92, 246,0.08) 100%)"
+          ? "linear-gradient(135deg, rgba(8,8,12,0.95) 0%, rgba(212, 175, 55,0.08) 100%)"
           : "linear-gradient(135deg, rgba(8,8,12,0.92) 0%, rgba(8,8,12,0.75) 100%)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        border: `1px solid ${hovered ? "rgba(139, 92, 246,0.40)" : "rgba(255,255,255,0.08)"}`,
+        border: `1px solid ${hovered ? "rgba(212, 175, 55,0.40)" : "rgba(255,255,255,0.08)"}`,
         borderRadius: 24, padding: 32, cursor: "pointer",
         boxShadow: hovered
-          ? "0 24px 60px rgba(0,0,0,0.75), 0 0 40px rgba(139, 92, 246,0.18), inset 0 1px 0 rgba(255,255,255,0.07)"
-          : "0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(139, 92, 246,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
+          ? "0 24px 60px rgba(0,0,0,0.75), 0 0 40px rgba(212, 175, 55,0.18), inset 0 1px 0 rgba(255,255,255,0.07)"
+          : "0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
         transform: hovered ? "translateY(-5px)" : "translateY(0)",
         transition: "all 0.35s cubic-bezier(0.16,1,0.3,1)",
         display: "flex", flexDirection: "column", gap: 0,
       }}>
       {/* Date + time */}
-      <div style={{ fontSize: "0.68rem", letterSpacing: "0.25em", color: "#8B5CF6", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 14 }}>
+      <div style={{ fontSize: "0.68rem", letterSpacing: "0.25em", color: "#D4AF37", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 14 }}>
         {ev.date} · {ev.time}
       </div>
       {/* Title */}
@@ -1066,7 +1066,7 @@ function EventCard({ ev, delay }) {
         </div>
         <div style={{ height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}>
           <motion.div initial={{ width: 0 }} whileInView={{ width: "60%" }} transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ height: "100%", borderRadius: 2, background: "linear-gradient(to right, #8B5CF6, #06b6d4)" }} />
+            style={{ height: "100%", borderRadius: 2, background: "linear-gradient(to right, #D4AF37, #06b6d4)" }} />
         </div>
       </div>
       {/* Price + CTA */}
@@ -1081,15 +1081,15 @@ function EventCard({ ev, delay }) {
           style={{
             padding: "11px 26px",
             background: "transparent",
-            color: "#a78bfa",
-            border: "1px solid rgba(139, 92, 246,0.55)",
+            color: "#F0E68C",
+            border: "1px solid rgba(212, 175, 55,0.55)",
             borderRadius: 6, cursor: "pointer", fontFamily: "inherit",
             letterSpacing: "0.1em", textTransform: "uppercase",
             fontSize: "0.78rem", fontWeight: 600,
             transition: "all 0.2s",
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(139, 92, 246,0.18)"; e.currentTarget.style.borderColor = "#8B5CF6"; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(139, 92, 246,0.55)"; e.currentTarget.style.color = "#a78bfa"; }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(212, 175, 55,0.18)"; e.currentTarget.style.borderColor = "#D4AF37"; e.currentTarget.style.color = "#fff"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(212, 175, 55,0.55)"; e.currentTarget.style.color = "#F0E68C"; }}
         >
           View Details →
         </motion.button>
@@ -1479,15 +1479,15 @@ function Artists() {
               style={{
                 width: "100%", padding: "16px 20px 16px 52px",
                 background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(139,92,246,0.18)",
+                border: "1px solid rgba(212, 175, 55,0.18)",
                 borderRadius: 30, color: "#fff",
                 fontSize: "0.9rem", outline: "none",
                 fontFamily: "inherit", backdropFilter: "blur(12px)",
                 transition: "all 0.35s ease",
                 boxSizing: "border-box",
               }}
-              onFocus={e => { e.target.style.borderColor = "#8B5CF6"; e.target.style.boxShadow = "0 0 20px rgba(139,92,246,0.2)"; }}
-              onBlur={e => { e.target.style.borderColor = "rgba(139,92,246,0.18)"; e.target.style.boxShadow = "none"; }}
+              onFocus={e => { e.target.style.borderColor = "#D4AF37"; e.target.style.boxShadow = "0 0 20px rgba(212, 175, 55,0.2)"; }}
+              onBlur={e => { e.target.style.borderColor = "rgba(212, 175, 55,0.18)"; e.target.style.boxShadow = "none"; }}
             />
             {search && (
               <button
@@ -1512,14 +1512,14 @@ function Artists() {
                   onClick={() => setSelectedGenre(g)}
                   style={{
                     padding: "8px 18px",
-                    background: active ? "linear-gradient(135deg,#8B5CF6,#a855f7)" : "rgba(255,255,255,0.03)",
-                    border: `1px solid ${active ? "#a855f7" : "rgba(255,255,255,0.08)"}`,
+                    background: active ? "linear-gradient(135deg,#D4AF37,#FFD700)" : "rgba(255,255,255,0.03)",
+                    border: `1px solid ${active ? "#FFD700" : "rgba(255,255,255,0.08)"}`,
                     borderRadius: 20, color: active ? "#fff" : "rgba(255,255,255,0.6)",
                     fontSize: "0.75rem", fontWeight: 600,
                     fontFamily: "inherit", cursor: "pointer",
                     letterSpacing: "0.05em",
                     transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
-                    boxShadow: active ? "0 8px 20px rgba(139,92,246,0.3)" : "none",
+                    boxShadow: active ? "0 8px 20px rgba(212, 175, 55,0.3)" : "none",
                   }}
                 >{g}</button>
               );
@@ -1559,7 +1559,7 @@ function Artists() {
               onClick={() => { setSearch(""); setSelectedGenre("All"); }}
               style={{
                 padding: "10px 24px", background: "transparent",
-                border: "1px solid #8B5CF6", borderRadius: 20,
+                border: "1px solid #D4AF37", borderRadius: 20,
                 color: "#fff", fontSize: "0.8rem",
                 fontFamily: "inherit", cursor: "pointer", fontWeight: 600,
               }}
@@ -1756,8 +1756,8 @@ function Gallery() {
                 {showQuote1 && (
                   <div className="masonry-item animate-card" style={{
                     padding: "36px 32px",
-                    background: "linear-gradient(135deg, rgba(139, 92, 246,0.06) 0%, rgba(6,182,212,0.03) 100%)",
-                    border: "1px solid rgba(139, 92, 246,0.15)",
+                    background: "linear-gradient(135deg, rgba(212, 175, 55,0.06) 0%, rgba(6,182,212,0.03) 100%)",
+                    border: "1px solid rgba(212, 175, 55,0.15)",
                     borderRadius: 24,
                     backdropFilter: "blur(12px)",
                     display: "flex",
@@ -1765,7 +1765,7 @@ function Gallery() {
                     justifyContent: "center",
                     marginBottom: 20,
                   }}>
-                    <span style={{ fontSize: "2rem", color: "#8B5CF6", fontFamily: "Georgia, serif", lineHeight: 0.1, alignSelf: "flex-start" }}>“</span>
+                    <span style={{ fontSize: "2rem", color: "#D4AF37", fontFamily: "Georgia, serif", lineHeight: 0.1, alignSelf: "flex-start" }}>“</span>
                     <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "1.2rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.6, margin: "0 0 12px" }}>
                       The resonance of the bass bouncing off the stone steps was pure ritual. Unmatched acoustic energy.
                     </p>
@@ -1778,7 +1778,7 @@ function Gallery() {
                 {showQuote2 && (
                   <div className="masonry-item animate-card" style={{
                     padding: "36px 32px",
-                    background: "linear-gradient(135deg, rgba(6,182,212,0.06) 0%, rgba(139, 92, 246,0.03) 100%)",
+                    background: "linear-gradient(135deg, rgba(6,182,212,0.06) 0%, rgba(212, 175, 55,0.03) 100%)",
                     border: "1px solid rgba(6,182,212,0.15)",
                     borderRadius: 24,
                     backdropFilter: "blur(12px)",
@@ -1791,7 +1791,7 @@ function Gallery() {
                     <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "1.2rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.6, margin: "0 0 12px" }}>
                       Underground sounds meet ancient history. Easily the most premium music collective in the country.
                     </p>
-                    <span style={{ fontSize: "0.68rem", color: "#8B5CF6", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: "600", fontFamily: "monospace" }}>
+                    <span style={{ fontSize: "0.68rem", color: "#D4AF37", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: "600", fontFamily: "monospace" }}>
                       — Rhea M., DJ & Producer
                     </span>
                   </div>
@@ -1809,7 +1809,7 @@ function Gallery() {
                     transition: "border-color 0.3s, transform 0.3s",
                     marginBottom: 20,
                   }}
-                  whileHover={{ scale: 1.02, borderColor: "rgba(139, 92, 246,0.3)" }}
+                  whileHover={{ scale: 1.02, borderColor: "rgba(212, 175, 55,0.3)" }}
                 >
                   <img src={item.img} alt={item.label} loading="lazy" style={{ width: "100%", display: "block", objectFit: "cover", transition: "transform 0.6s ease, filter 0.6s ease", filter: "brightness(0.8) saturate(0.95)" }}
                     onMouseEnter={e => { e.target.style.transform = "scale(1.05)"; e.target.style.filter = "brightness(1) saturate(1.05)"; }}
@@ -1829,7 +1829,7 @@ function Gallery() {
             style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", backdropFilter: "blur(12px)" }}>
             <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }}
               transition={{ type: "spring", damping: 22 }} onClick={e => e.stopPropagation()} className="lightbox-inner"
-              style={{ background: "#0d0d0d", border: "1px solid rgba(139, 92, 246,0.3)", borderRadius: 24, overflow: "hidden", boxShadow: "0 0 120px rgba(139, 92, 246,0.18)", maxWidth: "90vw", maxHeight: "85vh" }}>
+              style={{ background: "#0d0d0d", border: "1px solid rgba(212, 175, 55,0.3)", borderRadius: 24, overflow: "hidden", boxShadow: "0 0 120px rgba(212, 175, 55,0.18)", maxWidth: "90vw", maxHeight: "85vh" }}>
               <img src={lightbox.img} alt={lightbox.label} style={{ display: "block", maxWidth: "90vw", maxHeight: "75vh", objectFit: "contain", borderRadius: "24px 24px 0 0" }} />
               <div style={{ padding: "18px 28px", textAlign: "center" }}>
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.6rem", color: "#fff", letterSpacing: "0.1em" }}>{lightbox.label}</div>
@@ -1855,7 +1855,7 @@ function About() {
       name: "Arjuna\nVisionary & Creator",
       image: "/arjun.png",
       bio: "Born from an obsession with underground sound and ancient spaces. Tangy Sessions exists because Arjuna refused to let music stay ordinary.",
-      color: "#8B5CF6",
+      color: "#D4AF37",
     },
     {
       role: "Co-Founder",
@@ -1896,7 +1896,7 @@ function About() {
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.5rem, 6vw, 5.5rem)", lineHeight: 0.9, color: "rgba(255,255,255,0.92)", margin: "0 0 24px", letterSpacing: "0.02em" }}>
                 SOUND.<br />
-                <span style={{ color: "#8B5CF6" }}>STILLNESS.</span><br />
+                <span style={{ color: "#D4AF37" }}>STILLNESS.</span><br />
                 COMMUNITY.
               </motion.h2>
 
@@ -1919,7 +1919,7 @@ function About() {
                   initial={{ opacity: 0, scale: 0.6 }} whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
                   whileHover={{ scale: 1.08 }} style={{ textAlign: "left" }}>
-                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3rem", color: "#8B5CF6", lineHeight: 1 }}>{n}</div>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3rem", color: "#D4AF37", lineHeight: 1 }}>{n}</div>
                   <div style={{ fontSize: "0.68rem", letterSpacing: "0.22em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase", marginTop: 4 }}>{l}</div>
                 </motion.div>
               ))}
@@ -1974,7 +1974,7 @@ function About() {
 
                 {/* Content always visible on both cards */}
                 <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "32px 28px", zIndex: 2 }}>
-                  <div style={{ fontSize: "0.72rem", color: "#8B5CF6", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: "700", marginBottom: 6 }}>
+                  <div style={{ fontSize: "0.72rem", color: "#D4AF37", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: "700", marginBottom: 6 }}>
                     {f.role.toUpperCase()}
                   </div>
                   <h3 style={{
@@ -2006,7 +2006,7 @@ function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.8 }}
-          whileHover={{ borderColor: "rgba(139, 92, 246, 0.25)", boxShadow: "0 30px 70px rgba(0,0,0,0.65), 0 0 30px rgba(139, 92, 246, 0.05)" }}
+          whileHover={{ borderColor: "rgba(212, 175, 55, 0.25)", boxShadow: "0 30px 70px rgba(0,0,0,0.65), 0 0 30px rgba(212, 175, 55, 0.05)" }}
           style={{
             maxWidth: 950,
             margin: "96px auto 0",
@@ -2033,7 +2033,7 @@ function About() {
           }}>
             "We are not building events.<br />We are creating spaces where people can feel something real."
           </p>
-          <div style={{ marginTop: 24, fontSize: "0.82rem", letterSpacing: "0.25em", color: "#8B5CF6", textTransform: "uppercase", fontWeight: "600", fontFamily: "monospace" }}>
+          <div style={{ marginTop: 24, fontSize: "0.82rem", letterSpacing: "0.25em", color: "#D4AF37", textTransform: "uppercase", fontWeight: "600", fontFamily: "monospace" }}>
             — Arjuna & Deepa
           </div>
         </motion.div>
@@ -2084,7 +2084,7 @@ function Contact({ toast }) {
     const inp = field => ({
       width: "100%", padding: "14px 18px",
       background: "rgba(0,0,0,0.55)",
-      border: `1px solid ${errors[field] ? "#ef4444" : "rgba(139, 92, 246,0.2)"}`,
+      border: `1px solid ${errors[field] ? "#ef4444" : "rgba(212, 175, 55,0.2)"}`,
       borderRadius: 8, color: "#fff", fontSize: "0.88rem", fontFamily: "inherit",
       outline: "none", boxSizing: "border-box", marginBottom: 4, transition: "all 0.25s",
     });
@@ -2107,7 +2107,7 @@ function Contact({ toast }) {
               }}>
               {[["Location", "Bansilal Stepwell", "Hyderabad, Telangana, India"], ["Contact", "hello@tangysessions.in", ""]].map(([title, line1, line2]) => (
                 <div key={title} style={{ marginBottom: 24 }}>
-                  <div style={{ color: "#8B5CF6", fontSize: "0.72rem", letterSpacing: "0.25em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8, fontWeight: "600" }}>{title}</div>
+                  <div style={{ color: "#D4AF37", fontSize: "0.72rem", letterSpacing: "0.25em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8, fontWeight: "600" }}>{title}</div>
                   <div style={{ color: "#fff", fontSize: "0.95rem" }}>{line1}</div>
                   {line2 && <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.85rem" }}>{line2}</div>}
                 </div>
@@ -2115,13 +2115,13 @@ function Contact({ toast }) {
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}>
                 {["Instagram", "Spotify", "SoundCloud"].map(s => (
                   <motion.button key={s} onClick={() => toast({ message: `Opening ${s}...`, type: "info" })}
-                    whileHover={{ scale: 1.05, borderColor: "#8B5CF6", color: "#8B5CF6" }} whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.05, borderColor: "#D4AF37", color: "#D4AF37" }} whileTap={{ scale: 0.95 }}
                     style={{ padding: "9px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em", transition: "all 0.2s" }}>
                     {s}
                   </motion.button>
                 ))}
               </div>
-              <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(139, 92, 246,0.2)", height: 200 }}>
+              <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(212, 175, 55,0.2)", height: 200 }}>
                 <iframe title="Bansilal Stepwell" src="https://maps.google.com/maps?q=Bansilal+Baoli+Stepwell+Hyderabad+Telangana&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) saturate(0.8) contrast(0.9)" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
               </div>
             </motion.div>
@@ -2131,10 +2131,10 @@ function Contact({ toast }) {
               style={{
                 background: "linear-gradient(135deg, rgba(8,8,12,0.7) 0%, rgba(8,8,12,0.45) 100%)",
                 backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-                border: isFormFocused ? "1px solid rgba(139, 92, 246,0.45)" : "1px solid rgba(255,255,255,0.08)",
+                border: isFormFocused ? "1px solid rgba(212, 175, 55,0.45)" : "1px solid rgba(255,255,255,0.08)",
                 borderRadius: 16, padding: "32px",
                 boxShadow: isFormFocused
-                  ? "0 24px 60px rgba(0,0,0,0.85), 0 0 30px rgba(139, 92, 246,0.18), inset 0 1px 0 rgba(255,255,255,0.1)"
+                  ? "0 24px 60px rgba(0,0,0,0.85), 0 0 30px rgba(212, 175, 55,0.18), inset 0 1px 0 rgba(255,255,255,0.1)"
                   : "0 12px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)",
                 transition: "all 0.4s ease",
               }}>
@@ -2153,8 +2153,8 @@ function Contact({ toast }) {
                         <input placeholder={f.charAt(0).toUpperCase() + f.slice(1)} value={form[f]}
                           onChange={e => { setForm(x => ({ ...x, [f]: e.target.value })); setErrors(er => ({ ...er, [f]: null })); }}
                           style={inp(f)}
-                          onFocus={e => { setIsFormFocused(true); e.target.style.borderColor = "#8B5CF6"; e.target.style.background = "rgba(139, 92, 246,0.06)"; e.target.style.boxShadow = "0 0 0 3px rgba(139, 92, 246,0.12)"; }}
-                          onBlur={e => { setIsFormFocused(false); e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(139, 92, 246,0.2)"; e.target.style.background = "rgba(0,0,0,0.55)"; e.target.style.boxShadow = "none"; }}
+                          onFocus={e => { setIsFormFocused(true); e.target.style.borderColor = "#D4AF37"; e.target.style.background = "rgba(212, 175, 55,0.06)"; e.target.style.boxShadow = "0 0 0 3px rgba(212, 175, 55,0.12)"; }}
+                          onBlur={e => { setIsFormFocused(false); e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(212, 175, 55,0.2)"; e.target.style.background = "rgba(0,0,0,0.55)"; e.target.style.boxShadow = "none"; }}
                         />
                         {errors[f] && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>⚠ {errors[f]}</div>}
                       </div>
@@ -2163,8 +2163,8 @@ function Contact({ toast }) {
                       <textarea placeholder="Your message (optional if subscribing to Tangy Letter)" value={form.message} rows={4}
                         onChange={e => { setForm(x => ({ ...x, message: e.target.value })); setErrors(er => ({ ...er, message: null })); }}
                         style={{ ...inp("message"), resize: "vertical" }}
-                        onFocus={e => { setIsFormFocused(true); e.target.style.borderColor = "#8B5CF6"; e.target.style.background = "rgba(139, 92, 246,0.06)"; e.target.style.boxShadow = "0 0 0 3px rgba(139, 92, 246,0.12)"; }}
-                        onBlur={e => { setIsFormFocused(false); e.target.style.borderColor = errors.message ? "#ef4444" : "rgba(139, 92, 246,0.2)"; e.target.style.background = "rgba(0,0,0,0.55)"; e.target.style.boxShadow = "none"; }}
+                        onFocus={e => { setIsFormFocused(true); e.target.style.borderColor = "#D4AF37"; e.target.style.background = "rgba(212, 175, 55,0.06)"; e.target.style.boxShadow = "0 0 0 3px rgba(212, 175, 55,0.12)"; }}
+                        onBlur={e => { setIsFormFocused(false); e.target.style.borderColor = errors.message ? "#ef4444" : "rgba(212, 175, 55,0.2)"; e.target.style.background = "rgba(0,0,0,0.55)"; e.target.style.boxShadow = "none"; }}
                       />
                       {errors.message && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>⚠ {errors.message}</div>}
                     </div>
@@ -2173,14 +2173,14 @@ function Contact({ toast }) {
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, cursor: "pointer", userSelect: "none" }}
                       onClick={() => setForm(x => ({ ...x, subscribe: !x.subscribe }))}>
                       <input type="checkbox" checked={form.subscribe} onChange={() => {}} 
-                        style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#8B5CF6" }} />
+                        style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#D4AF37" }} />
                       <span style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.78)" }}>
                         Subscribe to <strong>Tangy Letter</strong> for session updates
                       </span>
                     </div>
 
                     <MagneticButton onClick={handleSend}
-                      style={{ width: "100%", padding: 15, background: "#8B5CF6", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700, boxShadow: "0 0 20px rgba(139, 92, 246,0.25)" }}>
+                      style={{ width: "100%", padding: 15, background: "#D4AF37", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700, boxShadow: "0 0 20px rgba(212, 175, 55,0.25)" }}>
                       {form.subscribe && !form.message.trim() ? "Subscribe" : "Send Message"}
                     </MagneticButton>
                   </motion.div>
@@ -2200,7 +2200,7 @@ function Footer() {
         background: "linear-gradient(135deg, rgba(7,7,7,0.75) 0%, rgba(15,15,15,0.60) 100%)",
         backdropFilter: "blur(28px)",
         WebkitBackdropFilter: "blur(28px)",
-        borderTop: "1px solid rgba(139, 92, 246,0.18)",
+        borderTop: "1px solid rgba(212, 175, 55,0.18)",
         padding: "60px 5vw 32px",
         position: "relative",
         zIndex: 1,
@@ -2217,7 +2217,7 @@ function Footer() {
         <div style={{ display: "flex", gap: 60, flexWrap: "wrap" }}>
           {[["Explore", ["Events", "Artists", "Gallery"]], ["Connect", ["Instagram", "Spotify", "Contact"]]].map(([title, items]) => (
             <div key={title}>
-              <div style={{ color: "#8B5CF6", fontSize: "0.68rem", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 16 }}>{title}</div>
+              <div style={{ color: "#D4AF37", fontSize: "0.68rem", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 16 }}>{title}</div>
               {items.map(item => (
                 <div key={item} style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.83rem", marginBottom: 10, cursor: "pointer", transition: "color 0.2s" }}
                   onMouseEnter={e => e.target.style.color = "#fff"}
@@ -2241,10 +2241,10 @@ function Footer() {
 function SectionHeader({ label, title }) {
   return (
     <motion.div initial={{ opacity: 0, y: -16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} style={{ textAlign: "center" }}>
-      <div style={{ fontSize: "0.68rem", letterSpacing: "0.38em", color: "#8B5CF6", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 14 }}>{label}</div>
+      <div style={{ fontSize: "0.68rem", letterSpacing: "0.38em", color: "#D4AF37", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 14 }}>{label}</div>
       <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>{title}</h2>
       <motion.div initial={{ width: 0 }} whileInView={{ width: 48 }} transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-        style={{ height: 2, background: "linear-gradient(to right, #8B5CF6, #06b6d4)", margin: "18px auto 0", borderRadius: 2 }} />
+        style={{ height: 2, background: "linear-gradient(to right, #D4AF37, #06b6d4)", margin: "18px auto 0", borderRadius: 2 }} />
     </motion.div>
   );
 }
@@ -2282,10 +2282,10 @@ function LandingPage({ showArtistOverlay = false }) {
         }
 
         .unicorn-wrapper a, a[href*="unicorn.studio"] { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
-        ::selection { background: rgba(139, 92, 246,0.35); }
+        ::selection { background: rgba(212, 175, 55,0.35); }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #8B5CF6; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 2px; }
         input, select, textarea, button { font-family: inherit; }
 
         /* Removed transform: translateZ(0) to fix stacking context issues with background */
@@ -2345,19 +2345,19 @@ function LandingPage({ showArtistOverlay = false }) {
 
       <Navbar />
       <ErrorBoundary name="Hero"><Hero /></ErrorBoundary>
-      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(212, 175, 55,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="WhyTangy"><WhyTangy /></ErrorBoundary>
-      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(212, 175, 55,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Events"><Events /></ErrorBoundary>
-      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(212, 175, 55,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Gallery"><Gallery /></ErrorBoundary>
-      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(212, 175, 55,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="About"><About /></ErrorBoundary>
-      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(212, 175, 55,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Volunteer"><Volunteer /></ErrorBoundary>
-      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(212, 175, 55,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="ArtistRegister"><ArtistRegister toast={toast} /></ErrorBoundary>
-      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(139, 92, 246,0.12) 50%, transparent)", margin: "0 auto" }} />
+      <div style={{ width: "100%", height: "1px", background: "linear-gradient(to right, transparent, rgba(212, 175, 55,0.12) 50%, transparent)", margin: "0 auto" }} />
       <ErrorBoundary name="Contact"><Contact toast={toast} /></ErrorBoundary>
       <Footer />
 

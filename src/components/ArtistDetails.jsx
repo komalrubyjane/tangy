@@ -18,7 +18,7 @@ const ARTIST_DB = {
     hosted: "45",
     availability: "Available for bookings",
     statusColor: "#10b981",
-    color: "#8b5cf6",
+    color: "#D4AF37",
     accent: "#10b981",
     bio: "KRYZEN is an architect of deep, hypnotic soundscapes. Blurring the line between time and space, their sets are designed to transport listeners to the outer limits of perception. Heavily influenced by Berlin's industrial landscape and classical minimalism, they craft experiences that linger in the consciousness long after the night ends. Having played major underground sanctuaries across Europe and Asia, their return to India marks a new chapter in dark spatial audio design.",
     quote: "Sound is the canvas; time is the illusion. We are but shadows moving through the frequency.",
@@ -58,7 +58,7 @@ const ARTIST_DB = {
     hosted: "20",
     availability: "Available for bookings",
     statusColor: "#10b981",
-    color: "#06b6d4",
+    color: "#C9A24B",
     accent: "#ec4899",
     bio: "Aura.wav crafts delicate, breathtaking sonic landscapes from field recordings, modular synths, and processing algorithms. Their work is a translation of nature's chaos into crystalline structures of sound. By weaving elements of organic glitch, field acoustics, and warm ambient pads, Aura.wav builds worlds where listeners can dissolve. They are a resident developer of sonic architecture for relaxation spaces.",
     quote: "Every sound has a soul waiting to be uncovered in the quiet spaces between noise.",
@@ -97,8 +97,8 @@ const ARTIST_DB = {
     hosted: "55",
     availability: "Limited Availability",
     statusColor: "#ef4444",
-    color: "#a855f7",
-    accent: "#06b6d4",
+    color: "#FFD700",
+    accent: "#C9A24B",
     bio: "SONDER represents the realization that each random passerby is living a life as vivid and complex as one's own. This philosophical concept forms the foundation of their raw modular acts. Eschewing computers and pre-recorded tracks, SONDER builds electronic storms completely live using patch cables and analog hardware, ensuring that no two performances are ever the same.",
     quote: "No presets. No laptops. Just human emotion driving electrical current through copper wire.",
     gallery: [
@@ -136,7 +136,7 @@ const ARTIST_DB = {
     hosted: "70",
     availability: "Available for bookings",
     statusColor: "#10b981",
-    color: "#06b6d4",
+    color: "#C9A24B",
     accent: "#f59e0b",
     bio: "Ritvik is a pioneer in classical electronic synthesis. By taking Carnatic ragas and ancient acoustic vocal lines and running them through modular pitch-shifters, delay arrays, and analog synthesisers, they create a bridges between centuries-old devotion and underground club rave dynamics. A truly spellbinding performance where vocal purity meets synthesis power.",
     quote: "Tradition is not the worship of ashes, but the preservation of fire. We process that fire.",
@@ -176,7 +176,7 @@ const ARTIST_DB = {
     availability: "Available for bookings",
     statusColor: "#10b981",
     color: "#f59e0b",
-    accent: "#8b5cf6",
+    accent: "#D4AF37",
     bio: "ZEPH fuses the relentless, unforgiving driving rhythms of Berlin techno with acoustic South Asian acoustic percussion like the mridangam and kanjira. The resulting tracks are aggressive, high-energy mechanical rituals that push subwoofers to their physical limits. Intensely hypnotic and body-moving.",
     quote: "Rhythm is the oldest language we possess. Techno is its logical evolution in the digital era.",
     gallery: [
@@ -215,7 +215,7 @@ const ARTIST_DB = {
     availability: "Available for bookings",
     statusColor: "#10b981",
     color: "#ef4444",
-    accent: "#8B5CF6",
+    accent: "#F26D4F",
     bio: "Noctis operates in the lower, somatic frequencies of sound. Creating monolithic walls of dark sub drone, modular noise, and processed heavy industrial feedback, their music feels like a physical presence inside a room. An immersive sonic weight designed for deep introspection in unique acoustic spaces.",
     quote: "Listen deep enough into the darkness, and you will hear the sound of the universe collapsing.",
     gallery: [
@@ -254,7 +254,7 @@ const ARTIST_DB = {
     availability: "Available for bookings",
     statusColor: "#10b981",
     color: "#ec4899",
-    accent: "#06b6d4",
+    accent: "#C9A24B",
     bio: "Priya K combines ethereal, dreamlike vocal sequences with modular pitch-shifting, delay arrays, and driving deep house structures. Her haunting vocals weave effortlessly through heavy basslines, taking listeners on a emotional journey that is both club-ready and deeply personal. She is one of the most recognizable voices in modern electronic fusion.",
     quote: "The voice is the first synthesiser. Processing it is how we expose the ghosts inside.",
     gallery: [
@@ -331,7 +331,7 @@ const ARTIST_DB = {
     hosted: "42",
     availability: "Available for bookings",
     statusColor: "#10b981",
-    color: "#8b5cf6",
+    color: "#D4AF37",
     accent: "#ec4899",
     bio: "KALI is a Hyderabad-born sonic architect whose live performances descend like dark, ancient rituals. Fusing deep modular loops with industrial textures and hypnotic techno, their shows are designed to echo inside historical spaces, completely transforming stepwells and stone sanctuaries into modern temples of bass.",
     quote: "Our sets are structured like ancient stone steps—descending deep into the earth where the echo never dies.",
@@ -476,7 +476,7 @@ function StatCard({ label, val, artist, delay }) {
 
       {/* Numerical counter */}
       <div style={{
-        fontFamily: "'Bebas Neue', sans-serif",
+        fontFamily: "'Instrument Serif', sans-serif",
         fontSize: "2.85rem",
         color: "#fff",
         letterSpacing: "0.05em",
@@ -751,7 +751,7 @@ export default function ArtistDetails() {
         </button>
 
         <div style={{
-          fontFamily: "'Bebas Neue', sans-serif",
+          fontFamily: "'Instrument Serif', sans-serif",
           fontSize: "1.75rem",
           letterSpacing: "0.12em",
           color: "#fff",
@@ -842,7 +842,7 @@ export default function ArtistDetails() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.9, delay: 0.12, type: "spring", damping: 15 }}
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
+              fontFamily: "'Instrument Serif', sans-serif",
               fontSize: "clamp(4.2rem, 11vw, 8.5rem)",
               lineHeight: 0.85,
               letterSpacing: "0.02em",
@@ -955,7 +955,7 @@ export default function ArtistDetails() {
               }} />
 
               <h2 style={{
-                fontFamily: "'Bebas Neue', sans-serif",
+                fontFamily: "'Instrument Serif', sans-serif",
                 fontSize: "2.4rem",
                 letterSpacing: "0.08em",
                 color: "#fff",
@@ -1005,7 +1005,7 @@ export default function ArtistDetails() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                 <div>
                   <h2 style={{
-                    fontFamily: "'Bebas Neue', sans-serif",
+                    fontFamily: "'Instrument Serif', sans-serif",
                     fontSize: "2.4rem",
                     letterSpacing: "0.08em",
                     color: "#fff",
@@ -1150,7 +1150,7 @@ export default function ArtistDetails() {
             >
               <div>
                 <h2 style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontFamily: "'Instrument Serif', sans-serif",
                   fontSize: "2.4rem",
                   letterSpacing: "0.08em",
                   color: "#fff",
@@ -1254,7 +1254,7 @@ export default function ArtistDetails() {
             >
               <div>
                 <h2 style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontFamily: "'Instrument Serif', sans-serif",
                   fontSize: "2.4rem",
                   letterSpacing: "0.08em",
                   color: "#fff",
@@ -1399,7 +1399,7 @@ export default function ArtistDetails() {
                 }} />
 
                 <h3 style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontFamily: "'Instrument Serif', sans-serif",
                   fontSize: "2.1rem",
                   letterSpacing: "0.08em",
                   color: "#fff",
@@ -1661,7 +1661,7 @@ export default function ArtistDetails() {
               />
               <div style={{ textAlign: "center" }}>
                 <h4 style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontFamily: "'Instrument Serif', sans-serif",
                   fontSize: "1.9rem",
                   letterSpacing: "0.1em",
                   color: "#fff",
