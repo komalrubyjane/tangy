@@ -1,5 +1,5 @@
 // ─── src/pages/EventDetails.jsx ──────────────────────────────────────────────
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import PaymentModal from "../components/PaymentModal";
@@ -577,57 +577,162 @@ export default function EventDetails() {
 // ─── GALLERY ─────────────────────────────────────────────────────────────────
 function GallerySection({ ev }) {
   const [lightbox, setLightbox] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const scrollRef = useRef(null);
+
   const handleKeyDown = useCallback(e => { if (e.key === "Escape") setLightbox(null); }, []);
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  return (
-    <section style={{ padding: "80px 5vw" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <Label text="Photos" />
-        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: "0 0 40px", letterSpacing: "0.04em" }}>
-          Gallery
-        </h2>
+  // Group photos into pages of 3
+  const PER_SLIDE = 3;
+  const slides = [];
+  for (let i = 0; i < ev.gallery.length; i += PER_SLIDE) {
+    slides.push(ev.gallery.slice(i, i + PER_SLIDE));
+  }
+  const total = slides.length;
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 2 }}>
-          {ev.gallery.map((item, i) => (
-            <motion.div
-              key={i}
-              onClick={() => setLightbox(item)}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              style={{
-                aspectRatio: "4/3", cursor: "pointer",
-                overflow: "hidden", background: "#080808",
-                position: "relative",
-              }}
-            >
-              <img
-                src={item.img} alt={item.label} loading="lazy"
-                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.6s ease, filter 0.4s ease", filter: "grayscale(30%) brightness(0.75)", display: "block" }}
-                onMouseEnter={e => { e.target.style.transform = "scale(1.06)"; e.target.style.filter = "grayscale(0%) brightness(1)"; }}
-                onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.filter = "grayscale(30%) brightness(0.75)"; }}
-              />
-              {/* Hover label */}
-              <div style={{
-                position: "absolute", bottom: 0, left: 0, right: 0,
-                padding: "24px 14px 12px",
-                background: "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
-                fontFamily: "'Space Mono', monospace", fontSize: "0.6rem",
-                color: "#C8FF2B", letterSpacing: "0.2em", textTransform: "uppercase",
-              }}>
-                {item.label}
-              </div>
-              {/* Corner deco */}
-              <div style={{ position: "absolute", top: 0, left: 0, width: 16, height: 16, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
-            </motion.div>
-          ))}
+  const goTo = (idx) => {
+    const n = Math.max(0, Math.min(total - 1, idx));
+    setCurrentSlide(n);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ left: n * scrollRef.current.offsetWidth, behavior: "smooth" });
+    }
+  };
+
+  const onScroll = () => {
+    if (!scrollRef.current) return;
+    const n = Math.round(scrollRef.current.scrollLeft / scrollRef.current.offsetWidth);
+    setCurrentSlide(n);
+  };
+
+  return (
+    <section style={{ padding: "80px 0" }}>
+      {/* Header */}
+      <div style={{ padding: "0 5vw", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 28 }}>
+          <div>
+            <Label text="Photos" />
+            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>Gallery</h2>
+          </div>
+          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.2em" }}>
+            {String(currentSlide + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </div>
         </div>
       </div>
+
+      {/* Carousel wrapper */}
+      <div style={{ position: "relative" }}>
+        <style>{`
+          .gal-track::-webkit-scrollbar { display: none; }
+          .gal-track { scrollbar-width: none; -ms-overflow-style: none; }
+        `}</style>
+
+        {/* Track */}
+        <div
+          ref={scrollRef}
+          onScroll={onScroll}
+          className="gal-track"
+          style={{
+            display: "flex",
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {slides.map((slide, si) => (
+            <div
+              key={si}
+              style={{
+                minWidth: "100%",
+                flexShrink: 0,
+                scrollSnapAlign: "start",
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 2,
+                padding: "0 5vw",
+                boxSizing: "border-box",
+              }}
+            >
+              {/* Fill to always show 3 columns */}
+              {[...slide, ...Array(PER_SLIDE - slide.length).fill(null)].map((item, ii) =>
+                item ? (
+                  <div
+                    key={ii}
+                    onClick={() => setLightbox(item)}
+                    style={{ aspectRatio: "4/3", cursor: "pointer", overflow: "hidden", background: "#080808", position: "relative" }}
+                  >
+                    <img
+                      src={item.img} alt={item.label} loading="lazy"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease, filter 0.4s ease", filter: "grayscale(30%) brightness(0.75)", display: "block" }}
+                      onMouseEnter={e => { e.target.style.transform = "scale(1.06)"; e.target.style.filter = "grayscale(0%) brightness(1)"; }}
+                      onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.filter = "grayscale(30%) brightness(0.75)"; }}
+                    />
+                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 10px 8px", background: "linear-gradient(to top, rgba(0,0,0,0.9), transparent)", fontFamily: "'Space Mono', monospace", fontSize: "0.52rem", color: "#C8FF2B", letterSpacing: "0.18em", textTransform: "uppercase" }}>
+                      {item.label}
+                    </div>
+                    <div style={{ position: "absolute", top: 0, left: 0, width: 12, height: 12, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
+                  </div>
+                ) : (
+                  <div key={`empty-${ii}`} style={{ background: "#0a0a0a", aspectRatio: "4/3" }} />
+                )
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Prev / Next arrows */}
+        {total > 1 && (
+          <>
+            <button
+              onClick={() => goTo(currentSlide - 1)}
+              disabled={currentSlide === 0}
+              style={{
+                position: "absolute", left: "calc(5vw + 6px)", top: "50%", transform: "translateY(-50%)",
+                width: 38, height: 38, background: "rgba(8,8,8,0.9)",
+                border: `1px solid ${currentSlide === 0 ? "rgba(255,255,255,0.06)" : "rgba(200,255,43,0.4)"}`,
+                color: currentSlide === 0 ? "rgba(255,255,255,0.12)" : "#C8FF2B",
+                cursor: currentSlide === 0 ? "default" : "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "1rem", zIndex: 10, transition: "all 0.2s", borderRadius: 0,
+              }}
+            >&#8592;</button>
+            <button
+              onClick={() => goTo(currentSlide + 1)}
+              disabled={currentSlide === total - 1}
+              style={{
+                position: "absolute", right: "calc(5vw + 6px)", top: "50%", transform: "translateY(-50%)",
+                width: 38, height: 38, background: "rgba(8,8,8,0.9)",
+                border: `1px solid ${currentSlide === total - 1 ? "rgba(255,255,255,0.06)" : "rgba(200,255,43,0.4)"}`,
+                color: currentSlide === total - 1 ? "rgba(255,255,255,0.12)" : "#C8FF2B",
+                cursor: currentSlide === total - 1 ? "default" : "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "1rem", zIndex: 10, transition: "all 0.2s", borderRadius: 0,
+              }}
+            >&#8594;</button>
+          </>
+        )}
+      </div>
+
+      {/* Dot navigation */}
+      {total > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 18 }}>
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              style={{
+                width: i === currentSlide ? 22 : 7,
+                height: 3, padding: 0, border: "none",
+                background: i === currentSlide ? "#C8FF2B" : "rgba(255,255,255,0.15)",
+                cursor: "pointer", transition: "all 0.3s ease",
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Lightbox */}
       <AnimatePresence>
