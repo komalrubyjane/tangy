@@ -586,7 +586,7 @@ function GallerySection({ ev }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  // Group photos into pages of 3
+  // Group photos into collage slides of 3
   const PER_SLIDE = 3;
   const slides = [];
   for (let i = 0; i < ev.gallery.length; i += PER_SLIDE) {
@@ -607,6 +607,27 @@ function GallerySection({ ev }) {
     const n = Math.round(scrollRef.current.scrollLeft / scrollRef.current.offsetWidth);
     setCurrentSlide(n);
   };
+
+  // Single photo tile
+  const PhotoTile = ({ item, style }) => item ? (
+    <div
+      onClick={() => setLightbox(item)}
+      style={{ position: "relative", overflow: "hidden", cursor: "pointer", background: "#080808", ...style }}
+    >
+      <img
+        src={item.img} alt={item.label} loading="lazy"
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.6s ease, filter 0.4s ease", filter: "grayscale(20%) brightness(0.78)" }}
+        onMouseEnter={e => { e.target.style.transform = "scale(1.07)"; e.target.style.filter = "grayscale(0%) brightness(1)"; }}
+        onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.filter = "grayscale(20%) brightness(0.78)"; }}
+      />
+      {/* label */}
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "28px 12px 10px", background: "linear-gradient(to top, rgba(0,0,0,0.88), transparent)", fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", color: "#C8FF2B", letterSpacing: "0.22em", textTransform: "uppercase" }}>
+        {item.label}
+      </div>
+      {/* corner deco */}
+      <div style={{ position: "absolute", top: 0, left: 0, width: 12, height: 12, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
+    </div>
+  ) : <div style={{ background: "#0d0d0d", ...style }} />;
 
   return (
     <section style={{ padding: "80px 0" }}>
@@ -642,45 +663,53 @@ function GallerySection({ ev }) {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {slides.map((slide, si) => (
-            <div
-              key={si}
-              style={{
-                minWidth: "100%",
-                flexShrink: 0,
-                scrollSnapAlign: "start",
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 2,
-                padding: "0 5vw",
-                boxSizing: "border-box",
-              }}
-            >
-              {/* Fill to always show 3 columns */}
-              {[...slide, ...Array(PER_SLIDE - slide.length).fill(null)].map((item, ii) =>
-                item ? (
-                  <div
-                    key={ii}
-                    onClick={() => setLightbox(item)}
-                    style={{ aspectRatio: "4/3", cursor: "pointer", overflow: "hidden", background: "#080808", position: "relative" }}
-                  >
-                    <img
-                      src={item.img} alt={item.label} loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease, filter 0.4s ease", filter: "grayscale(30%) brightness(0.75)", display: "block" }}
-                      onMouseEnter={e => { e.target.style.transform = "scale(1.06)"; e.target.style.filter = "grayscale(0%) brightness(1)"; }}
-                      onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.filter = "grayscale(30%) brightness(0.75)"; }}
-                    />
-                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 10px 8px", background: "linear-gradient(to top, rgba(0,0,0,0.9), transparent)", fontFamily: "'Space Mono', monospace", fontSize: "0.52rem", color: "#C8FF2B", letterSpacing: "0.18em", textTransform: "uppercase" }}>
-                      {item.label}
-                    </div>
-                    <div style={{ position: "absolute", top: 0, left: 0, width: 12, height: 12, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
-                  </div>
+          {slides.map((slide, si) => {
+            const bigLeft = si % 2 === 0; // alternate which side the big photo is on
+            const [a, b, c] = slide; // a = big, b & c = small stack
+            return (
+              <div
+                key={si}
+                style={{
+                  minWidth: "100%",
+                  flexShrink: 0,
+                  scrollSnapAlign: "start",
+                  padding: "0 5vw",
+                  boxSizing: "border-box",
+                  /* Collage grid:
+                     bigLeft:  [big | small-top  ]
+                               [big | small-bottom]
+                     bigRight: [small-top  | big]
+                               [small-bottom | big]
+                  */
+                  display: "grid",
+                  gridTemplateColumns: bigLeft ? "58% 42%" : "42% 58%",
+                  gridTemplateRows: "1fr 1fr",
+                  gap: 3,
+                  height: "clamp(280px, 42vw, 480px)",
+                }}
+              >
+                {bigLeft ? (
+                  <>
+                    {/* Big photo — spans both rows on the left */}
+                    <PhotoTile item={a} style={{ gridColumn: "1", gridRow: "1 / 3" }} />
+                    {/* Small top-right */}
+                    <PhotoTile item={b} style={{ gridColumn: "2", gridRow: "1" }} />
+                    {/* Small bottom-right */}
+                    <PhotoTile item={c} style={{ gridColumn: "2", gridRow: "2" }} />
+                  </>
                 ) : (
-                  <div key={`empty-${ii}`} style={{ background: "#0a0a0a", aspectRatio: "4/3" }} />
-                )
-              )}
-            </div>
-          ))}
+                  <>
+                    {/* Small top-left */}
+                    <PhotoTile item={b} style={{ gridColumn: "1", gridRow: "1" }} />
+                    {/* Small bottom-left */}
+                    <PhotoTile item={c} style={{ gridColumn: "1", gridRow: "2" }} />
+                    {/* Big photo — spans both rows on the right */}
+                    <PhotoTile item={a} style={{ gridColumn: "2", gridRow: "1 / 3" }} />
+                  </>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Prev / Next arrows */}
