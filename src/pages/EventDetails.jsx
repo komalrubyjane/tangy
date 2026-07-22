@@ -630,35 +630,43 @@ function GallerySection({ ev }) {
   ) : <div style={{ background: "#0d0d0d", ...style }} />;
 
   return (
-    <section style={{ padding: "80px 0" }}>
+    <section style={{ padding: "80px 0", overflow: "hidden" }}>
       {/* Header */}
       <div style={{ padding: "0 5vw", maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 28 }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <div>
             <Label text="Photos" />
             <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>Gallery</h2>
           </div>
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.2em" }}>
-            {String(currentSlide + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", color: "rgba(255,255,255,0.2)", letterSpacing: "0.15em" }}>← SWIPE →</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.2em" }}>
+              {String(currentSlide + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Carousel wrapper */}
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", overflow: "hidden" }}>
         <style>{`
           .gal-track::-webkit-scrollbar { display: none; }
-          .gal-track { scrollbar-width: none; -ms-overflow-style: none; }
+          .gal-track { scrollbar-width: none; -ms-overflow-style: none; width: 100%; }
+          @media (max-width: 600px) {
+            .gal-arrow { display: none !important; }
+          }
         `}</style>
 
-        {/* Track */}
+        {/* Track — must have width:100% so minWidth:100% on slides resolves correctly */}
         <div
           ref={scrollRef}
           onScroll={onScroll}
           className="gal-track"
           style={{
             display: "flex",
+            width: "100%",
             overflowX: "auto",
+            overflowY: "hidden",
             scrollSnapType: "x mandatory",
             WebkitOverflowScrolling: "touch",
           }}
@@ -685,7 +693,8 @@ function GallerySection({ ev }) {
                   gridTemplateColumns: bigLeft ? "58% 42%" : "42% 58%",
                   gridTemplateRows: "1fr 1fr",
                   gap: 3,
-                  height: "clamp(280px, 42vw, 480px)",
+                  /* vw alone is too small on narrow phones; use max(42vw, 42vh) */
+                  height: "clamp(240px, max(42vw, 38vh), 480px)",
                 }}
               >
                 {bigLeft ? (
@@ -716,6 +725,7 @@ function GallerySection({ ev }) {
         {total > 1 && (
           <>
             <button
+              className="gal-arrow"
               onClick={() => goTo(currentSlide - 1)}
               disabled={currentSlide === 0}
               style={{
@@ -729,6 +739,7 @@ function GallerySection({ ev }) {
               }}
             >&#8592;</button>
             <button
+              className="gal-arrow"
               onClick={() => goTo(currentSlide + 1)}
               disabled={currentSlide === total - 1}
               style={{
