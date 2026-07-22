@@ -69,6 +69,12 @@ const GlobalStyles = () => (
     @keyframes rotateSlow { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
     @keyframes slideIn  { from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;} }
     @keyframes ambientPulse { 0%,100%{opacity:0.3;transform:scale(1);} 50%{opacity:0.6;transform:scale(1.08);} }
+    @keyframes goldShine {
+      0% { left: -150%; }
+      50% { left: 150%; }
+      100% { left: 150%; }
+    }
+
     @keyframes subtleZoom {
       0% { transform: scale(1); }
       100% { transform: scale(1.1); }
@@ -171,8 +177,25 @@ const GlobalStyles = () => (
       cursor: pointer;
       border-radius: 3px;
       transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
     }
     .t-btn-ghost:hover { border-color: var(--tangy-amber); color: var(--tangy-amber); background: rgba(255, 223, 0,0.05); }
+
+    .t-btn-primary::after, .t-btn-ghost::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 150%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      transform: skewX(-25deg);
+      pointer-events: none;
+    }
+    .t-btn-primary:hover::after, .t-btn-ghost:hover::after {
+      animation: goldShine 1.8s infinite ease-in-out;
+    }
 
     /* Nav */
     .nav-link {

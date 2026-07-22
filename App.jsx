@@ -131,10 +131,24 @@ function MagneticButton({ children, onClick, style, className }) {
       style={{
         ...style,
         position: "relative",
+        overflow: "hidden",
       }}
       className={className}
     >
-      {children}
+      {/* Shining Metallic Shimmer Overlay */}
+      <span className="shining-gold-overlay" style={{
+        position: "absolute",
+        top: 0,
+        left: "-150%",
+        width: "150%",
+        height: "100%",
+        background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent)",
+        transform: "skewX(-25deg)",
+        transition: "none",
+        pointerEvents: "none",
+        zIndex: 1,
+      }} />
+      <span style={{ position: "relative", zIndex: 2 }}>{children}</span>
     </motion.button>
   );
 }
@@ -2262,6 +2276,19 @@ function LandingPage({ showArtistOverlay = false }) {
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
         
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @keyframes goldShine {
+          0% { left: -150%; }
+          50% { left: 150%; }
+          100% { left: 150%; }
+        }
+
+        button:hover .shining-gold-overlay,
+        .t-btn-primary:hover .shining-gold-overlay,
+        .t-btn-ghost:hover .shining-gold-overlay,
+        .nav-admin button:hover .shining-gold-overlay {
+          animation: goldShine 1.8s infinite ease-in-out;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
