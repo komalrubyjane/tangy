@@ -162,7 +162,7 @@ export default function VolunteerForm() {
         .volunteer-form-container input:focus,
         .volunteer-form-container select:focus,
         .volunteer-form-container textarea:focus {
-          border-color: #FFD700 !important;
+          border-color: #FFE338 !important;
           box-shadow: 0 0 15px rgba(168,85,247,0.3) !important;
         }
       `}</style>
@@ -173,7 +173,7 @@ export default function VolunteerForm() {
         ))}
       </div>
       
-      <div style={{ fontSize: "0.8rem", color: "#F0E68C", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Step {step} of 5</div>
+      <div style={{ fontSize: "0.8rem", color: "#FFF275", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Step {step} of 5</div>
 
       <AnimatePresence mode="wait">
         <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
@@ -241,7 +241,7 @@ export default function VolunteerForm() {
               {/* CONDITIONALS */}
               {form.primaryDept === "Creative Direction & Show Design" && (
                 <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#F0E68C" }}>Creative Direction Section</h4>
+                  <h4 style={{ margin: 0, color: "#FFF275" }}>Creative Direction Section</h4>
                   <div><label style={LABEL_STYLE}>Role *</label>
                     <select value={form.cdRole} onChange={e => handleChange("cdRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Show Director">Show Director</option><option value="Show Crew">Show Crew</option></select>
                   </div>
@@ -255,7 +255,7 @@ export default function VolunteerForm() {
 
               {form.primaryDept === "Stage Designer & Decor Lead" && (
                 <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#F0E68C" }}>Stage Design Section</h4>
+                  <h4 style={{ margin: 0, color: "#FFF275" }}>Stage Design Section</h4>
                   <div><label style={LABEL_STYLE}>Background *</label><select value={form.sdBg} onChange={e => handleChange("sdBg", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Interior Design">Interior Design</option><option value="Architecture">Architecture</option><option value="Event Decor">Event Decor</option><option value="Fashion / Set Design">Fashion / Set Design</option><option value="Self Taught">Self Taught</option><option value="Beginner">Beginner</option></select></div>
                   <div><label style={LABEL_STYLE}>Role *</label><select value={form.sdRole} onChange={e => handleChange("sdRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Decor Lead">Decor Lead</option><option value="Decor Crew">Decor Crew</option><option value="Either">Either</option></select></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><select value={form.sdExp} onChange={e => handleChange("sdExp", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Professional">Professional</option><option value="Independent">Independent</option><option value="Idea-based">Idea-based</option><option value="No experience">No experience</option></select></div>
@@ -268,7 +268,7 @@ export default function VolunteerForm() {
               {/* Add other conditionals similarly */}
               {form.primaryDept === "Costume Design" && (
                 <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#F0E68C" }}>Costume Design Section</h4>
+                  <h4 style={{ margin: 0, color: "#FFF275" }}>Costume Design Section</h4>
                   <div><label style={LABEL_STYLE}>Role *</label><select value={form.csRole} onChange={e => handleChange("csRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Costume Head">Costume Head</option><option value="Costume Crew">Costume Crew</option></select></div>
                   <div><label style={LABEL_STYLE}>Background *</label><input type="text" value={form.csBg} onChange={e => handleChange("csBg", e.target.value)} style={INPUT_STYLE} /></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><input type="text" value={form.csExp} onChange={e => handleChange("csExp", e.target.value)} style={INPUT_STYLE} /></div>
@@ -278,7 +278,7 @@ export default function VolunteerForm() {
 
               {form.primaryDept === "Visual & Content" && (
                 <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#F0E68C" }}>Visual & Content Section</h4>
+                  <h4 style={{ margin: 0, color: "#FFF275" }}>Visual & Content Section</h4>
                   <div><label style={LABEL_STYLE}>Skills *</label><select value={form.vcSkills} onChange={e => handleChange("vcSkills", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Photographer">Photographer</option><option value="Videographer">Videographer</option><option value="Editor">Editor</option><option value="Reels Creator">Reels Creator</option><option value="Colourist">Colourist</option><option value="Graphic Designer">Graphic Designer</option><option value="Motion Designer">Motion Designer</option></select></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><input type="text" value={form.vcExp} onChange={e => handleChange("vcExp", e.target.value)} style={INPUT_STYLE} /></div>
                   <div><label style={LABEL_STYLE}>Equipment & Software *</label><input type="text" value={form.vcEquip} onChange={e => handleChange("vcEquip", e.target.value)} style={INPUT_STYLE} /></div>
@@ -406,7 +406,7 @@ export default function VolunteerForm() {
         
         <motion.button
           onClick={step === 5 ? handleSubmit : nextStep} disabled={isSubmitting}
-          whileHover={!isSubmitting ? { scale: 1.05, backgroundColor: "#B8860B" } : {}}
+          whileHover={!isSubmitting ? { scale: 1.05, backgroundColor: "#E5A93C" } : {}}
           whileTap={!isSubmitting ? { scale: 0.95 } : {}}
           style={{ padding: "14px 36px", background: isSubmitting ? "rgba(242, 109, 79,0.5)" : "#F26D4F", color: "#fff", border: "none", borderRadius: 8, cursor: isSubmitting ? "not-allowed" : "pointer", textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.1em", boxShadow: "0 0 20px rgba(242, 109, 79,0.3)" }}>
           {isSubmitting ? "Submitting..." : step === 5 ? "Submit Application" : "Continue"}

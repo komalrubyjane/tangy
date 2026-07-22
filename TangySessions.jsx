@@ -60,7 +60,7 @@ function useToast() {
 }
 
 function ToastContainer({ toasts }) {
-  const colors = { info: "#D4AF37", success: "#10b981", error: "#ef4444", warning: "#f59e0b" };
+  const colors = { info: "#FFDF00", success: "#10b981", error: "#ef4444", warning: "#f59e0b" };
   return (
     <div style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 9999, display: "flex", flexDirection: "column", gap: "10px" }}>
       {toasts.map(t => (
@@ -96,7 +96,7 @@ function SafeImage({ src, alt, fallback, style, className }) {
     <>
       {!loaded && (
         <div style={{ ...style, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: 28, height: 28, border: "2px solid #D4AF37", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+          <div style={{ width: 28, height: 28, border: "2px solid #FFDF00", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
         </div>
       )}
       <img
@@ -119,9 +119,9 @@ const EVENTS = [
 ];
 
 const ARTISTS = [
-  { id: 1, name: "KRYZEN", role: "Deep House DJ", emoji: "🎧", color: "#D4AF37" },
+  { id: 1, name: "KRYZEN", role: "Deep House DJ", emoji: "🎧", color: "#FFDF00" },
   { id: 2, name: "Aura.wav", role: "Ambient Producer", emoji: "🌊", color: "#06b6d4" },
-  { id: 3, name: "SONDER", role: "Live Electronic", emoji: "⚡", color: "#FFD700" },
+  { id: 3, name: "SONDER", role: "Live Electronic", emoji: "⚡", color: "#FFE338" },
   { id: 4, name: "Ritvik", role: "Classical Fusion", emoji: "🎻", color: "#06b6d4" },
 ];
 
@@ -170,19 +170,19 @@ function Navbar() {
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
       background: scrolled ? "rgba(10,10,10,0.95)" : "transparent",
       backdropFilter: scrolled ? "blur(12px)" : "none",
-      borderBottom: scrolled ? "1px solid rgba(212, 175, 55,0.2)" : "none",
+      borderBottom: scrolled ? "1px solid rgba(255, 223, 0,0.2)" : "none",
       transition: "all 0.4s ease", padding: "0 5vw",
       display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px"
     }}>
       <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.4rem", letterSpacing: "0.15em", color: "#fff", cursor: "pointer" }}
         onClick={() => scrollTo("home")}>
-        TANGY<span style={{ color: "#D4AF37" }}>.</span>
+        TANGY<span style={{ color: "#FFDF00" }}>.</span>
       </div>
       <div style={{ display: "flex", gap: "28px" }} className="nav-links">
         {links.map(l => (
           <button key={l} onClick={() => scrollTo(l)}
             style={{ background: "none", border: "none", color: "rgba(255,255,255,0.75)", cursor: "pointer", fontSize: "0.8rem", letterSpacing: "0.12em", fontFamily: "inherit", textTransform: "uppercase", transition: "color 0.2s" }}
-            onMouseEnter={e => e.target.style.color = "#D4AF37"}
+            onMouseEnter={e => e.target.style.color = "#FFDF00"}
             onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.75)"}
           >{l}</button>
         ))}
@@ -248,7 +248,7 @@ function Hero({ onBook }) {
         // Fallback: animated gradient background
         <div style={{
           position: "absolute", inset: 0, zIndex: 0,
-          background: "radial-gradient(ellipse at 30% 50%, #D4AF3722 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, #06b6d422 0%, transparent 60%), #0a0a0a",
+          background: "radial-gradient(ellipse at 30% 50%, #FFDF0022 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, #06b6d422 0%, transparent 60%), #0a0a0a",
           animation: "pulse 4s ease-in-out infinite"
         }} />
       )}
@@ -262,7 +262,7 @@ function Hero({ onBook }) {
       }} />
       {/* Content */}
       <div style={{ position: "relative", zIndex: 3, textAlign: "center", padding: "0 24px" }}>
-        <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 0.9rem)", letterSpacing: "0.5em", color: "#D4AF37", textTransform: "uppercase", marginBottom: "20px", fontFamily: "monospace", animation: "fadeSlideUp 0.8s ease both" }}>
+        <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 0.9rem)", letterSpacing: "0.5em", color: "#FFDF00", textTransform: "uppercase", marginBottom: "20px", fontFamily: "monospace", animation: "fadeSlideUp 0.8s ease both" }}>
           Est. 2025 · Hyderabad
         </div>
         <h1 style={{
@@ -270,9 +270,9 @@ function Hero({ onBook }) {
           fontSize: "clamp(4rem, 12vw, 9rem)",
           lineHeight: 0.95, letterSpacing: "0.05em", color: "#fff",
           margin: 0, animation: "fadeSlideUp 0.8s 0.15s ease both",
-          textShadow: "0 0 80px rgba(212, 175, 55,0.4)"
+          textShadow: "0 0 80px rgba(255, 223, 0,0.4)"
         }}>
-          TANGY<br /><span style={{ color: "#D4AF37" }}>SESSIONS</span>
+          TANGY<br /><span style={{ color: "#FFDF00" }}>SESSIONS</span>
         </h1>
         <p style={{
           fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
@@ -283,13 +283,13 @@ function Hero({ onBook }) {
         </p>
         <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "40px", flexWrap: "wrap", animation: "fadeSlideUp 0.8s 0.45s ease both" }}>
           <button onClick={onBook} style={{
-            padding: "14px 36px", background: "#D4AF37", color: "#fff", border: "none",
+            padding: "14px 36px", background: "#FFDF00", color: "#fff", border: "none",
             borderRadius: "4px", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em",
             textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 600,
-            transition: "all 0.3s", boxShadow: "0 0 30px rgba(212, 175, 55,0.5)"
+            transition: "all 0.3s", boxShadow: "0 0 30px rgba(255, 223, 0,0.5)"
           }}
-            onMouseEnter={e => { e.target.style.background = "#B8860B"; e.target.style.transform = "translateY(-2px)"; }}
-            onMouseLeave={e => { e.target.style.background = "#D4AF37"; e.target.style.transform = "none"; }}>
+            onMouseEnter={e => { e.target.style.background = "#E5A93C"; e.target.style.transform = "translateY(-2px)"; }}
+            onMouseLeave={e => { e.target.style.background = "#FFDF00"; e.target.style.transform = "none"; }}>
             Book Tickets
           </button>
           <button onClick={() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" })} style={{
@@ -311,7 +311,7 @@ function Hero({ onBook }) {
       </div>
       {/* Scroll indicator */}
       <div style={{ position: "absolute", bottom: "32px", left: "50%", transform: "translateX(-50%)", zIndex: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", opacity: 0.5 }}>
-        <div style={{ width: "1px", height: "40px", background: "linear-gradient(to bottom, transparent, #D4AF37)", animation: "pulse 2s ease-in-out infinite" }} />
+        <div style={{ width: "1px", height: "40px", background: "linear-gradient(to bottom, transparent, #FFDF00)", animation: "pulse 2s ease-in-out infinite" }} />
       </div>
     </section>
   );
@@ -342,9 +342,9 @@ function EventCard({ ev, delay, onBook }) {
         scale: 1.02, 
         rotateY: 5, 
         rotateX: -5,
-        boxShadow: "0 25px 60px rgba(212, 175, 55,0.25)",
-        borderColor: "rgba(212, 175, 55,0.6)",
-        background: "rgba(212, 175, 55,0.08)"
+        boxShadow: "0 25px 60px rgba(255, 223, 0,0.25)",
+        borderColor: "rgba(255, 223, 0,0.6)",
+        background: "rgba(255, 223, 0,0.08)"
       }}
       style={{
         background: "rgba(255,255,255,0.03)",
@@ -353,7 +353,7 @@ function EventCard({ ev, delay, onBook }) {
         transformStyle: "preserve-3d",
         cursor: "pointer"
       }}>
-      <div style={{ fontSize: "0.7rem", letterSpacing: "0.25em", color: "#D4AF37", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "12px", transform: "translateZ(30px)" }}>
+      <div style={{ fontSize: "0.7rem", letterSpacing: "0.25em", color: "#FFDF00", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "12px", transform: "translateZ(30px)" }}>
         {ev.date} · {ev.time}
       </div>
       <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#fff", margin: "0 0 8px", letterSpacing: "0.05em", transform: "translateZ(40px)" }}>{ev.name}</h3>
@@ -364,11 +364,11 @@ function EventCard({ ev, delay, onBook }) {
           ₹{ev.price}
         </div>
         <motion.button onClick={() => onBook(ev)} style={{
-          padding: "10px 24px", background: "#D4AF37", color: "#fff", border: "none",
+          padding: "10px 24px", background: "#FFDF00", color: "#fff", border: "none",
           borderRadius: "4px", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.08em",
           textTransform: "uppercase", fontSize: "0.78rem"
         }}
-          whileHover={{ scale: 1.05, backgroundColor: "#B8860B" }}
+          whileHover={{ scale: 1.05, backgroundColor: "#E5A93C" }}
           whileTap={{ scale: 0.95 }}>
           Book Now
         </motion.button>
@@ -462,9 +462,9 @@ function Gallery() {
               onClick={(e) => e.stopPropagation()}
               className="lightbox-inner"
               style={{
-                background: "#111", border: "1px solid rgba(212, 175, 55,0.3)", borderRadius: "16px",
+                background: "#111", border: "1px solid rgba(255, 223, 0,0.3)", borderRadius: "16px",
                 padding: "60px 80px", textAlign: "center",
-                boxShadow: "0 0 100px rgba(212, 175, 55,0.2)"
+                boxShadow: "0 0 100px rgba(255, 223, 0,0.2)"
               }}>
               <motion.div style={{ fontSize: "5rem", marginBottom: "16px" }}
                 animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
@@ -491,8 +491,8 @@ function GalleryItem({ item, delay, onClick }) {
       whileHover={{ 
         scale: 1.05, 
         rotateZ: 2,
-        borderColor: "rgba(212, 175, 55,0.4)",
-        boxShadow: "0 25px 50px rgba(212, 175, 55,0.25)"
+        borderColor: "rgba(255, 223, 0,0.4)",
+        boxShadow: "0 25px 50px rgba(255, 223, 0,0.25)"
       }}
       style={{
         aspectRatio: "4/3", borderRadius: "10px", cursor: "pointer", overflow: "hidden",
@@ -560,8 +560,8 @@ function Tickets({ toast, selectedEvent }) {
         initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
         whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
         viewport={{ once: true }} transition={{ type: "spring", bounce: 0.4 }}
-        whileHover={{ boxShadow: "0 40px 80px rgba(212, 175, 55,0.15)" }}
-        style={{ maxWidth: "520px", margin: "60px auto 0", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(212, 175, 55,0.2)", borderRadius: "16px", padding: "40px", transformStyle: "preserve-3d" }}>
+        whileHover={{ boxShadow: "0 40px 80px rgba(255, 223, 0,0.15)" }}
+        style={{ maxWidth: "520px", margin: "60px auto 0", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255, 223, 0,0.2)", borderRadius: "16px", padding: "40px", transformStyle: "preserve-3d" }}>
         
         <div style={{ marginBottom: "24px" }}>
           <label style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "8px", transform: "translateZ(20px)" }}>
@@ -586,23 +586,23 @@ function Tickets({ toast, selectedEvent }) {
         </div>
 
         <motion.div 
-          whileHover={{ translateY: -5, boxShadow: "0 10px 30px rgba(212, 175, 55,0.15)" }}
-          style={{ background: "rgba(212, 175, 55,0.08)", border: "1px solid rgba(212, 175, 55,0.2)", borderRadius: "10px", padding: "20px", marginBottom: "28px", transform: "translateZ(30px)" }}>
+          whileHover={{ translateY: -5, boxShadow: "0 10px 30px rgba(255, 223, 0,0.15)" }}
+          style={{ background: "rgba(255, 223, 0,0.08)", border: "1px solid rgba(255, 223, 0,0.2)", borderRadius: "10px", padding: "20px", marginBottom: "28px", transform: "translateZ(30px)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", color: "rgba(255,255,255,0.5)", fontSize: "0.85rem", marginBottom: "8px" }}>
             <span>Price per ticket</span>
             <span>₹{selectedEv?.price ?? "—"}</span>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.6rem", letterSpacing: "0.05em" }}>
             <span>Total</span>
-            <span style={{ color: "#D4AF37" }}>₹{total || "—"}</span>
+            <span style={{ color: "#FFDF00" }}>₹{total || "—"}</span>
           </div>
         </motion.div>
 
         <motion.button onClick={handleSubmit} disabled={loading}
-          whileHover={!loading ? { scale: 1.02, backgroundColor: "#B8860B" } : {}}
+          whileHover={!loading ? { scale: 1.02, backgroundColor: "#E5A93C" } : {}}
           whileTap={!loading ? { scale: 0.98 } : {}}
           style={{
-            width: "100%", padding: "16px", background: loading ? "#4c1d95" : "#D4AF37",
+            width: "100%", padding: "16px", background: loading ? "#4c1d95" : "#FFDF00",
             color: "#fff", border: "none", borderRadius: "8px", cursor: loading ? "not-allowed" : "pointer",
             fontFamily: "inherit", letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.9rem",
             fontWeight: 600, transition: "background 0.3s", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
@@ -625,7 +625,7 @@ function About() {
   return (
     <section id="about" style={{ background: "transparent", padding: "100px 5vw", perspective: "1000px" }}>
       <div style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once:true }} style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#D4AF37", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "16px" }}>Our Story</motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once:true }} style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#FFDF00", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "16px" }}>Our Story</motion.div>
         
         <motion.h2 initial={{ opacity: 0, rotateX: -30 }} whileInView={{ opacity: 1, rotateX: 0 }} transition={{ delay: 0.1, type: "spring" }} viewport={{ once:true }} style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 4.5rem)", color: "#fff", margin: "0 0 32px", letterSpacing: "0.05em" }}>
           About Tangy Sessions
@@ -651,7 +651,7 @@ function About() {
               viewport={{ once:true }} transition={{ delay: 0.5 + i * 0.1, type: "spring" }}
               whileHover={{ scale: 1.1, translateY: -10 }}
               style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3rem", color: "#D4AF37", lineHeight: 1 }}>{n}</div>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3rem", color: "#FFDF00", lineHeight: 1 }}>{n}</div>
               <div style={{ fontSize: "0.72rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginTop: "6px" }}>{l}</div>
             </motion.div>
           ))}
@@ -706,12 +706,12 @@ function Contact({ toast }) {
           viewport={{ once: true }} transition={{ duration: 0.6 }}
           style={{ transformStyle: "preserve-3d" }}>
           <div style={{ marginBottom: "32px", transform: "translateZ(20px)" }}>
-            <div style={{ color: "#D4AF37", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "8px" }}>Location</div>
+            <div style={{ color: "#FFDF00", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "8px" }}>Location</div>
             <div style={{ color: "#fff", fontSize: "1.05rem" }}>Bansilal Stepwell</div>
             <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.9rem" }}>Hyderabad, Telangana, India</div>
           </div>
           <div style={{ marginBottom: "32px", transform: "translateZ(20px)" }}>
-            <div style={{ color: "#D4AF37", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "8px" }}>Contact</div>
+            <div style={{ color: "#FFDF00", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "8px" }}>Contact</div>
             <div style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem" }}>hello@tangysessions.in</div>
           </div>
           <div className="social-btns" style={{ display: "flex", gap: "16px", marginTop: "32px", transform: "translateZ(30px)" }}>
@@ -720,7 +720,7 @@ function Contact({ toast }) {
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }} transition={{ delay: 0.2 + i * 0.1 }}
-                whileHover={{ scale: 1.1, borderColor: "#D4AF37", color: "#D4AF37" }}
+                whileHover={{ scale: 1.1, borderColor: "#FFDF00", color: "#FFDF00" }}
                 whileTap={{ scale: 0.95 }}
                 style={{ padding: "10px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.6)", borderRadius: "6px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em" }}>
                 {s}
@@ -729,8 +729,8 @@ function Contact({ toast }) {
           </div>
           
           <motion.div 
-            whileHover={{ boxShadow: "0 20px 40px rgba(212, 175, 55,0.25)", borderColor: "rgba(212, 175, 55,0.4)" }}
-            style={{ marginTop: "32px", borderRadius: "10px", overflow: "hidden", border: "1px solid rgba(212, 175, 55,0.2)", height: "220px", transform: "translateZ(40px)", position: "relative" }}>
+            whileHover={{ boxShadow: "0 20px 40px rgba(255, 223, 0,0.25)", borderColor: "rgba(255, 223, 0,0.4)" }}
+            style={{ marginTop: "32px", borderRadius: "10px", overflow: "hidden", border: "1px solid rgba(255, 223, 0,0.2)", height: "220px", transform: "translateZ(40px)", position: "relative" }}>
             <iframe
               title="Bansilal Stepwell Location"
               src="https://maps.google.com/maps?q=Bansilal+Baoli+Stepwell+Hyderabad+Telangana&t=&z=16&ie=UTF8&iwloc=&output=embed"
@@ -768,7 +768,7 @@ function Contact({ toast }) {
                     <input placeholder={f.charAt(0).toUpperCase() + f.slice(1)} value={form[f]}
                       onChange={e => { setForm(x => ({ ...x, [f]: e.target.value })); setErrors(er => ({ ...er, [f]: null })); }}
                       style={inp(f)} 
-                      onFocus={(e) => { e.target.style.borderColor = "#D4AF37"; e.target.style.background="rgba(255,255,255,0.08)"; }}
+                      onFocus={(e) => { e.target.style.borderColor = "#FFDF00"; e.target.style.background="rgba(255,255,255,0.08)"; }}
                       onBlur={(e) => { e.target.style.borderColor = errors[f] ? "#ef4444" : "rgba(255,255,255,0.1)"; e.target.style.background="rgba(255,255,255,0.04)"; }}/>
                     {errors[f] && <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: "4px" }}>⚠ {errors[f]}</motion.div>}
                   </div>
@@ -777,15 +777,15 @@ function Contact({ toast }) {
                   <textarea placeholder="Your message" value={form.message} rows={5}
                     onChange={e => { setForm(x => ({ ...x, message: e.target.value })); setErrors(er => ({ ...er, message: null })); }}
                     style={{ ...inp("message"), resize: "vertical" }} 
-                    onFocus={(e) => { e.target.style.borderColor = "#D4AF37"; e.target.style.background="rgba(255,255,255,0.08)"; }}
+                    onFocus={(e) => { e.target.style.borderColor = "#FFDF00"; e.target.style.background="rgba(255,255,255,0.08)"; }}
                     onBlur={(e) => { e.target.style.borderColor = errors.message ? "#ef4444" : "rgba(255,255,255,0.1)"; e.target.style.background="rgba(255,255,255,0.04)"; }}/>
                   {errors.message && <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: "4px" }}>⚠ {errors.message}</motion.div>}
                 </div>
                 <motion.button onClick={handleSend}
-                  whileHover={{ scale: 1.02, backgroundColor: "#B8860B", boxShadow: "0 10px 20px rgba(212, 175, 55,0.3)" }}
+                  whileHover={{ scale: 1.02, backgroundColor: "#E5A93C", boxShadow: "0 10px 20px rgba(255, 223, 0,0.3)" }}
                   whileTap={{ scale: 0.98 }}
                   style={{
-                    width: "100%", padding: "14px", background: "#D4AF37", color: "#fff", border: "none",
+                    width: "100%", padding: "14px", background: "#FFDF00", color: "#fff", border: "none",
                     borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em",
                     textTransform: "uppercase", fontSize: "0.85rem", transform: "translateZ(20px)"
                   }}>
@@ -803,11 +803,11 @@ function Contact({ toast }) {
 // ─── FOOTER ──────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer style={{ background: "transparent", borderTop: "1px solid rgba(212, 175, 55,0.15)", padding: "60px 5vw 32px" }}>
+    <footer style={{ background: "transparent", borderTop: "1px solid rgba(255, 223, 0,0.15)", padding: "60px 5vw 32px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "40px", marginBottom: "48px" }}>
         <div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", letterSpacing: "0.12em", color: "#fff", marginBottom: "8px" }}>
-            TANGY<span style={{ color: "#D4AF37" }}>.</span>
+            TANGY<span style={{ color: "#FFDF00" }}>.</span>
           </div>
           <div style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.82rem", fontStyle: "italic" }}>Music beneath history.</div>
         </div>
@@ -817,7 +817,7 @@ function Footer() {
             ["Connect", ["Instagram", "Spotify", "Contact"]]
           ].map(([title, items]) => (
             <div key={title}>
-              <div style={{ color: "#D4AF37", fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "16px" }}>{title}</div>
+              <div style={{ color: "#FFDF00", fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "16px" }}>{title}</div>
               {items.map(item => (
                 <div key={item} style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.85rem", marginBottom: "10px", cursor: "pointer" }}
                   onMouseEnter={e => e.target.style.color = "#fff"}
@@ -845,13 +845,13 @@ function SectionHeader({ label, title }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       style={{ textAlign: "center", marginBottom: "8px" }}>
-      <div style={{ fontSize: "0.7rem", letterSpacing: "0.35em", color: "#D4AF37", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "14px" }}>{label}</div>
+      <div style={{ fontSize: "0.7rem", letterSpacing: "0.35em", color: "#FFDF00", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "14px" }}>{label}</div>
       <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#fff", margin: 0, letterSpacing: "0.05em" }}>{title}</h2>
       <motion.div 
         initial={{ width: 0 }} 
         whileInView={{ width: "48px" }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        style={{ height: "2px", background: "linear-gradient(to right, #D4AF37, #06b6d4)", margin: "18px auto 0", borderRadius: "2px" }} />
+        style={{ height: "2px", background: "linear-gradient(to right, #FFDF00, #06b6d4)", margin: "18px auto 0", borderRadius: "2px" }} />
     </motion.div>
   );
 }
@@ -882,10 +882,10 @@ function LandingPage() {
         body { -webkit-tap-highlight-color: transparent; }
         img, video { max-width: 100%; }
         input, select, textarea, button { font-family: inherit; }
-        ::selection { background: rgba(212, 175, 55,0.35); }
+        ::selection { background: rgba(255, 223, 0,0.35); }
         ::-webkit-scrollbar { width:4px; }
         ::-webkit-scrollbar-track { background:#0a0a0a; }
-        ::-webkit-scrollbar-thumb { background:#D4AF37; border-radius:2px; }
+        ::-webkit-scrollbar-thumb { background:#FFDF00; border-radius:2px; }
 
         /* ─── MOBILE BREAKPOINT ─── */
         @media (max-width: 700px) {

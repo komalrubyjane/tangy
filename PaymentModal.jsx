@@ -20,8 +20,8 @@ function Stepper({ step }) {
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
             <motion.div
               animate={{
-                background: i < step ? "#D4AF37" : i === step ? "rgba(212, 175, 55,0.2)" : "rgba(255,255,255,0.05)",
-                borderColor: i <= step ? "#D4AF37" : "rgba(255,255,255,0.1)",
+                background: i < step ? "#FFDF00" : i === step ? "rgba(255, 223, 0,0.2)" : "rgba(255,255,255,0.05)",
+                borderColor: i <= step ? "#FFDF00" : "rgba(255,255,255,0.1)",
                 scale: i === step ? 1.1 : 1,
               }}
               style={{
@@ -36,7 +36,7 @@ function Stepper({ step }) {
           </div>
           {i < steps.length - 1 && (
             <motion.div
-              animate={{ background: i < step - 1 ? "#D4AF37" : "rgba(255,255,255,0.08)" }}
+              animate={{ background: i < step - 1 ? "#FFDF00" : "rgba(255,255,255,0.08)" }}
               style={{ height: 1, width: 64, marginBottom: 22, transition: "background 0.4s" }}
             />
           )}
@@ -129,10 +129,10 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
         transition={{ type: "spring", damping: 22, stiffness: 260 }}
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#0d0d0d", border: "1px solid rgba(212, 175, 55,0.25)",
+          background: "#0d0d0d", border: "1px solid rgba(255, 223, 0,0.25)",
           borderRadius: 20, width: "100%", maxWidth: 520,
           maxHeight: "90vh", overflowY: "auto",
-          boxShadow: "0 0 80px rgba(212, 175, 55,0.2), 0 40px 80px rgba(0,0,0,0.6)",
+          boxShadow: "0 0 80px rgba(255, 223, 0,0.2), 0 40px 80px rgba(0,0,0,0.6)",
           fontFamily: "'DM Sans', system-ui, sans-serif",
         }}
       >
@@ -143,7 +143,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
           position: "sticky", top: 0, background: "#0d0d0d", zIndex: 10, borderRadius: "20px 20px 0 0"
         }}>
           <div>
-            <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "#D4AF37", textTransform: "uppercase", fontFamily: "monospace" }}>Secure Checkout</div>
+            <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "#FFDF00", textTransform: "uppercase", fontFamily: "monospace" }}>Secure Checkout</div>
             <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.6rem", color: "#fff", letterSpacing: "0.05em", marginTop: 2 }}>
               ₹{amount.toLocaleString("en-IN")}
             </div>
@@ -169,14 +169,14 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                     <motion.button
                       key={m.id}
                       onClick={() => { setMethod(m.id); setErrors({}); }}
-                      whileHover={{ scale: 1.02, borderColor: "rgba(212, 175, 55,0.5)" }}
+                      whileHover={{ scale: 1.02, borderColor: "rgba(255, 223, 0,0.5)" }}
                       whileTap={{ scale: 0.97 }}
                       style={{
                         padding: "16px 14px", textAlign: "left",
-                        background: method === m.id ? "rgba(212, 175, 55,0.12)" : "rgba(255,255,255,0.03)",
-                        border: `1px solid ${method === m.id ? "#D4AF37" : "rgba(255,255,255,0.08)"}`,
+                        background: method === m.id ? "rgba(255, 223, 0,0.12)" : "rgba(255,255,255,0.03)",
+                        border: `1px solid ${method === m.id ? "#FFDF00" : "rgba(255,255,255,0.08)"}`,
                         borderRadius: 10, cursor: "pointer", color: "#fff",
-                        boxShadow: method === m.id ? "0 0 20px rgba(212, 175, 55,0.15)" : "none",
+                        boxShadow: method === m.id ? "0 0 20px rgba(255, 223, 0,0.15)" : "none",
                         transition: "all 0.2s",
                       }}
                     >
@@ -193,7 +193,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                       <label style={{ display: "block", fontSize: "0.72rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 8 }}>UPI ID</label>
                       <input placeholder="yourname@upi" value={upiId} onChange={e => { setUpiId(e.target.value); setErrors({}); }}
                         style={inp("upi")}
-                        onFocus={e => e.target.style.borderColor = "#D4AF37"}
+                        onFocus={e => e.target.style.borderColor = "#FFDF00"}
                         onBlur={e => e.target.style.borderColor = errors.upi ? "#ef4444" : "rgba(255,255,255,0.1)"}
                       />
                       {errors.upi && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 6 }}>⚠ {errors.upi}</div>}
@@ -215,7 +215,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                         <input placeholder="1234 5678 9012 3456" value={card.number}
                           onChange={e => { setCard(c => ({ ...c, number: formatCard(e.target.value) })); setErrors({}); }}
                           style={inp("cardNumber")} maxLength={19}
-                          onFocus={e => e.target.style.borderColor = "#D4AF37"}
+                          onFocus={e => e.target.style.borderColor = "#FFDF00"}
                           onBlur={e => e.target.style.borderColor = errors.cardNumber ? "#ef4444" : "rgba(255,255,255,0.1)"}
                         />
                         {errors.cardNumber && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.cardNumber}</div>}
@@ -226,7 +226,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                           <input placeholder="MM/YY" value={card.expiry}
                             onChange={e => { setCard(c => ({ ...c, expiry: formatExpiry(e.target.value) })); setErrors({}); }}
                             style={inp("expiry")} maxLength={5}
-                            onFocus={e => e.target.style.borderColor = "#D4AF37"}
+                            onFocus={e => e.target.style.borderColor = "#FFDF00"}
                             onBlur={e => e.target.style.borderColor = errors.expiry ? "#ef4444" : "rgba(255,255,255,0.1)"}
                           />
                           {errors.expiry && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.expiry}</div>}
@@ -236,7 +236,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                           <input placeholder="•••" value={card.cvv} type="password"
                             onChange={e => { setCard(c => ({ ...c, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) })); setErrors({}); }}
                             style={inp("cvv")} maxLength={4}
-                            onFocus={e => e.target.style.borderColor = "#D4AF37"}
+                            onFocus={e => e.target.style.borderColor = "#FFDF00"}
                             onBlur={e => e.target.style.borderColor = errors.cvv ? "#ef4444" : "rgba(255,255,255,0.1)"}
                           />
                           {errors.cvv && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.cvv}</div>}
@@ -247,7 +247,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                         <input placeholder="Full name" value={card.name}
                           onChange={e => { setCard(c => ({ ...c, name: e.target.value })); setErrors({}); }}
                           style={inp("name")}
-                          onFocus={e => e.target.style.borderColor = "#D4AF37"}
+                          onFocus={e => e.target.style.borderColor = "#FFDF00"}
                           onBlur={e => e.target.style.borderColor = errors.name ? "#ef4444" : "rgba(255,255,255,0.1)"}
                         />
                         {errors.name && <div style={{ color: "#ef4444", fontSize: "0.73rem", marginTop: 4 }}>⚠ {errors.name}</div>}
@@ -268,8 +268,8 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                         {BANKS.map(b => (
                           <button key={b} onClick={() => { setBank(b); setErrors({}); }}
                             style={{
-                              padding: "12px 16px", textAlign: "left", background: bank === b ? "rgba(212, 175, 55,0.12)" : "rgba(255,255,255,0.03)",
-                              border: `1px solid ${bank === b ? "#D4AF37" : "rgba(255,255,255,0.08)"}`, borderRadius: 8,
+                              padding: "12px 16px", textAlign: "left", background: bank === b ? "rgba(255, 223, 0,0.12)" : "rgba(255,255,255,0.03)",
+                              border: `1px solid ${bank === b ? "#FFDF00" : "rgba(255,255,255,0.08)"}`, borderRadius: 8,
                               color: bank === b ? "#fff" : "rgba(255,255,255,0.6)", cursor: "pointer", fontSize: "0.85rem", transition: "all 0.2s",
                             }}>
                             🏦 {b}
@@ -286,8 +286,8 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                         {WALLETS.map(w => (
                           <button key={w} onClick={() => { setWallet(w); setErrors({}); }}
                             style={{
-                              padding: "16px", background: wallet === w ? "rgba(212, 175, 55,0.12)" : "rgba(255,255,255,0.03)",
-                              border: `1px solid ${wallet === w ? "#D4AF37" : "rgba(255,255,255,0.08)"}`, borderRadius: 10,
+                              padding: "16px", background: wallet === w ? "rgba(255, 223, 0,0.12)" : "rgba(255,255,255,0.03)",
+                              border: `1px solid ${wallet === w ? "#FFDF00" : "rgba(255,255,255,0.08)"}`, borderRadius: 10,
                               color: wallet === w ? "#fff" : "rgba(255,255,255,0.6)", cursor: "pointer", fontSize: "0.85rem", fontWeight: 600, transition: "all 0.2s",
                             }}>
                             👛 {w}
@@ -302,15 +302,15 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                 {method && (
                   <motion.button
                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    whileHover={{ scale: 1.02, backgroundColor: "#B8860B" }}
+                    whileHover={{ scale: 1.02, backgroundColor: "#E5A93C" }}
                     whileTap={{ scale: 0.97 }}
                     onClick={validateAndPay}
                     style={{
                       width: "100%", marginTop: 24, padding: "15px",
-                      background: "#D4AF37", color: "#fff", border: "none", borderRadius: 10,
+                      background: "#FFDF00", color: "#fff", border: "none", borderRadius: 10,
                       cursor: "pointer", fontFamily: "inherit", fontSize: "0.9rem",
                       fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase",
-                      boxShadow: "0 0 30px rgba(212, 175, 55,0.4)",
+                      boxShadow: "0 0 30px rgba(255, 223, 0,0.4)",
                     }}>
                     Pay ₹{amount.toLocaleString("en-IN")} →
                   </motion.button>
@@ -328,8 +328,8 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                 style={{ textAlign: "center", padding: "40px 20px" }}>
                 <div style={{ position: "relative", width: 80, height: 80, margin: "0 auto 28px" }}>
                   <svg style={{ position: "absolute", inset: 0, animation: "spin 1.2s linear infinite" }} viewBox="0 0 80 80" fill="none">
-                    <circle cx="40" cy="40" r="36" stroke="rgba(212, 175, 55,0.15)" strokeWidth="4" />
-                    <path d="M40 4 A36 36 0 0 1 76 40" stroke="#D4AF37" strokeWidth="4" strokeLinecap="round" />
+                    <circle cx="40" cy="40" r="36" stroke="rgba(255, 223, 0,0.15)" strokeWidth="4" />
+                    <path d="M40 4 A36 36 0 0 1 76 40" stroke="#FFDF00" strokeWidth="4" strokeLinecap="round" />
                   </svg>
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" }}>
                     {countdown}
@@ -345,7 +345,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                 <div style={{ marginTop: 24, height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden" }}>
                   <motion.div
                     initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 3, ease: "linear" }}
-                    style={{ height: "100%", background: "linear-gradient(to right, #D4AF37, #06b6d4)", borderRadius: 2 }}
+                    style={{ height: "100%", background: "linear-gradient(to right, #FFDF00, #06b6d4)", borderRadius: 2 }}
                   />
                 </div>
               </motion.div>
@@ -366,14 +366,14 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                 </motion.div>
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", color: "#fff", letterSpacing: "0.08em" }}>Payment Successful!</div>
                 <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem", marginTop: 8, lineHeight: 1.6 }}>
-                  Your tickets for <strong style={{ color: "#D4AF37" }}>{event?.name}</strong> are confirmed.<br />
+                  Your tickets for <strong style={{ color: "#FFDF00" }}>{event?.name}</strong> are confirmed.<br />
                   Check your email for the booking confirmation.
                 </div>
 
                 {/* Booking reference */}
-                <div style={{ margin: "24px 0", padding: "16px", background: "rgba(212, 175, 55,0.06)", border: "1px solid rgba(212, 175, 55,0.2)", borderRadius: 10 }}>
+                <div style={{ margin: "24px 0", padding: "16px", background: "rgba(255, 223, 0,0.06)", border: "1px solid rgba(255, 223, 0,0.2)", borderRadius: 10 }}>
                   <div style={{ fontSize: "0.65rem", letterSpacing: "0.25em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 6 }}>Booking Reference</div>
-                  <div style={{ fontFamily: "monospace", fontSize: "1.1rem", color: "#D4AF37", letterSpacing: "0.2em" }}>
+                  <div style={{ fontFamily: "monospace", fontSize: "1.1rem", color: "#FFDF00", letterSpacing: "0.2em" }}>
                     TS-{Math.random().toString(36).toUpperCase().slice(2, 10)}
                   </div>
                 </div>
@@ -383,7 +383,7 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                     onClick={() => { onSuccess(); onClose(); }}
                     style={{
-                      flex: 1, padding: "14px", background: "#D4AF37", color: "#fff", border: "none",
+                      flex: 1, padding: "14px", background: "#FFDF00", color: "#fff", border: "none",
                       borderRadius: 10, cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem",
                       fontWeight: 600, letterSpacing: "0.08em",
                     }}>
