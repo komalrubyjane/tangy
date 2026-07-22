@@ -11,181 +11,125 @@ export default function Volunteer() {
   };
 
   return (
-    <section id="volunteer" style={{ background: "transparent", padding: "clamp(120px, 14vw, 200px) 5vw", position: "relative", overflow: "hidden" }}>
-      {/* Background Overlay */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "radial-gradient(circle at center, transparent 30%, rgba(5, 5, 5, 0.25) 95%), rgba(5, 5, 5, 0.15)",
-        zIndex: 0,
-        pointerEvents: "none",
-      }} />
-
-      {/* Ambient purple/pink blur glow */}
-      <div style={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: "55vw",
-        height: "55vh",
-        background: "radial-gradient(circle, rgba(229, 192, 123,0.08) 0%, transparent 70%)",
-        filter: "blur(90px)",
-        zIndex: 0,
-        pointerEvents: "none",
-      }} />
-
-      {/* Giant Background text */}
-      <div style={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        fontFamily: "'Bebas Neue', sans-serif",
-        fontSize: "clamp(8rem, 22vw, 32rem)",
-        color: "#C8FF2B",
-        opacity: 0.02,
-        pointerEvents: "none",
-        whiteSpace: "nowrap",
-        userSelect: "none",
-        zIndex: 0,
-        filter: "blur(2px)",
-      }}>
-        COLLECTIVE
+    <section id="volunteer" style={{ background: "#080808", padding: "120px 5vw", position: "relative", overflow: "hidden" }}>
+      {/* Background Graphic Lines / Torn paper effect simulated via grid */}
+      <div style={{ position: "absolute", inset: 0, opacity: 0.03, pointerEvents: "none", zIndex: 0, background: "repeating-linear-gradient(45deg, #fff, #fff 10px, transparent 10px, transparent 20px)" }} />
+      
+      {/* Moving Marquee Text */}
+      <div style={{ position: "absolute", top: 20, left: 0, right: 0, overflow: "hidden", whiteSpace: "nowrap", opacity: 0.15, zIndex: 0 }}>
+        <motion.div 
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ ease: "linear", duration: 15, repeat: Infinity }}
+          style={{ display: "inline-block", fontSize: "clamp(4rem, 10vw, 8rem)", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.2em", color: "#C8FF2B" }}
+        >
+          CO-CREATE THE RITUAL • JOIN THE COLLECTIVE • CO-CREATE THE RITUAL • JOIN THE COLLECTIVE • 
+        </motion.div>
       </div>
 
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5vw", alignItems: "center" }} className="vol-teaser-grid">
-          {/* Left: Text Content */}
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 1300, margin: "0 auto" }}>
+        
+        {/* Asymmetric layout with large poster-like visuals */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "6vw", alignItems: "center" }} className="vol-teaser-grid">
+          
+          {/* Right Column becomes Left, asymmetric and overlapping */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            style={{ display: "flex", flexDirection: "column", gap: 24 }}
-          >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#2A593E", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "600" }}>
-              The Collective • Co-Create the Ritual
-            </div>
-            
-            <h2 style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: "clamp(3rem, 6vw, 5.5rem)",
-              color: "#fff",
-              lineHeight: 0.95,
-              margin: 0,
-              letterSpacing: "0.02em",
-            }}>
-              NOT EVERYONE<br />
-              <span style={{ WebkitTextStroke: "1px rgba(243, 229, 171,0.6)", WebkitTextFillColor: "transparent" }}>
-                JUST ARRIVES.
-              </span>
-            </h2>
-
-            <div style={{ height: 2, width: 48, background: "linear-gradient(to right, #C8FF2B, #EC4899)", borderRadius: 1 }} />
-
-            <p style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: "italic",
-              fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)",
-              color: "rgba(255,255,255,0.9)",
-              lineHeight: 1.6,
-              margin: 0,
-              borderLeft: "2px solid #C8FF2B",
-              paddingLeft: 24,
-            }}>
-              "Some attend the sessions. Others co-create the magic."
-            </p>
-
-            <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}>
-              Tangy Sessions is built on shared presence, hand-crafted detail, and mutual devotion. We gather to shape silent sanctuaries and electric musical rituals. If you have the curiosity to create, we invite you to build this story with us.
-            </p>
-
-            <div style={{ marginTop: 12 }}>
-              <motion.button
-                onClick={handleNavigate}
-                whileHover={{ scale: 1.03, boxShadow: "0 0 35px rgba(229, 192, 123, 0.45)", backgroundColor: "#E6CA65" }}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  padding: "16px 44px",
-                  background: "#C8FF2B",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 30,
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  fontSize: "0.88rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  boxShadow: "0 10px 30px rgba(229, 192, 123, 0.25)",
-                  transition: "background-color 0.3s ease, box-shadow 0.3s ease",
-                }}
-              >
-                Join The Collective
-              </motion.button>
-            </div>
-          </motion.div>
-
-          {/* Right: Immersive Image Frame */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             style={{ position: "relative" }}
           >
             <div style={{
               position: "relative",
-              borderRadius: 16,
-              overflow: "hidden",
-              border: "1px solid rgba(229, 192, 123, 0.2)",
-              boxShadow: "0 30px 60px rgba(0,0,0,0.8)",
-              height: "clamp(300px, 40vw, 500px)",
+              border: "2px solid #C8FF2B",
+              padding: "10px",
+              background: "#111111",
+              transform: "rotate(-2deg)",
             }}>
-              <motion.div
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 0.6 }}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundImage: "url('/gallery/tangy6.jpg')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
+              <img src="/gallery/tangy6.jpg" alt="Join Collective" style={{ width: "100%", height: "auto", display: "block", filter: "grayscale(1) contrast(1.2)" }} />
+              
+              {/* Overlapping Graffiti/Ticket Graphic stamp */}
               <div style={{
                 position: "absolute",
-                inset: 0,
-                background: "linear-gradient(to top, rgba(5,5,5,0.7), transparent)",
-              }} />
+                top: -30,
+                right: -20,
+                background: "#FF2E52",
+                color: "#080808",
+                padding: "8px 16px",
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: "1.2rem",
+                letterSpacing: "0.1em",
+                transform: "rotate(6deg)",
+                boxShadow: "5px 5px 0px #080808",
+                fontWeight: "bold",
+              }}>
+                BUILD THE STORY
+              </div>
+
+              {/* Barcode Accent */}
+              <div style={{ display: "flex", gap: 3, height: 40, marginTop: 12, justifyContent: "center", opacity: 0.8 }}>
+                {[2, 1, 3, 1, 2, 4, 1, 2, 3, 1, 4, 1, 2].map((w, idx) => (
+                  <div key={idx} style={{ width: w, height: "100%", background: "#C8FF2B" }} />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Left Content Column with bold typography */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            style={{ display: "flex", flexDirection: "column", gap: 28 }}
+          >
+            <div style={{ alignSelf: "flex-start", background: "#2A593E", color: "#C8FF2B", padding: "6px 14px", fontSize: "0.72rem", letterSpacing: "0.3em", textTransform: "uppercase", fontWeight: "bold", fontFamily: "monospace" }}>
+              NOT EVERYONE JUST ARRIVES
             </div>
 
-            {/* Overlapping small visual accent */}
-            <div style={{
-              position: "absolute",
-              bottom: -20,
-              right: -20,
-              background: "rgba(11, 11, 15, 0.9)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              borderRadius: 8,
-              padding: "16px 20px",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              boxShadow: "0 15px 30px rgba(0,0,0,0.5)",
+            <h2 style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(3.5rem, 7vw, 6.5rem)",
+              color: "#fff",
+              lineHeight: 0.9,
+              margin: 0,
+              letterSpacing: "0.01em",
             }}>
-              <span style={{ color: "#2A593E", fontSize: "1.2rem" }}>✦</span>
-              <span style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: "1.1rem",
-                color: "#fff",
-                letterSpacing: "0.1em",
-              }}>
-                CREATIVE MOVEMENT
-              </span>
+              SOME PEOPLE<br />
+              <span style={{ color: "#C8FF2B" }}>HELP CREATE</span><br />
+              THE MAGIC.
+            </h2>
+
+            <div style={{ borderTop: "2px dashed rgba(255,255,255,0.15)", paddingTop: 20 }}>
+              <p style={{ color: "#A4A4A4", fontSize: "1rem", lineHeight: 1.8, margin: 0 }}>
+                Tangy Sessions is built on shared presence, hand-crafted detail, and mutual devotion. We gather to shape silent sanctuaries and electric musical rituals. If you have the curiosity to create, we invite you to build this story with us.
+              </p>
             </div>
+
+            {/* Poster CTA Button */}
+            <div style={{ marginTop: 8 }}>
+              <motion.button
+                onClick={handleNavigate}
+                whileHover={{ scale: 1.05, backgroundColor: "#C8FF2B", color: "#080808", boxShadow: "0 0 30px rgba(200, 255, 43, 0.4)" }}
+                whileTap={{ scale: 0.95 }}
+                style={{
+                  padding: "20px 48px",
+                  background: "transparent",
+                  color: "#C8FF2B",
+                  border: "2px solid #C8FF2B",
+                  borderRadius: 0,
+                  cursor: "pointer",
+                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontSize: "1.4rem",
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  transition: "all 0.3s ease",
+                }}
+              >
+                APPLY TO VOLUNTEER →
+              </motion.button>
+            </div>
+
           </motion.div>
         </div>
       </div>
@@ -194,7 +138,7 @@ export default function Volunteer() {
         @media (max-width: 768px) {
           .vol-teaser-grid {
             grid-template-columns: 1fr !important;
-            gap: 48px !important;
+            gap: 60px !important;
           }
         }
       `}</style>

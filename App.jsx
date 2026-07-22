@@ -1755,78 +1755,71 @@ function Gallery() {
       <div style={{ position: "relative", zIndex: 1 }}>
         <SectionHeader label="Memories" title="Gallery" />
         
-        <div className="masonry-grid" style={{ marginTop: 60 }}>
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "40px",
+          marginTop: 60,
+          justifyContent: "center",
+          alignItems: "center",
+        }}>
           {GALLERY.map((item, i) => {
-            const showQuote1 = i === 3;
-            const showQuote2 = i === 7;
+            const rotation = (i % 3 === 0) ? -3 : (i % 3 === 1) ? 2 : 4;
+            const tapeAngle = (i % 2 === 0) ? -15 : 12;
             
             return (
-              <React.Fragment key={item.id}>
-                {showQuote1 && (
-                  <div className="masonry-item animate-card" style={{
-                    padding: "36px 32px",
-                    background: "linear-gradient(135deg, rgba(200, 255, 43,0.06) 0%, rgba(6,182,212,0.03) 100%)",
-                    border: "1px solid rgba(200, 255, 43,0.15)",
-                    borderRadius: 24,
-                    backdropFilter: "blur(12px)",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    marginBottom: 20,
-                  }}>
-                    <span style={{ fontSize: "2rem", color: "#C8FF2B", fontFamily: "Georgia, serif", lineHeight: 0.1, alignSelf: "flex-start" }}>“</span>
-                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "1.2rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.6, margin: "0 0 12px" }}>
-                      The resonance of the bass bouncing off the stone steps was pure ritual. Unmatched acoustic energy.
-                    </p>
-                    <span style={{ fontSize: "0.68rem", color: "#06b6d4", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: "600", fontFamily: "monospace" }}>
-                      — Kabir S., Attendee
-                    </span>
-                  </div>
-                )}
+              <motion.div 
+                key={item.id}
+                onClick={() => setLightbox(item)}
+                initial={{ opacity: 0, scale: 0.9, y: 30 }} 
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }} 
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+                whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
+                style={{
+                  background: "#181818",
+                  padding: "16px 16px 40px 16px",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: "0 15px 30px rgba(0,0,0,0.5)",
+                  transform: `rotate(${rotation}deg)`,
+                  cursor: "pointer",
+                  width: "280px",
+                  position: "relative",
+                  flexShrink: 0,
+                  transition: "transform 0.3s ease, border-color 0.3s"
+                }}
+              >
+                {/* Visual Tape Effect */}
+                <div style={{
+                  position: "absolute",
+                  top: "-15px",
+                  left: "50%",
+                  transform: `translateX(-50%) rotate(${tapeAngle}deg)`,
+                  width: "80px",
+                  height: "24px",
+                  background: "rgba(200, 255, 43, 0.25)",
+                  backdropFilter: "blur(2px)",
+                  border: "1px dashed rgba(200, 255, 43, 0.5)",
+                  zIndex: 2
+                }} />
 
-                {showQuote2 && (
-                  <div className="masonry-item animate-card" style={{
-                    padding: "36px 32px",
-                    background: "linear-gradient(135deg, rgba(6,182,212,0.06) 0%, rgba(200, 255, 43,0.03) 100%)",
-                    border: "1px solid rgba(6,182,212,0.15)",
-                    borderRadius: 24,
-                    backdropFilter: "blur(12px)",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    marginBottom: 20,
-                  }}>
-                    <span style={{ fontSize: "2rem", color: "#06b6d4", fontFamily: "Georgia, serif", lineHeight: 0.1, alignSelf: "flex-start" }}>“</span>
-                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "1.2rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.6, margin: "0 0 12px" }}>
-                      Underground sounds meet ancient history. Easily the most premium music collective in the country.
-                    </p>
-                    <span style={{ fontSize: "0.68rem", color: "#C8FF2B", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: "600", fontFamily: "monospace" }}>
-                      — Rhea M., DJ & Producer
-                    </span>
-                  </div>
-                )}
-
-                <motion.div onClick={() => setLightbox(item)}
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="masonry-item"
-                  style={{
-                    borderRadius: 24, cursor: "pointer", overflow: "hidden",
-                    background: "#080808",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                    position: "relative",
-                    transition: "border-color 0.3s, transform 0.3s",
-                    marginBottom: 20,
-                  }}
-                  whileHover={{ scale: 1.02, borderColor: "rgba(200, 255, 43,0.3)" }}
-                >
-                  <img src={item.img} alt={item.label} loading="lazy" style={{ width: "100%", display: "block", objectFit: "cover", transition: "transform 0.6s ease, filter 0.6s ease", filter: "brightness(0.8) saturate(0.95)" }}
-                    onMouseEnter={e => { e.target.style.transform = "scale(1.05)"; e.target.style.filter = "brightness(1) saturate(1.05)"; }}
-                    onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.filter = "brightness(0.8) saturate(0.95)"; }}
+                {/* Polaroid Image Box */}
+                <div style={{ overflow: "hidden", background: "#080808", height: "200px" }}>
+                  <img 
+                    src={item.img} 
+                    alt={item.label} 
+                    loading="lazy" 
+                    style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1) contrast(1.1)", transition: "filter 0.4s, transform 0.4s" }}
+                    onMouseEnter={e => { e.target.style.filter = "none"; e.target.style.transform = "scale(1.05)"; }}
+                    onMouseLeave={e => { e.target.style.filter = "grayscale(1) contrast(1.1)"; e.target.style.transform = "scale(1)"; }}
                   />
-                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "28px 20px 16px", background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)", fontSize: "0.72rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{item.label}</div>
-                </motion.div>
-              </React.Fragment>
+                </div>
+
+                {/* Polaroid Text Tag */}
+                <div style={{ marginTop: 16, fontFamily: "monospace", fontSize: "0.75rem", color: "#A4A4A4", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                  {item.label}
+                </div>
+              </motion.div>
             );
           })}
         </div>
@@ -1878,182 +1871,142 @@ function About() {
   const stats = [["25+", "Sessions"], ["10000+", "Attendees"], ["50+", "Artists"], ["1", "Stepwell"]];
 
   return (
-    <section id="about" style={{ background: "transparent", padding: "clamp(140px, 15vw, 220px) 5vw", position: "relative", overflow: "hidden" }}>
-      <SectionBackgroundText text="TANGY" />
-      
-      {/* Increased contrast backdrop glow overlay behind cards */}
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <div id="about-grid" style={{ maxWidth: 1300, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, alignItems: "stretch" }}>
+    <section id="about" style={{ background: "#080808", padding: "140px 5vw", position: "relative", overflow: "hidden" }}>
+      {/* Background Graphic elements */}
+      <div style={{ position: "absolute", top: "10%", right: "-5%", fontFamily: "'Bebas Neue', sans-serif", fontSize: "16rem", color: "rgba(200,255,43,0.02)", pointerEvents: "none", userSelect: "none" }}>
+        CREATIVE
+      </div>
 
-          {/* LEFT — Story + Stats */}
-          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
-            style={{
-              background: "linear-gradient(135deg, rgba(24,24,24,0.92) 0%, rgba(24,24,24,0.8) 100%)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              border: "1px solid rgba(255,255,255,0.06)",
-              borderRadius: 24,
-              padding: "48px 40px",
-              boxShadow: "0 24px 60px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.04)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              height: 600,
-            }}>
-            <div>
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.5rem, 6vw, 5.5rem)", lineHeight: 0.9, color: "rgba(255,255,255,0.92)", margin: "0 0 24px", letterSpacing: "0.02em" }}>
-                SOUND.<br />
-                <span style={{ color: "#C8FF2B" }}>STILLNESS.</span><br />
-                COMMUNITY.
-              </motion.h2>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 1300, margin: "0 auto" }}>
+        
+        {/* Asymmetrical magazine spread header */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 80 }}>
+          <span style={{ fontFamily: "monospace", fontSize: "0.8rem", color: "#C8FF2B", letterSpacing: "0.4em", textTransform: "uppercase" }}>01 // MANIFESTO</span>
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(4rem, 10vw, 8rem)", color: "#fff", lineHeight: 0.9, margin: 0, textTransform: "uppercase" }}>
+            SOUND. STILLNESS. <br />
+            <span style={{ WebkitTextStroke: "1px #C8FF2B", WebkitTextFillColor: "transparent" }}>COMMUNITY.</span>
+          </h2>
+        </div>
 
-              {[
-                "Tangy Sessions is a cultural movement designed to bring people together through the power of curated music, shared presence, and authentic connection.",
-                "We create sanctuaries for deep listening and creative expression—spaces where sound guides us back to stillness, and every collective beat becomes a meaningful, shared experience.",
-              ].map((p, i) => (
-                <motion.p key={i}
-                  initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 * i }}
-                  style={{ color: i === 0 ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.65)", fontSize: i === 0 ? "1rem" : "0.88rem", lineHeight: 1.8, marginBottom: 18 }}>
-                  {p}
-                </motion.p>
-              ))}
+        <div id="about-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 64, alignItems: "start" }}>
+          
+          {/* Asymmetric Left side - Story details */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            style={{ display: "flex", flexDirection: "column", gap: 32 }}
+          >
+            <div style={{ borderLeft: "4px solid #C8FF2B", paddingLeft: 24 }}>
+              <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)", color: "rgba(255,255,255,0.95)", lineHeight: 1.6, margin: 0 }}>
+                Tangy Sessions is a cultural movement designed to bring people together through the power of curated music, shared presence, and authentic connection.
+              </p>
             </div>
+            
+            <p style={{ color: "#A4A4A4", fontSize: "1rem", lineHeight: 1.8, margin: 0 }}>
+              We create sanctuaries for deep listening and creative expression—spaces where sound guides us back to stillness, and every collective beat becomes a meaningful, shared experience.
+            </p>
 
-            {/* Stats */}
-            <div style={{ display: "flex", gap: 36, marginTop: 24, flexWrap: "wrap" }}>
-              {stats.map(([n, l], i) => (
-                <motion.div key={l}
-                  initial={{ opacity: 0, scale: 0.6 }} whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
-                  whileHover={{ scale: 1.08 }} style={{ textAlign: "left" }}>
-                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3rem", color: "#C8FF2B", lineHeight: 1 }}>{n}</div>
-                  <div style={{ fontSize: "0.68rem", letterSpacing: "0.22em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase", marginTop: 4 }}>{l}</div>
-                </motion.div>
+            {/* Asymmetrical Stats Row */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24, background: "#111111", padding: 32, border: "1px solid rgba(255,255,255,0.06)", marginTop: 20 }}>
+              {stats.map(([n, l], idx) => (
+                <div key={l} style={{ borderBottom: "1px dashed rgba(255,255,255,0.1)", paddingBottom: 12 }}>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.8rem", color: "#C8FF2B", lineHeight: 1 }}>{n}</div>
+                  <div style={{ fontSize: "0.68rem", letterSpacing: "0.15em", color: "#A4A4A4", textTransform: "uppercase", marginTop: 4 }}>{l}</div>
+                </div>
               ))}
             </div>
           </motion.div>
 
-          {/* RIGHT — Founders (Equal Flex side-by-side layout) */}
-          <motion.div
-            id="about-founders"
-            initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
-            style={{ display: "flex", gap: 24, height: 600, width: "100%" }}>
+          {/* Asymmetric Right side - Portrait Layout */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
             {founders.map((f, i) => (
               <motion.div
-                key={f.role + i}
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                key={f.role}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+                onMouseEnter={() => setActive(i)}
                 style={{
-                  position: "relative", overflow: "hidden", borderRadius: 24,
-                  cursor: "pointer", flex: 1, height: "100%",
-                  border: `1px solid ${active === i ? f.color + "55" : "rgba(255,255,255,0.08)"}`,
-                  boxShadow: active === i
-                    ? `0 24px 60px rgba(0,0,0,0.8), 0 0 30px ${f.color}25`
-                    : "0 12px 32px rgba(0,0,0,0.6)",
-                  background: "linear-gradient(to top, #080808 0%, rgba(5,5,5,0.35) 55%, transparent 100%)",
-                  transition: "border-color 0.4s, box-shadow 0.4s",
+                  background: "#181818",
+                  border: active === i ? "1px solid #C8FF2B" : "1px solid rgba(255,255,255,0.08)",
+                  padding: 24,
+                  display: "flex",
+                  gap: 20,
+                  alignItems: "center",
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+                  transition: "all 0.3s ease",
+                  transform: active === i ? "rotate(-1deg) scale(1.02)" : "none",
                 }}
-                onMouseEnter={() => setActive(i)}>
-
-                {/* Photo */}
-                <img src={f.image} alt={f.role}
+              >
+                <img 
+                  src={f.image} 
+                  alt={f.role} 
                   style={{
-                    position: "absolute", inset: 0, width: "100%", height: "100%",
-                    objectFit: "cover", objectPosition: "center top",
-                    filter: active === i ? "brightness(0.78) saturate(1.05)" : "brightness(0.50) saturate(0.85) grayscale(25%)",
-                    transform: active === i ? "scale(1.04)" : "scale(1)",
-                    transition: "filter 0.5s ease, transform 0.5s ease",
-                  }} />
-
-                {/* Base gradient */}
-                <div style={{
-                  position: "absolute", inset: 0,
-                  background: "linear-gradient(to top, #080808 0%, rgba(5,5,5,0.35) 60%, transparent 100%)",
-                }} />
-
-                {/* Colour tint overlay (active) */}
-                <div style={{
-                  position: "absolute", inset: 0,
-                  background: `radial-gradient(circle at top right, ${f.color}15, transparent 65%)`,
-                  opacity: active === i ? 1 : 0,
-                  transition: "opacity 0.4s",
-                }} />
-
-                {/* Content always visible on both cards */}
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "32px 28px", zIndex: 2 }}>
-                  <div style={{ fontSize: "0.72rem", color: "#C8FF2B", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: "700", marginBottom: 6 }}>
-                    {f.role.toUpperCase()}
-                  </div>
-                  <h3 style={{
-                    fontFamily: "'Bebas Neue', sans-serif",
-                    fontSize: "2.4rem",
-                    color: "rgba(255,255,255,0.92)",
-                    lineHeight: 1.0,
-                    letterSpacing: "0.04em",
-                    margin: "0 0 4px",
-                  }}>
-                    {f.name.split('\n')[0].toUpperCase()}
+                    width: 90,
+                    height: 120,
+                    objectFit: "cover",
+                    filter: active === i ? "none" : "grayscale(1)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    transition: "all 0.3s ease"
+                  }}
+                />
+                <div>
+                  <span style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#C8FF2B", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "bold" }}>
+                    {f.role}
+                  </span>
+                  <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.6rem", color: "#fff", margin: "4px 0 8px" }}>
+                    {f.name.split('\n')[0]}
                   </h3>
-                  <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.65)", fontWeight: "500", marginBottom: 14, fontFamily: "monospace", letterSpacing: "0.05em" }}>
-                    {f.name.split('\n')[1]}
-                  </div>
-                  <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.6, margin: 0 }}>
+                  <p style={{ fontSize: "0.8rem", color: "#A4A4A4", lineHeight: 1.5, margin: 0 }}>
                     {f.bio}
                   </p>
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
 
         </div>
 
-        {/* Founder Quote */}
+        {/* Founder Quote rebuilt as an editorial pull-out block */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          whileHover={{ borderColor: "rgba(200, 255, 43, 0.25)", boxShadow: "0 30px 70px rgba(0,0,0,0.65), 0 0 30px rgba(200, 255, 43, 0.05)" }}
+          transition={{ duration: 0.8 }}
           style={{
-            maxWidth: 950,
-            margin: "96px auto 0",
+            marginTop: 100,
+            borderTop: "1px dashed rgba(255,255,255,0.15)",
+            borderBottom: "1px dashed rgba(255,255,255,0.15)",
+            padding: "50px 20px",
             textAlign: "center",
-            padding: "64px 48px",
-            background: "rgba(15, 15, 15, 0.45)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: 24,
-            boxShadow: "0 24px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-            position: "relative",
-            overflow: "hidden",
-            transition: "border-color 0.4s ease, box-shadow 0.4s ease",
+            position: "relative"
           }}
         >
+          <div style={{ position: "absolute", left: 10, top: 10, fontSize: "0.72rem", color: "#C8FF2B", fontFamily: "monospace" }}>[NOTE.S01]</div>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
-            fontSize: "clamp(1.3rem, 3vw, 2.2rem)",
-            color: "rgba(255,255,255,0.92)",
-            lineHeight: 1.6,
-            margin: 0,
+            fontSize: "clamp(1.4rem, 3.5vw, 2.5rem)",
+            color: "#fff",
+            lineHeight: 1.5,
+            margin: "0 auto",
+            maxWidth: 1000
           }}>
-            "We are not building events.<br />We are creating spaces where people can feel something real."
+            "We are not building events. We are creating spaces where people can feel something real."
           </p>
-          <div style={{ marginTop: 24, fontSize: "0.82rem", letterSpacing: "0.25em", color: "#C8FF2B", textTransform: "uppercase", fontWeight: "600", fontFamily: "monospace" }}>
+          <div style={{ marginTop: 24, fontSize: "0.85rem", letterSpacing: "0.25em", color: "#C8FF2B", textTransform: "uppercase", fontFamily: "'Bebas Neue', sans-serif" }}>
             — Arjuna & Deepa
           </div>
         </motion.div>
+
       </div>
 
       <style>{`
         @media (max-width: 768px) {
-          #about-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
-          #about-grid > * { width: 100% !important; height: auto !important; }
-          #about-founders { flex-direction: column !important; height: auto !important; gap: 20px !important; }
-          #about-founders > * { height: 450px !important; flex: none !important; min-width: 0 !important; width: 100% !important; }
+          #about-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
         }
       `}</style>
     </section>
