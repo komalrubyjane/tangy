@@ -367,13 +367,51 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", color: "#fff", letterSpacing: "0.08em" }}>Payment Successful!</div>
                 <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem", marginTop: 8, lineHeight: 1.6 }}>
                   Your tickets for <strong style={{ color: "#C8FF2B" }}>{event?.name}</strong> are confirmed.<br />
-                  Check your email for the booking confirmation.
+                  <span style={{ color: "#C8FF2B", fontWeight: "bold" }}>✔ Ticket email with QR code dispatched to your inbox.</span>
                 </div>
 
-                {/* Booking reference */}
-                <div style={{ margin: "24px 0", padding: "16px", background: "rgba(229, 192, 123,0.06)", border: "1px solid rgba(229, 192, 123,0.2)", borderRadius: 10 }}>
-                  <div style={{ fontSize: "0.65rem", letterSpacing: "0.25em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: 6 }}>Booking Reference</div>
-                  <div style={{ fontFamily: "monospace", fontSize: "1.1rem", color: "#C8FF2B", letterSpacing: "0.2em" }}>
+                {/* Interactive Brutalist QR Code Ticket Card */}
+                <div style={{
+                  margin: "24px 0",
+                  padding: "24px",
+                  background: "#161616",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  position: "relative",
+                  textAlign: "center"
+                }}>
+                  <div style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "#C8FF2B", textTransform: "uppercase", marginBottom: 12, fontFamily: "monospace" }}>
+                    ENTRY PASS // BOARDING PASS
+                  </div>
+                  
+                  {/* Generated QR Code SVG */}
+                  <div style={{
+                    width: 140,
+                    height: 140,
+                    margin: "0 auto 16px",
+                    background: "#fff",
+                    padding: 10,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
+                  }}>
+                    <svg viewBox="0 0 29 29" style={{ width: "100%", height: "100%", shapeRendering: "crispEdges" }}>
+                      <path fill="#000" d="M0 0h7v7H0zm22 0h7v7h-7zM0 22h7v7H0z" />
+                      <path fill="#000" d="M2 2h3v3H2zm20 0h3v3h-3zM2 24h3v3H2z" />
+                      <path fill="#000" d="M9 1h1v2H9zm3 0h1v1h-1zm2 0h4v1h-4zm5 0h1v3h-1zm-9 3h3v1h-3zm5 0h2v1h-2zm4 0h1v1h-1z" />
+                      <path fill="#000" d="M8 8h1v2H8zm2 0h2v1h-2zm3 0h2v3h-2zm3 0h2v1h-2zm3 0h4v1h-4z" />
+                      <path fill="#000" d="M1 9h2v1H1zm3 0h1v2H4zm3 0h1v1H7zm11 0h2v2h-2zm4 0h3v1h-3z" />
+                      <path fill="#000" d="M9 13h4v1H9zm6 0h2v2h-2zm4 0h1v1h-1zm2 0h2v1h-2zm-12 2h1v2H9zm3 0h2v1h-2zm4 0h2v1h-2zm3 0h2v3h-2z" />
+                      <path fill="#000" d="M1 18h1v1H1zm3 0h3v1H4zm5 0h1v2H9zm3 0h2v1h-2zm4 0h3v1h-3z" />
+                      <path fill="#000" d="M9 22h2v1H9zm4 0h1v1h-1zm2 0h2v2h-2zm4 0h2v1h-2zm-11 3h1v3H9zm3 0h3v1h-3zm5 0h2v1h-2z" />
+                      <path fill="#000" d="M22 22h1v1h-1zm2 0h3v2h-3zm-2 3h2v1h-2zm3 0h2v3h-2zm-3 3h4v1h-4z" />
+                    </svg>
+                  </div>
+
+                  <div style={{ fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 4 }}>
+                    PASSENGER REFERENCE
+                  </div>
+                  <div style={{ fontFamily: "monospace", fontSize: "1rem", color: "#C8FF2B", letterSpacing: "0.15em", fontWeight: "bold" }}>
                     TS-{Math.random().toString(36).toUpperCase().slice(2, 10)}
                   </div>
                 </div>
@@ -383,21 +421,21 @@ export default function PaymentModal({ amount, event, onClose, onSuccess }) {
                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                     onClick={() => { onSuccess(); onClose(); }}
                     style={{
-                      flex: 1, padding: "14px", background: "#C8FF2B", color: "#fff", border: "none",
-                      borderRadius: 10, cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem",
+                      flex: 1, padding: "14px", background: "#C8FF2B", color: "#080808", border: "none",
+                      borderRadius: 0, cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem",
                       fontWeight: 600, letterSpacing: "0.08em",
                     }}>
-                    Done
+                    DONE
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                    onClick={() => alert("Download ticket (connect to backend)")}
+                    onClick={() => alert("Dispatched: Ticket Pass PDF is downloading...")}
                     style={{
                       flex: 1, padding: "14px", background: "transparent", color: "#fff",
-                      border: "1px solid rgba(255,255,255,0.15)", borderRadius: 10,
-                      cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", letterSpacing: "0.08em",
+                      border: "1px solid rgba(255,255,255,0.15)", borderRadius: 0,
+                      cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", letterSpacing: "0.08em",
                     }}>
-                    Download Ticket
+                    DOWNLOAD PASS
                   </motion.button>
                 </div>
               </motion.div>

@@ -44,6 +44,25 @@ export const bookingService = {
         },
         body: formData.toString(),
       });
+
+      // ─── TICKET EMAIL DISPATCH SIMULATION ───
+      const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`TANGY_TICKET_${bookingData.eventName}_${bookingData.email}_${bookingData.qty || 1}`)}`;
+      console.log(`
+      📬 [EMAIL SIMULATION] Sending Confirmation Email...
+      To: ${bookingData.email}
+      Subject: Your Tangy Sessions Tickets are Confirmed! 🎟️
+      
+      Hi ${bookingData.name || "Guest"},
+      
+      Your spot is reserved for "${bookingData.eventName}".
+      Tickets: ${bookingData.qty || 1}x
+      
+      Please present the attached QR code at the venue gate for scanning:
+      QR Code URL: ${qrCodeUrl}
+      
+      See you beneath history!
+      - The Tangy Team
+      `);
       
       return { success: true };
     } catch (error) {

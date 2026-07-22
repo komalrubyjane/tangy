@@ -209,57 +209,45 @@ function Navbar() {
 
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero({ onBook }) {
-  const [videoError, setVideoError] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const videoRef = useRef(null);
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const tryPlay = async () => {
-      try {
-        await v.play();
-      } catch (e) {
-        console.warn("[Hero] Autoplay blocked:", e.message);
-        // Try muted play as fallback
-        try { v.muted = true; await v.play(); } catch {}
-      }
-    };
-    tryPlay();
-  }, []);
-
   return (
     <section id="home" style={{ position: "relative", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: "#080808" }}>
-      {!videoError ? (
-        <video
-          ref={videoRef}
-          autoPlay loop muted playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
-          onCanPlay={() => setVideoLoaded(true)}
-          onError={(e) => {
-            console.error("[Hero] Video failed:", e);
-            setVideoError(true);
-          }}
-        >
-          <source src="https://res.cloudinary.com/dfonotyfb/video/upload/v1775585556/dds3_1_rqhg7x.mp4" type="video/mp4" />
-        </video>
-      ) : (
-        // Fallback: animated gradient background
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 0,
-          background: "radial-gradient(ellipse at 30% 50%, #C8FF2B22 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, #06b6d422 0%, transparent 60%), #080808",
-          animation: "pulse 4s ease-in-out infinite"
-        }} />
-      )}
+      
+      {/* Pinterest-style collage background grid */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gridTemplateRows: "repeat(3, 1fr)", gap: 3, opacity: 0.2 }}>
+        {[
+          "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=80",
+          "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=400&q=80",
+          "https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80",
+          "https://images.unsplash.com/photo-1471478331149-c72f17e33c73?w=400&q=80",
+          "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80",
+          "https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?w=400&q=80",
+          "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80",
+          "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80",
+          "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=400&q=80",
+          "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80",
+          "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=400&q=80",
+          "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=80",
+        ].map((src, i) => (
+          <div key={i} style={{ overflow: "hidden", filter: "grayscale(0.5) contrast(1.1)" }}>
+            <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="eager" />
+          </div>
+        ))}
+      </div>
+
       {/* Overlay */}
-      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1 }} />
+      <div style={{ position: "absolute", inset: 0, background: "rgba(8,8,8,0.82)", zIndex: 1 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(8,8,8,0.4) 0%, transparent 40%, rgba(8,8,8,0.9) 100%)", zIndex: 2 }} />
+      
+      {/* Neon glow blob */}
+      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "55vw", height: "35vh", background: "radial-gradient(ellipse, rgba(200,255,43,0.07) 0%, transparent 70%)", filter: "blur(50px)", zIndex: 2, pointerEvents: "none" }} />
+
       {/* Grain */}
       <div style={{
-        position: "absolute", inset: 0, zIndex: 2, opacity: 0.04,
-        backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        position: "absolute", inset: 0, zIndex: 2, opacity: 0.03,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         backgroundSize: "128px"
       }} />
+
       {/* Content */}
       <div style={{ position: "relative", zIndex: 3, textAlign: "center", padding: "0 24px" }}>
         <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 0.9rem)", letterSpacing: "0.5em", color: "#C8FF2B", textTransform: "uppercase", marginBottom: "20px", fontFamily: "monospace", animation: "fadeSlideUp 0.8s ease both" }}>
@@ -270,9 +258,9 @@ function Hero({ onBook }) {
           fontSize: "clamp(4rem, 12vw, 9rem)",
           lineHeight: 0.95, letterSpacing: "0.05em", color: "#fff",
           margin: 0, animation: "fadeSlideUp 0.8s 0.15s ease both",
-          textShadow: "0 0 80px rgba(229, 192, 123,0.4)"
+          textShadow: "0 0 80px rgba(200,255,43,0.2)"
         }}>
-          TANGY<br /><span style={{ color: "#C8FF2B" }}>SESSIONS</span>
+          TANGY<br /><span style={{ color: "#C8FF2B", textShadow: "0 0 50px rgba(200,255,43,0.5)" }}>SESSIONS</span>
         </h1>
         <p style={{
           fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic",
@@ -283,31 +271,26 @@ function Hero({ onBook }) {
         </p>
         <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "40px", flexWrap: "wrap", animation: "fadeSlideUp 0.8s 0.45s ease both" }}>
           <button onClick={onBook} style={{
-            padding: "14px 36px", background: "#C8FF2B", color: "#fff", border: "none",
-            borderRadius: "4px", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em",
-            textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 600,
-            transition: "all 0.3s", boxShadow: "0 0 30px rgba(229, 192, 123,0.5)"
+            padding: "14px 36px", background: "#C8FF2B", color: "#080808", border: "none",
+            borderRadius: "2px", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.15em",
+            textTransform: "uppercase", fontSize: "1rem", fontWeight: 700,
+            transition: "all 0.3s", boxShadow: "0 0 30px rgba(200,255,43,0.3)"
           }}
-            onMouseEnter={e => { e.target.style.background = "#D4AF37"; e.target.style.transform = "translateY(-2px)"; }}
+            onMouseEnter={e => { e.target.style.background = "#d4f52a"; e.target.style.transform = "translateY(-2px)"; }}
             onMouseLeave={e => { e.target.style.background = "#C8FF2B"; e.target.style.transform = "none"; }}>
             Book Tickets
           </button>
           <button onClick={() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" })} style={{
             padding: "14px 36px", background: "transparent", color: "#fff",
-            border: "1px solid rgba(255,255,255,0.35)", borderRadius: "4px",
-            cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.1em",
-            textTransform: "uppercase", fontSize: "0.85rem", transition: "all 0.3s"
+            border: "1px solid rgba(255,255,255,0.2)", borderRadius: "2px",
+            cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.15em",
+            textTransform: "uppercase", fontSize: "1rem", transition: "all 0.3s"
           }}
-            onMouseEnter={e => { e.target.style.borderColor = "#06b6d4"; e.target.style.color = "#06b6d4"; }}
-            onMouseLeave={e => { e.target.style.borderColor = "rgba(255,255,255,0.35)"; e.target.style.color = "#fff"; }}>
+            onMouseEnter={e => { e.target.style.borderColor = "#C8FF2B"; e.target.style.color = "#C8FF2B"; }}
+            onMouseLeave={e => { e.target.style.borderColor = "rgba(255,255,255,0.2)"; e.target.style.color = "#fff"; }}>
             Explore Events
           </button>
         </div>
-        {videoError && (
-          <div style={{ marginTop: "16px", fontSize: "0.72rem", color: "#f59e0b", fontFamily: "monospace", opacity: 0.7 }}>
-            ⚠ Video unavailable — fallback background active
-          </div>
-        )}
       </div>
       {/* Scroll indicator */}
       <div style={{ position: "absolute", bottom: "32px", left: "50%", transform: "translateX(-50%)", zIndex: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", opacity: 0.5 }}>
