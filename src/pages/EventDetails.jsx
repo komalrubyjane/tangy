@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import PaymentModal from "../components/PaymentModal";
 import { bookingService } from "../services/bookingService";
 
-// ─── SHARED EVENT DATA (keep in sync with App.jsx EVENTS) ────────────────────
+// ─── SHARED EVENT DATA ────────────────────────────────────────────────────────
 export const EVENTS_DATA = [
   {
     id: 1,
@@ -133,1012 +133,60 @@ export const EVENTS_DATA = [
   },
 ];
 
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-function SectionLabel({ text }) {
-  return (
-    <div style={{
-      fontSize: "0.65rem", letterSpacing: "0.42em", color: "#F26D4F",
-      textTransform: "uppercase", fontFamily: "monospace", marginBottom: 12,
-    }}>
-      {text}
-    </div>
-  );
-}
+// ─── GLOBAL STYLES ────────────────────────────────────────────────────────────
+const GlobalStyles = () => (
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body { overflow-x: hidden; background: #080808; }
+    input, button, select, textarea { font-family: inherit; }
+    ::selection { background: rgba(200,255,43,0.3); }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #080808; }
+    ::-webkit-scrollbar-thumb { background: #C8FF2B; }
 
-function GlassCard({ children, style = {}, ...props }) {
-  return (
-    <div style={{
-      background: "linear-gradient(135deg, rgba(8,8,12,0.82) 0%, rgba(8,8,12,0.62) 100%)",
-      backdropFilter: "blur(22px)",
-      WebkitBackdropFilter: "blur(22px)",
-      border: "1px solid rgba(242, 109, 79,0.22)",
-      borderRadius: 24,
-      boxShadow: "0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(242, 109, 79,0.06), inset 0 1px 0 rgba(255,255,255,0.05)",
-      ...style,
-    }} {...props}>
-      {children}
-    </div>
-  );
-}
-
-// ─── BREADCRUMB ───────────────────────────────────────────────────────────────
-function Breadcrumb({ eventName }) {
-  const navigate = useNavigate();
-  return (
-    <div style={{
-      display: "flex", alignItems: "center", gap: 8,
-      fontSize: "0.73rem", color: "rgba(255,255,255,0.4)",
-      letterSpacing: "0.06em", flexWrap: "wrap",
-    }}>
-      <span
-        onClick={() => { navigate("/"); window.scrollTo(0, 0); }}
-        style={{ cursor: "pointer", transition: "color 0.2s" }}
-        onMouseEnter={e => e.target.style.color = "#F26D4F"}
-        onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
-      >
-        Home
-      </span>
-      <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-      <span
-        onClick={() => { navigate("/"); setTimeout(() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" }), 120); }}
-        style={{ cursor: "pointer", transition: "color 0.2s" }}
-        onMouseEnter={e => e.target.style.color = "#F26D4F"}
-        onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
-      >
-        Events
-      </span>
-      <span style={{ color: "rgba(255,255,255,0.2)" }}>›</span>
-      <span style={{ color: "rgba(255,255,255,0.75)" }}>{eventName}</span>
-    </div>
-  );
-}
-
-// ─── HERO SECTION ─────────────────────────────────────────────────────────────
-function EventHero({ ev }) {
-  const pct = Math.round(((ev.capacity - ev.available) / ev.capacity) * 100);
-  const isLow = ev.available < 60;
-
-  return (
-    <section style={{ position: "relative", minHeight: "72vh", display: "flex", alignItems: "flex-end", overflow: "hidden" }}>
-      {/* Banner image */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url(${ev.heroImage})`,
-        backgroundSize: "cover", backgroundPosition: "center 30%",
-        zIndex: 0,
-      }} />
-      {/* Overlays */}
-      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #080808 0%, transparent 65%)", zIndex: 2 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(242, 109, 79,0.08), transparent 60%)", zIndex: 2 }} />
-
-      {/* Content */}
-      <div style={{ position: "relative", zIndex: 3, width: "100%", padding: "0 5vw 60px" }}>
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {/* Genre tags */}
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
-            {ev.tags.map(tag => (
-              <span key={tag} style={{
-                padding: "4px 12px",
-                background: "rgba(242, 109, 79,0.18)",
-                border: "1px solid rgba(242, 109, 79,0.4)",
-                borderRadius: 20, fontSize: "0.68rem",
-                color: "#2A593E", letterSpacing: "0.1em", textTransform: "uppercase",
-              }}>
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* Title */}
-          <h1 style={{
-            fontFamily: "'Instrument Serif', sans-serif",
-            fontSize: "clamp(3rem, 8vw, 7rem)",
-            color: "#fff", margin: "0 0 24px",
-            lineHeight: 0.95, letterSpacing: "0.04em",
-            textShadow: "0 0 80px rgba(242, 109, 79,0.3)",
-          }}>
-            {ev.name}
-          </h1>
-
-          {/* Meta row & Actions */}
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 32, marginBottom: 32 }}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 28 }}>
-              {[
-                { icon: "📅", label: "Date & Time", value: `${ev.date} · ${ev.time}` },
-                { icon: "📍", label: "Venue", value: `${ev.location}, ${ev.city}` },
-                { icon: "🎟", label: "From", value: `₹${ev.price.toLocaleString()}` },
-              ].map(({ icon, label, value }) => (
-                <div key={label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{
-                    width: 40, height: 40, borderRadius: 10,
-                    background: "rgba(242, 109, 79,0.18)",
-                    border: "1px solid rgba(242, 109, 79,0.35)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "1.1rem", flexShrink: 0,
-                  }}>
-                    {icon}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", fontFamily: "monospace" }}>{label}</div>
-                    <div style={{ fontSize: "0.88rem", color: "#fff", fontWeight: 500, marginTop: 2 }}>{value}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Availability */}
-            <div style={{ width: 280, minWidth: 240 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "rgba(255,255,255,0.4)", marginBottom: 6, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                <span>Availability</span>
-                <span style={{ color: isLow ? "#f59e0b" : "#10b981" }}>
-                  {isLow ? `⚠ Only ${ev.available} left` : `${ev.available} remaining`}
-                </span>
-              </div>
-              <div style={{ height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 4 }}>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${pct}%` }}
-                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                  style={{
-                    height: "100%", borderRadius: 4,
-                    background: isLow
-                      ? "linear-gradient(to right, #f59e0b, #ef4444)"
-                      : "linear-gradient(to right, #F26D4F, #C9A24B)",
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Book Now Button */}
-            <motion.button
-              onClick={() => {
-                document.getElementById("book-tickets")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(242, 109, 79, 0.4)" }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                padding: "14px 36px",
-                background: "linear-gradient(135deg, #F26D4F 0%, #D4AF37 100%)",
-                border: "none",
-                borderRadius: 30,
-                color: "#fff",
-                fontSize: "0.88rem",
-                fontWeight: 700,
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                boxShadow: "0 6px 20px rgba(242, 109, 79, 0.25)",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              Book Tickets 🎟️
-            </motion.button>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-// ─── ABOUT SECTION ────────────────────────────────────────────────────────────
-function AboutEvent({ ev }) {
-  return (
-    <section style={{ padding: "80px 5vw" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }} className="ed-about-grid">
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <GlassCard style={{ padding: "36px 32px", height: "100%" }}>
-            <SectionLabel text="About the Event" />
-            <h2 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)", color: "#fff", margin: "0 0 20px", letterSpacing: "0.04em" }}>
-              The Experience
-            </h2>
-            <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.85, fontSize: "0.92rem", marginBottom: 20 }}>
-              {ev.description}
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.75, fontSize: "0.87rem" }}>
-              {ev.experienceOverview}
-            </p>
-          </GlassCard>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          style={{ display: "flex", flexDirection: "column", gap: 20 }}
-        >
-          {/* Genres */}
-          <GlassCard style={{ padding: "28px 28px" }}>
-            <SectionLabel text="Music Genres" />
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 8 }}>
-              {ev.genres.map(g => (
-                <span key={g} style={{
-                  padding: "7px 16px",
-                  background: "linear-gradient(135deg, rgba(242, 109, 79,0.15), rgba(201, 162, 75,0.08))",
-                  border: "1px solid rgba(242, 109, 79,0.3)",
-                  borderRadius: 30, fontSize: "0.78rem",
-                  color: "#c4b5fd", letterSpacing: "0.06em",
-                }}>
-                  {g}
-                </span>
-              ))}
-            </div>
-          </GlassCard>
-
-          {/* Quick facts */}
-          <GlassCard style={{ padding: "28px 28px" }}>
-            <SectionLabel text="Event Details" />
-            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 8 }}>
-              {[
-                ["🗓", "Date", ev.date],
-                ["🕐", "Doors Open", ev.time],
-                ["📍", "Venue", ev.location],
-                ["🏙", "City", ev.city],
-                ["👥", "Capacity", `${ev.capacity} attendees`],
-                ["🎟", "Ticket Price", `₹${ev.price.toLocaleString()} per person`],
-              ].map(([icon, key, val]) => (
-                <div key={key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.04)", paddingBottom: 10 }}>
-                  <span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.35)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                    {icon} {key}
-                  </span>
-                  <span style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.85)", textAlign: "right" }}>{val}</span>
-                </div>
-              ))}
-            </div>
-          </GlassCard>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-// ─── SCHEDULE SECTION ─────────────────────────────────────────────────────────
-function ScheduleSection({ ev }) {
-  return (
-    <section style={{ padding: "80px 5vw", background: "rgba(242, 109, 79,0.02)" }}>
-      <div style={{ maxWidth: 760, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <SectionLabel text="Programme" />
-          <h2 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "clamp(2.5rem, 5vw, 3.5rem)", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>
-            Event Schedule
-          </h2>
-          <motion.div
-            initial={{ width: 0 }} whileInView={{ width: 48 }}
-            transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #F26D4F, #C9A24B)", margin: "16px auto 0", borderRadius: 2 }}
-          />
-        </div>
-
-        <div style={{ position: "relative" }}>
-          {/* Timeline line */}
-          <div style={{
-            position: "absolute", left: 79, top: 0, bottom: 0, width: 1,
-            background: "linear-gradient(to bottom, transparent, rgba(242, 109, 79,0.4) 10%, rgba(242, 109, 79,0.4) 90%, transparent)",
-          }} />
-
-          {ev.schedule.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              style={{ display: "flex", gap: 24, marginBottom: 28, position: "relative" }}
-            >
-              {/* Time column */}
-              <div style={{
-                minWidth: 68, textAlign: "right",
-                fontFamily: "monospace", fontSize: "0.72rem",
-                color: "#F26D4F", letterSpacing: "0.08em", paddingTop: 14,
-              }}>
-                {item.time}
-              </div>
-
-              {/* Dot */}
-              <div style={{
-                position: "relative", display: "flex", alignItems: "flex-start", paddingTop: 14,
-              }}>
-                <motion.div
-                  whileInView={{ scale: [0, 1.3, 1], opacity: [0, 1, 1] }}
-                  transition={{ duration: 0.5, delay: i * 0.08 + 0.2 }}
-                  viewport={{ once: true }}
-                  style={{
-                    width: 12, height: 12, borderRadius: "50%",
-                    background: i === 0 ? "#10b981" : "#F26D4F",
-                    border: `2px solid ${i === 0 ? "#10b981" : "#F26D4F"}`,
-                    boxShadow: `0 0 12px ${i === 0 ? "#10b981" : "#F26D4F"}66`,
-                    flexShrink: 0,
-                  }}
-                />
-              </div>
-
-              {/* Content card */}
-              <GlassCard style={{ flex: 1, padding: "16px 22px" }}>
-                <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.3rem", color: "#fff", letterSpacing: "0.06em", marginBottom: 4 }}>
-                  {item.act}
-                </div>
-                <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
-                  {item.detail}
-                </div>
-              </GlassCard>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── GALLERY SECTION ──────────────────────────────────────────────────────────
-function GallerySection({ ev }) {
-  const [lightbox, setLightbox] = useState(null);
-  const handleKeyDown = useCallback(e => { if (e.key === "Escape") setLightbox(null); }, []);
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
-
-  return (
-    <section style={{ padding: "80px 5vw" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <SectionLabel text="Photos" />
-          <h2 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "clamp(2.5rem, 5vw, 3.5rem)", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>
-            Gallery
-          </h2>
-          <motion.div
-            initial={{ width: 0 }} whileInView={{ width: 48 }}
-            transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #F26D4F, #C9A24B)", margin: "16px auto 0", borderRadius: 2 }}
-          />
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 }}>
-          {ev.gallery.map((item, i) => (
-            <motion.div
-              key={i}
-              onClick={() => setLightbox(item)}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.07 }}
-              whileHover={{ scale: 1.03 }}
-              style={{
-                aspectRatio: "4/3", borderRadius: 24, cursor: "pointer",
-                overflow: "hidden", background: "#080808",
-                border: "1px solid rgba(255,255,255,0.06)",
-                position: "relative",
-              }}
-            >
-              <img
-                src={item.img} alt={item.label} loading="lazy"
-                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease, filter 0.5s ease", filter: "brightness(0.8)" }}
-                onMouseEnter={e => { e.target.style.transform = "scale(1.08)"; e.target.style.filter = "brightness(1)"; }}
-                onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.filter = "brightness(0.8)"; }}
-              />
-              <div style={{
-                position: "absolute", bottom: 0, left: 0, right: 0,
-                padding: "20px 14px 12px",
-                background: "linear-gradient(to top, rgba(0,0,0,0.85), transparent)",
-                fontSize: "0.7rem", color: "rgba(255,255,255,0.65)",
-                letterSpacing: "0.15em", textTransform: "uppercase",
-              }}>
-                {item.label}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Lightbox */}
-      <AnimatePresence>
-        {lightbox && (
-          <motion.div
-            onClick={() => setLightbox(null)}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", backdropFilter: "blur(10px)" }}
-          >
-            <motion.div
-              initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }}
-              transition={{ type: "spring", damping: 22 }}
-              onClick={e => e.stopPropagation()}
-              style={{ background: "#111111", border: "1px solid rgba(242, 109, 79,0.3)", borderRadius: 24, overflow: "hidden", boxShadow: "0 0 120px rgba(242, 109, 79,0.18)", maxWidth: "90vw", maxHeight: "85vh" }}
-            >
-              <img src={lightbox.img} alt={lightbox.label} style={{ display: "block", maxWidth: "90vw", maxHeight: "75vh", objectFit: "contain", borderRadius: "24px 24px 0 0" }} />
-              <div style={{ padding: "18px 28px", textAlign: "center" }}>
-                <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.4rem", color: "#fff", letterSpacing: "0.1em" }}>{lightbox.label}</div>
-                <div style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.7rem", marginTop: 4, fontFamily: "monospace" }}>ESC or click to close</div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </section>
-  );
-}
-
-// ─── FAQ SECTION ──────────────────────────────────────────────────────────────
-function FAQSection({ ev }) {
-  const [open, setOpen] = useState(null);
-  return (
-    <section style={{ padding: "80px 5vw", background: "rgba(242, 109, 79,0.02)" }}>
-      <div style={{ maxWidth: 760, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <SectionLabel text="FAQ" />
-          <h2 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "clamp(2.5rem, 5vw, 3.5rem)", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>
-            Common Questions
-          </h2>
-          <motion.div
-            initial={{ width: 0 }} whileInView={{ width: 48 }}
-            transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #F26D4F, #C9A24B)", margin: "16px auto 0", borderRadius: 2 }}
-          />
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {ev.faqs.map((faq, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-20px" }}
-              transition={{ duration: 0.45, delay: i * 0.06 }}
-            >
-              <GlassCard style={{
-                border: open === i ? "1px solid rgba(242, 109, 79,0.45)" : "1px solid rgba(242, 109, 79,0.18)",
-                transition: "border-color 0.25s, box-shadow 0.25s",
-                boxShadow: open === i ? "0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(242, 109, 79,0.12)" : undefined,
-              }}>
-                <button
-                  onClick={() => setOpen(open === i ? null : i)}
-                  style={{
-                    width: "100%", padding: "20px 24px",
-                    background: "transparent", border: "none", cursor: "pointer",
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
-                    gap: 16, textAlign: "left",
-                  }}
-                >
-                  <span style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 500, lineHeight: 1.5, fontFamily: "inherit" }}>
-                    {faq.q}
-                  </span>
-                  <motion.span
-                    animate={{ rotate: open === i ? 45 : 0 }}
-                    transition={{ duration: 0.25 }}
-                    style={{ color: "#F26D4F", fontSize: "1.3rem", flexShrink: 0, lineHeight: 1 }}
-                  >
-                    +
-                  </motion.span>
-                </button>
-                <AnimatePresence>
-                  {open === i && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      style={{ overflow: "hidden" }}
-                    >
-                      <div style={{ padding: "0 24px 22px", color: "rgba(255,255,255,0.55)", fontSize: "0.85rem", lineHeight: 1.75 }}>
-                        {faq.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </GlassCard>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── BOOKING FORM SECTION ─────────────────────────────────────────────────────
-function BookingSection({ ev }) {
-    const [form, setForm] = useState({
-    name: "", email: "", phone: "", qty: 1, notes: "",
-    dob: "", gender: "Woman", paymentTo: "7671836748 - Arjuna/ Tangy",
-    upiName: "", upiId: "", paymentMethod: "Google Pay",
-    attendedBefore: "Not yet, but can't wait.", cityPart: "",
-    artistCollab: "", seatingPreference: "", instagram: ""
-  });
-  const [errors, setErrors] = useState({});
-  const [showModal, setShowModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  const total = ev.price * form.qty;
-
-    const validate = () => {
-    const errs = {};
-    if (!form.name.trim()) errs.name = "Name is required";
-    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = "Valid email required";
-    if (!form.phone.match(/^[+\d\s\-()]{7,15}$/)) errs.phone = "Valid phone number required";
-    if (!form.qty || form.qty < 1) errs.qty = "Minimum 1 ticket";
-    if (form.qty > 10) errs.qty = "Maximum 10 tickets per booking";
-    if (!form.upiName.trim()) errs.upiName = "UPI Name required";
-    if (!form.upiId.trim()) errs.upiId = "Transaction ID required";
-    return errs;
-  };
-
-  const handleSubmit = () => {
-    const errs = validate();
-    setErrors(errs);
-    if (Object.keys(errs).length === 0) {
-      // Instead of showing payment modal, since they already paid via UPI manually:
-      handlePaymentSuccess();
+    .ed-input {
+      width: 100%; padding: 14px 0;
+      background: transparent;
+      border: none; border-bottom: 1px solid rgba(255,255,255,0.15);
+      color: #fff; font-size: 0.9rem; font-family: inherit; outline: none;
+      transition: border-color 0.2s;
     }
-  };
+    .ed-input:focus { border-bottom-color: #C8FF2B; }
+    .ed-input::placeholder { color: rgba(255,255,255,0.2); }
+    select.ed-input { cursor: pointer; appearance: none; }
+    textarea.ed-input { resize: vertical; min-height: 60px; border: 1px solid rgba(255,255,255,0.12); padding: 12px; }
+    textarea.ed-input:focus { border-color: #C8FF2B; }
 
-  const handlePaymentSuccess = async () => {
-    setShowModal(false);
-    setIsSubmitting(true);
-    
-    // Pass the event name automatically
-        const result = await bookingService.submitBooking({
-      ...form,
-      eventName: ev.name,
-      amountPaid: ev.price * form.qty
-    });
-    
-    setIsSubmitting(false);
-    if (result.success) {
-      setSubmitSuccess(true);
-            setForm({
-        name: "", email: "", phone: "", qty: 1, notes: "",
-        dob: "", gender: "Woman", paymentTo: "7671836748 - Arjuna/ Tangy",
-        upiName: "", upiId: "", paymentMethod: "Google Pay",
-        attendedBefore: "Not yet, but can't wait.", cityPart: "",
-        artistCollab: "", seatingPreference: "", instagram: ""
-      });
-    } else {
-      alert("Failed to submit booking. Please try again.");
+    .ed-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    @media (max-width: 768px) {
+      .ed-about-grid { grid-template-columns: 1fr !important; }
+      .ed-breadcrumb { display: none !important; }
     }
-  };
+    @media (max-width: 600px) {
+      .ed-nav { padding: 0 16px !important; }
+      .ed-meta-row { flex-direction: column !important; gap: 16px !important; }
+    }
+  `}</style>
+);
 
-  const fieldStyle = (field) => ({
-    width: "100%", padding: "13px 16px",
-    background: "rgba(0,0,0,0.45)",
-    border: `1px solid ${errors[field] ? "#ef4444" : "rgba(242, 109, 79,0.25)"}`,
-    borderRadius: 8, color: "#fff", fontSize: "0.88rem",
-    fontFamily: "inherit", outline: "none",
-    boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s",
-  });
-
+// ─── SECTION LABEL ────────────────────────────────────────────────────────────
+function Label({ text }) {
   return (
-    <section id="book-tickets" style={{ padding: "80px 5vw" }}>
-      <div style={{ maxWidth: 580, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <SectionLabel text="Reserve Your Spot" />
-          <h2 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "clamp(2.5rem, 5vw, 3.5rem)", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>
-            Book Tickets
-          </h2>
-          <motion.div
-            initial={{ width: 0 }} whileInView={{ width: 48 }}
-            transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-            style={{ height: 2, background: "linear-gradient(to right, #F26D4F, #C9A24B)", margin: "16px auto 0", borderRadius: 2 }}
-          />
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", bounce: 0.3 }}
-        >
-          {submitSuccess ? (
-            <GlassCard style={{ padding: "40px 32px", textAlign: "center", border: "1px solid rgba(16, 185, 129, 0.4)", boxShadow: "0 25px 60px rgba(0,0,0,0.7), 0 0 50px rgba(16, 185, 129, 0.15)" }}>
-              <div style={{ fontSize: "3rem", marginBottom: 14 }}>🎉</div>
-              <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.2rem", color: "#10b981", margin: "0 0 8px", letterSpacing: "0.06em" }}>Booking Confirmed</h3>
-              <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem", lineHeight: 1.6, marginBottom: 28 }}>
-                Your tickets for <strong>{ev.name}</strong> have been secured! A confirmation email containing your entry pass has been sent to your inbox.
-              </p>
-
-              {/* Redesigned Premium Ticket Mockup with QR Code */}
-              <div style={{
-                background: "linear-gradient(135deg, #111 0%, #080808 100%)",
-                border: "1px dashed rgba(255, 255, 255, 0.15)",
-                borderRadius: 16,
-                padding: "24px",
-                margin: "0 auto 28px",
-                maxWidth: 420,
-                textAlign: "left",
-                position: "relative",
-                overflow: "hidden",
-                boxShadow: "0 15px 30px rgba(0,0,0,0.4)"
-              }}>
-                <div style={{ position: "absolute", top: 0, right: 0, width: 120, height: 120, background: "radial-gradient(circle, rgba(229, 192, 123, 0.1) 0%, transparent 75%)", pointerEvents: "none" }} />
-                
-                {/* Ticket Header */}
-                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px dashed rgba(255,255,255,0.1)", paddingBottom: 14, marginBottom: 14 }}>
-                  <div>
-                    <div style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#C8FF2B", textTransform: "uppercase", fontWeight: 700 }}>Tangy Sessions Entry Pass</div>
-                    <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.3rem", color: "#fff", marginTop: 4 }}>{ev.name}</div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "0.58rem", color: "rgba(255,255,255,0.3)" }}>QTY</div>
-                    <div style={{ fontSize: "1.2rem", fontWeight: 700, color: "#fff" }}>{form.qty}x</div>
-                  </div>
-                </div>
-
-                {/* Ticket Details & QR Code */}
-                <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
-                  <div style={{ flex: 1, minWidth: 160 }}>
-                    <div style={{ marginBottom: 10 }}>
-                      <span style={{ display: "block", fontSize: "0.55rem", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Attendee</span>
-                      <span style={{ fontSize: "0.85rem", color: "#fff", fontWeight: 500 }}>{form.name || "Guest"}</span>
-                    </div>
-                    <div style={{ marginBottom: 10 }}>
-                      <span style={{ display: "block", fontSize: "0.55rem", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Date & Time</span>
-                      <span style={{ fontSize: "0.82rem", color: "#fff" }}>{ev.date} · {ev.time}</span>
-                    </div>
-                    <div>
-                      <span style={{ display: "block", fontSize: "0.55rem", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Venue</span>
-                      <span style={{ fontSize: "0.82rem", color: "#06b6d4" }}>📍 {ev.location}</span>
-                    </div>
-                  </div>
-
-                  {/* QR Code Container */}
-                  <div style={{
-                    width: 90,
-                    height: 90,
-                    background: "#fff",
-                    borderRadius: 8,
-                    padding: 6,
-                    boxSizing: "border-box",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 10px 20px rgba(0,0,0,0.3)"
-                  }}>
-                    <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`TANGY_TICKET_${ev.id}_${form.email}_${form.qty}`)}`}
-                      alt="Ticket Entry QR Code" 
-                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setSubmitSuccess(false)}
-                style={{
-                  padding: "12px 24px", background: "transparent", border: "1px solid rgba(16, 185, 129, 0.5)",
-                  color: "#10b981", borderRadius: 8, cursor: "pointer", fontFamily: "inherit",
-                  textTransform: "uppercase", letterSpacing: "0.1em", fontSize: "0.8rem",
-                  transition: "all 0.2s"
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(16, 185, 129, 0.15)"}
-                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-              >
-                Book Another Ticket
-              </button>
-            </GlassCard>
-          ) : (
-          <GlassCard style={{ padding: "40px 36px", border: "1px solid rgba(242, 109, 79,0.35)", boxShadow: "0 25px 60px rgba(0,0,0,0.7), 0 0 50px rgba(242, 109, 79,0.12)" }}>
-            {/* Event info banner */}
-            <div style={{
-              background: "rgba(242, 109, 79,0.1)", border: "1px solid rgba(242, 109, 79,0.25)",
-              borderRadius: 10, padding: "14px 18px", marginBottom: 28,
-              display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10,
-            }}>
-              <div>
-                <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.15rem", color: "#fff", letterSpacing: "0.06em" }}>{ev.name}</div>
-                <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.4)", marginTop: 2 }}>{ev.date} · {ev.location}</div>
-              </div>
-              <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.5rem", color: "#F26D4F" }}>₹{ev.price.toLocaleString()}</div>
-            </div>
-
-                        {/* Name */}
-            <div style={{ marginBottom: 18 }}>
-              <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Full Name *</label>
-              <input
-                type="text" placeholder="Your full name"
-                value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: null })); }}
-                style={fieldStyle("name")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = errors.name ? "#ef4444" : "rgba(242, 109, 79,0.25)"; }}
-              />
-              {errors.name && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.name}</div>}
-            </div>
-
-            {/* Email */}
-            <div style={{ marginBottom: 18 }}>
-              <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Email Address *</label>
-              <input
-                type="email" placeholder="your@email.com"
-                value={form.email} onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(er => ({ ...er, email: null })); }}
-                style={fieldStyle("email")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = errors.email ? "#ef4444" : "rgba(242, 109, 79,0.25)"; }}
-              />
-              {errors.email && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.email}</div>}
-            </div>
-
-            {/* Phone */}
-            <div style={{ marginBottom: 18 }}>
-              <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Phone Number (WhatsApp) *</label>
-              <input
-                type="tel" placeholder="+91 98765 43210"
-                value={form.phone} onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setErrors(er => ({ ...er, phone: null })); }}
-                style={fieldStyle("phone")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = errors.phone ? "#ef4444" : "rgba(242, 109, 79,0.25)"; }}
-              />
-              {errors.phone && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.phone}</div>}
-            </div>
-
-            {/* DOB & Gender */}
-            <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
-              <div style={{ flex: "1 1 120px" }}>
-                <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Date of Birth *</label>
-                <input
-                  type="text" placeholder="DD/MM/YYYY"
-                  value={form.dob} onChange={e => setForm(f => ({ ...f, dob: e.target.value }))}
-                  style={fieldStyle("dob")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = "rgba(242, 109, 79,0.25)"; }}
-                />
-              </div>
-              <div style={{ flex: "1 1 120px" }}>
-                <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Gender *</label>
-                <select
-                  value={form.gender} onChange={e => setForm(f => ({ ...f, gender: e.target.value }))}
-                  style={{...fieldStyle("gender"), appearance: "none", cursor: "pointer"}}
-                >
-                  <option value="Woman">Woman</option>
-                  <option value="Man">Man</option>
-                  <option value="Non-binary / Genderqueer">Non-binary / Genderqueer</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
-                </select>
-              </div>
-            </div>
-
-            {/* City & Instagram */}
-            <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
-              <div style={{ flex: "1 1 120px" }}>
-                <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Part of City?</label>
-                <input
-                  type="text" placeholder="e.g. Jubilee Hills"
-                  value={form.cityPart} onChange={e => setForm(f => ({ ...f, cityPart: e.target.value }))}
-                  style={fieldStyle("cityPart")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = "rgba(242, 109, 79,0.25)"; }}
-                />
-              </div>
-              <div style={{ flex: "1 1 120px" }}>
-                <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Instagram ID</label>
-                <input
-                  type="text" placeholder="@username"
-                  value={form.instagram} onChange={e => setForm(f => ({ ...f, instagram: e.target.value }))}
-                  style={fieldStyle("instagram")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = "rgba(242, 109, 79,0.25)"; }}
-                />
-              </div>
-            </div>
-
-            {/* Attended Before */}
-            <div style={{ marginBottom: 18 }}>
-              <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Attended Before? *</label>
-              <select
-                value={form.attendedBefore} onChange={e => setForm(f => ({ ...f, attendedBefore: e.target.value }))}
-                style={{...fieldStyle("attendedBefore"), appearance: "none", cursor: "pointer"}}
-              >
-                <option value="Not yet, but can't wait.">Not yet, but can't wait.</option>
-                <option value="Once or twice — loved it.">Once or twice — loved it.</option>
-                <option value="Yes, I’m a Tangy regular!">Yes, I’m a Tangy regular!</option>
-              </select>
-            </div>
-
-            {/* Quantity & Seating */}
-            <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap", alignItems: "flex-end" }}>
-              <div style={{ flex: "1 1 180px" }}>
-                <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Tickets (max 10) *</label>
-                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                  <button
-                    onClick={() => setForm(f => ({ ...f, qty: Math.max(1, f.qty - 1) }))}
-                    style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(242, 109, 79,0.12)", border: "1px solid rgba(242, 109, 79,0.3)", color: "#fff", cursor: "pointer", fontSize: "1.3rem", display: "flex", alignItems: "center", justifyContent: "center" }}
-                  >−</button>
-                  <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.2rem", color: "#fff", minWidth: 36, textAlign: "center", lineHeight: 1 }}>{form.qty}</div>
-                  <button
-                    onClick={() => setForm(f => ({ ...f, qty: Math.min(10, f.qty + 1) }))}
-                    style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(242, 109, 79,0.12)", border: "1px solid rgba(242, 109, 79,0.3)", color: "#fff", cursor: "pointer", fontSize: "1.3rem", display: "flex", alignItems: "center", justifyContent: "center" }}
-                  >+</button>
-                </div>
-              </div>
-              <div style={{ flex: "1 1 140px" }}>
-                <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Seating Preference</label>
-                <input
-                  type="text" placeholder="Chairs/Mattress?"
-                  value={form.seatingPreference} onChange={e => setForm(f => ({ ...f, seatingPreference: e.target.value }))}
-                  style={fieldStyle("seatingPreference")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = "rgba(242, 109, 79,0.25)"; }}
-                />
-              </div>
-            </div>
-
-            {/* Artist Collab */}
-            <div style={{ marginBottom: 18 }}>
-              <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Are you an Artist? / Collab Ideas</label>
-              <textarea
-                placeholder="We love hearing your story!"
-                value={form.artistCollab} onChange={e => setForm(f => ({ ...f, artistCollab: e.target.value }))}
-                style={{ ...fieldStyle("artistCollab"), minHeight: "50px", resize: "vertical" }}
-                onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = "rgba(242, 109, 79,0.25)"; }}
-              />
-            </div>
-
-            {/* Additional Notes */}
-            <div style={{ marginBottom: 24 }}>
-              <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Anything else to share?</label>
-              <textarea
-                placeholder="Feedback, stories, etc..."
-                value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                style={{ ...fieldStyle("notes"), minHeight: "50px", resize: "vertical" }}
-                onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = "rgba(242, 109, 79,0.25)"; }}
-              />
-            </div>
-
-            {/* Total price display */}            <div style={{
-              background: "rgba(242, 109, 79,0.08)",
-              border: "1px solid rgba(242, 109, 79,0.25)",
-              borderRadius: 12, padding: "20px 22px", marginBottom: 26,
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", color: "rgba(255,255,255,0.45)", fontSize: "0.82rem", marginBottom: 10 }}>
-                <span>{form.qty} × ₹{ev.price.toLocaleString()} per ticket</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.2rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em" }}>TOTAL</span>
-                <motion.span
-                  key={total}
-                  initial={{ scale: 1.2, color: "#2A593E" }}
-                  animate={{ scale: 1, color: "#F26D4F" }}
-                  transition={{ duration: 0.3 }}
-                  style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.4rem", letterSpacing: "0.04em" }}
-                >
-                  ₹{total.toLocaleString()}
-                </motion.span>
-              </div>
-            </div>
-
-                        {/* Payment Details Section */}
-            <div style={{ background: "rgba(242, 109, 79,0.05)", border: "1px solid rgba(242, 109, 79,0.2)", borderRadius: 12, padding: "24px 20px", marginBottom: 26 }}>
-              <h4 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.4rem", color: "#2A593E", margin: "0 0 16px", letterSpacing: "0.05em" }}>Payment Details</h4>
-              <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginBottom: 16, lineHeight: 1.5 }}>
-                Please make the payment of <strong>₹{total.toLocaleString()}</strong> to one of the following numbers and fill in the transaction details below.
-              </p>
-              
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Payment Made To *</label>
-                <select
-                  value={form.paymentTo} onChange={e => setForm(f => ({ ...f, paymentTo: e.target.value }))}
-                  style={{...fieldStyle("paymentTo"), appearance: "none", cursor: "pointer"}}
-                >
-                  <option value="7671836748 - Arjuna/ Tangy">7671836748 - Arjuna/ Tangy</option>
-                  <option value="8686299924 - Deepa">8686299924 - Deepa</option>
-                </select>
-              </div>
-
-              <div style={{ display: "flex", gap: 16, marginBottom: 14, flexWrap: "wrap" }}>
-                <div style={{ flex: "1 1 120px" }}>
-                  <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Your UPI Name *</label>
-                  <input
-                    type="text" placeholder="Name on your UPI App"
-                    value={form.upiName} onChange={e => { setForm(f => ({ ...f, upiName: e.target.value })); setErrors(er => ({ ...er, upiName: null })); }}
-                    style={fieldStyle("upiName")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = errors.upiName ? "#ef4444" : "rgba(242, 109, 79,0.25)"; }}
-                  />
-                  {errors.upiName && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.upiName}</div>}
-                </div>
-                <div style={{ flex: "1 1 120px" }}>
-                  <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>Payment Method *</label>
-                  <select
-                    value={form.paymentMethod} onChange={e => setForm(f => ({ ...f, paymentMethod: e.target.value }))}
-                    style={{...fieldStyle("paymentMethod"), appearance: "none", cursor: "pointer"}}
-                  >
-                    <option value="Google Pay">Google Pay</option>
-                    <option value="PhonePe">PhonePe</option>
-                    <option value="UPI ID">UPI ID</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: 4 }}>
-                <label style={{ display: "block", fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8 }}>UPI Transaction ID *</label>
-                <input
-                  type="text" placeholder="12-35 digit reference number"
-                  value={form.upiId} onChange={e => { setForm(f => ({ ...f, upiId: e.target.value })); setErrors(er => ({ ...er, upiId: null })); }}
-                  style={fieldStyle("upiId")} onFocus={e => { e.target.style.borderColor = "#F26D4F"; }} onBlur={e => { e.target.style.borderColor = errors.upiId ? "#ef4444" : "rgba(242, 109, 79,0.25)"; }}
-                />
-                {errors.upiId && <div style={{ color: "#ef4444", fontSize: "0.72rem", marginTop: 5 }}>⚠ {errors.upiId}</div>}
-              </div>
-            </div>
-
-            {/* Submit */}
-            <motion.button
-              id="proceed-to-payment"
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              whileHover={!isSubmitting ? { scale: 1.02, backgroundColor: "#D4AF37" } : {}}
-              whileTap={!isSubmitting ? { scale: 0.97 } : {}}
-              style={{
-                width: "100%", padding: "17px 0",
-                background: isSubmitting ? "rgba(242, 109, 79,0.5)" : "#F26D4F", 
-                color: "#fff", border: "none",
-                borderRadius: 8, cursor: isSubmitting ? "not-allowed" : "pointer", 
-                fontFamily: "inherit",
-                letterSpacing: "0.14em", textTransform: "uppercase",
-                fontSize: "0.9rem", fontWeight: 700,
-                boxShadow: "0 0 40px rgba(242, 109, 79,0.4)",
-                transition: "background 0.2s",
-                display: "flex", justifyContent: "center", alignItems: "center", gap: 10
-              }}
-            >
-              {isSubmitting ? (
-                <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%" }}
-                  />
-                  <span>Confirming Booking...</span>
-                </>
-              ) : (
-                "Proceed to Payment →"
-              )}
-            </motion.button>
-
-            <div style={{ marginTop: 16, textAlign: "center", fontSize: "0.7rem", color: "rgba(255,255,255,0.2)" }}>
-              🔒 Secure checkout · Instant confirmation · Free cancellation within 48h
-            </div>
-          </GlassCard>
-          )}
-        </motion.div>
-      </div>
-
-      </section>
+    <div style={{
+      fontFamily: "'Space Mono', monospace", fontSize: "0.62rem",
+      letterSpacing: "0.4em", color: "#C8FF2B", textTransform: "uppercase", marginBottom: 12,
+    }}>
+      // {text} //
+    </div>
   );
 }
 
-// ─── CONTACT STRIP ────────────────────────────────────────────────────────────
-function ContactStrip() {
-  return (
-    <section style={{ padding: "60px 5vw", background: "rgba(242, 109, 79,0.04)", borderTop: "1px solid rgba(242, 109, 79,0.12)" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 28 }}>
-        <div>
-          <SectionLabel text="Contact" />
-          <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "1.8rem", color: "#fff", margin: 0, letterSpacing: "0.06em" }}>
-            Questions? We've Got You.
-          </h3>
-        </div>
-        <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-          {[
-            { label: "Email Us", value: "hello@tangysessions.in", href: "mailto:hello@tangysessions.in" },
-            { label: "Instagram", value: "@tangysessions", href: "#" },
-          ].map(({ label, value, href }) => (
-            <a
-              key={label}
-              href={href}
-              style={{
-                padding: "12px 22px",
-                background: "rgba(242, 109, 79,0.1)",
-                border: "1px solid rgba(242, 109, 79,0.3)",
-                borderRadius: 8, color: "#c4b5fd",
-                textDecoration: "none", fontSize: "0.83rem",
-                transition: "all 0.2s", display: "block",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "rgba(242, 109, 79,0.25)"; e.currentTarget.style.borderColor = "rgba(242, 109, 79,0.6)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "rgba(242, 109, 79,0.1)"; e.currentTarget.style.borderColor = "rgba(242, 109, 79,0.3)"; }}
-            >
-              <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginBottom: 3 }}>{label}</div>
-              {value}
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+// ─── DASHED DIVIDER ───────────────────────────────────────────────────────────
+const Dash = () => (
+  <div style={{ width: "100%", borderTop: "1px dashed rgba(200,255,43,0.18)", margin: "0" }} />
+);
 
 // ─── MAIN EVENT DETAILS PAGE ──────────────────────────────────────────────────
 export default function EventDetails() {
@@ -1156,122 +204,869 @@ export default function EventDetails() {
         alignItems: "center", justifyContent: "center",
         fontFamily: "'DM Sans', sans-serif", color: "#fff", textAlign: "center", padding: 40,
       }}>
-        <div style={{ fontSize: "4rem", marginBottom: 16 }}>🔍</div>
-        <h2 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.5rem", letterSpacing: "0.06em", margin: "0 0 12px" }}>Event Not Found</h2>
-        <p style={{ color: "rgba(255,255,255,0.45)", marginBottom: 32 }}>We couldn't find an event at this URL.</p>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(4rem,15vw,10rem)", color: "rgba(255,255,255,0.05)", lineHeight: 1 }}>404</div>
+        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,5vw,3.5rem)", letterSpacing: "0.06em", margin: "0 0 12px", color: "#fff" }}>Event Not Found</h2>
+        <p style={{ color: "rgba(255,255,255,0.35)", marginBottom: 32, fontFamily: "'Space Mono', monospace", fontSize: "0.75rem" }}>Nothing at this URL.</p>
         <button
           onClick={() => navigate("/")}
           style={{
-            padding: "12px 28px", background: "#F26D4F", color: "#fff",
-            border: "none", borderRadius: 6, cursor: "pointer",
-            fontFamily: "inherit", fontSize: "0.9rem", letterSpacing: "0.1em",
+            padding: "14px 36px", background: "#C8FF2B", color: "#080808",
+            border: "none", borderRadius: 0, cursor: "pointer",
+            fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", letterSpacing: "0.15em",
           }}
         >
-          Back to Home
+          ← Back to Home
         </button>
       </div>
     );
   }
 
+  const pct = Math.round(((ev.capacity - ev.available) / ev.capacity) * 100);
+  const isLow = ev.available < 60;
+
   return (
-    <div style={{
-      background: "#080808", minHeight: "100vh",
-      fontFamily: "'DM Sans', system-ui, sans-serif", color: "#fff",
-    }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-        body { overflow-x: hidden; }
-        input, button, select, textarea { font-family: inherit; }
-        ::selection { background: rgba(242, 109, 79,0.35); }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #080808; }
-        ::-webkit-scrollbar-thumb { background: #F26D4F; border-radius: 2px; }
+    <div style={{ background: "#080808", minHeight: "100vh", fontFamily: "'DM Sans', system-ui, sans-serif", color: "#fff" }}>
+      <GlobalStyles />
 
-        .ed-about-grid {
-          grid-template-columns: 1fr 1fr;
-        }
-        @media (max-width: 768px) {
-          .ed-about-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .ed-breadcrumbs {
-            display: none !important;
-          }
-        }
-        @media (max-width: 600px) {
-          .ed-nav-bar { padding: 0 16px !important; }
-          .ed-meta-row { gap: 14px !important; }
-        }
-      `}</style>
-
-      {/* ── Top navigation bar ───────────────────────────────────────────────── */}
-      <nav className="ed-nav-bar" style={{
+      {/* ── NAVBAR ──────────────────────────────────────────────────────────── */}
+      <nav className="ed-nav" style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-        background: "rgba(9,9,9,0.95)", backdropFilter: "blur(16px)",
-        borderBottom: "1px solid rgba(242, 109, 79,0.15)",
+        background: "rgba(8,8,8,0.97)", borderBottom: "1px solid rgba(200,255,43,0.1)",
         padding: "0 5vw", height: 64,
         display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
       }}>
-        {/* Logo */}
-        <img
-          src="/logo.svg" alt="Tangy Sessions"
-          style={{ height: 38, width: "auto", minWidth: 80, cursor: "pointer" }}
+        {/* Logo text */}
+        <div
           onClick={() => { navigate("/"); window.scrollTo(0, 0); }}
-        />
-
-        {/* Breadcrumb - Hidden on Mobile */}
-        <div className="ed-breadcrumbs" style={{ display: "flex", justifyContent: "center" }}>
-          <Breadcrumb eventName={ev.name} />
+          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.6rem", color: "#fff", cursor: "pointer", letterSpacing: "0.05em" }}
+        >
+          TANGY<span style={{ color: "#C8FF2B" }}>.</span>
         </div>
 
-        {/* Back button */}
-        <motion.button
-          onClick={() => {
-            navigate("/");
-            setTimeout(() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" }), 120);
-          }}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
-          style={{
-            padding: "8px 18px",
-            background: "transparent",
-            border: "1px solid rgba(242, 109, 79,0.4)",
-            borderRadius: 6, color: "#2A593E",
-            cursor: "pointer", fontSize: "0.78rem",
-            letterSpacing: "0.1em", textTransform: "uppercase",
-            whiteSpace: "nowrap", transition: "all 0.2s",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(242, 109, 79,0.15)"; e.currentTarget.style.borderColor = "#F26D4F"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(242, 109, 79,0.4)"; }}
-        >
-          ← Back
-        </motion.button>
-      </nav>
+        {/* Breadcrumb */}
+        <div className="ed-breadcrumb" style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "rgba(255,255,255,0.3)", letterSpacing: "0.1em" }}>
+          <span onClick={() => { navigate("/"); window.scrollTo(0, 0); }} style={{ cursor: "pointer" }} onMouseEnter={e => e.target.style.color = "#C8FF2B"} onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.3)"}>HOME</span>
+          <span style={{ opacity: 0.3 }}>›</span>
+          <span onClick={() => { navigate("/"); setTimeout(() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" }), 120); }} style={{ cursor: "pointer" }} onMouseEnter={e => e.target.style.color = "#C8FF2B"} onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.3)"}>EVENTS</span>
+          <span style={{ opacity: 0.3 }}>›</span>
+          <span style={{ color: "#C8FF2B" }}>{ev.name.toUpperCase()}</span>
+        </div>
 
-      {/* Spacer for fixed nav */}
+        {/* Back */}
+        <button
+          onClick={() => { navigate("/"); setTimeout(() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" }), 120); }}
+          style={{
+            padding: "8px 20px", background: "transparent",
+            border: "1px solid rgba(200,255,43,0.4)", color: "#C8FF2B",
+            cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: "0.65rem",
+            letterSpacing: "0.12em", textTransform: "uppercase", borderRadius: 0,
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "#C8FF2B"; e.currentTarget.style.color = "#080808"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#C8FF2B"; }}
+        >
+          ← BACK
+        </button>
+      </nav>
       <div style={{ height: 64 }} />
 
-      {/* ── Page sections ────────────────────────────────────────────────────── */}
-      <EventHero ev={ev} />
-      <AboutEvent ev={ev} />
-      <ScheduleSection ev={ev} />
-      <GallerySection ev={ev} />
-      <FAQSection ev={ev} />
-      <BookingSection ev={ev} />
-      <ContactStrip />
+      {/* ═══════════════════════════════════════════════════════════════════════
+          HERO
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ position: "relative", minHeight: "82vh", display: "flex", alignItems: "flex-end", overflow: "hidden" }}>
+        {/* Background image */}
+        <div style={{
+          position: "absolute", inset: 0,
+          backgroundImage: `url(${ev.heroImage})`,
+          backgroundSize: "cover", backgroundPosition: "center 30%",
+        }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #080808 0%, transparent 60%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(8,8,8,0.7) 0%, transparent 60%)" }} />
 
-      {/* ── Footer ───────────────────────────────────────────────────────────── */}
+        {/* Serial tag — top right */}
+        <div style={{
+          position: "absolute", top: 24, right: "5vw",
+          fontFamily: "'Space Mono', monospace", fontSize: "0.6rem",
+          color: "rgba(200,255,43,0.5)", letterSpacing: "0.3em", textTransform: "uppercase",
+        }}>
+          SRL-{String(ev.id).padStart(3,"0")} // TS-HYD-2025
+        </div>
+
+        {/* Vertical rotated label */}
+        <div style={{
+          position: "absolute", left: 28, top: "50%",
+          transform: "translateY(-50%) rotate(-90deg)",
+          fontFamily: "'Space Mono', monospace", fontSize: "0.55rem",
+          color: "rgba(200,255,43,0.4)", letterSpacing: "0.4em", textTransform: "uppercase",
+          whiteSpace: "nowrap",
+        }}>
+          BANSILAL STEPWELL · HYDERABAD
+        </div>
+
+        {/* Content */}
+        <div style={{ position: "relative", zIndex: 3, width: "100%", padding: "0 5vw 70px" }}>
+          {/* Tags */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20 }}
+          >
+            {ev.tags.map(tag => (
+              <span key={tag} style={{
+                padding: "4px 14px",
+                border: "1px dashed rgba(200,255,43,0.5)",
+                fontFamily: "'Space Mono', monospace", fontSize: "0.6rem",
+                color: "#C8FF2B", letterSpacing: "0.2em", textTransform: "uppercase",
+              }}>
+                {tag}
+              </span>
+            ))}
+          </motion.div>
+
+          {/* Title */}
+          <div style={{ overflow: "hidden" }}>
+            <motion.h1
+              initial={{ y: "100%", opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: "clamp(3.5rem, 9vw, 8rem)",
+                color: "#fff", margin: "0 0 28px",
+                lineHeight: 0.93, letterSpacing: "0.03em",
+              }}
+            >
+              {ev.name}
+            </motion.h1>
+          </div>
+
+          {/* Meta row */}
+          <motion.div
+            className="ed-meta-row"
+            initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            style={{ display: "flex", alignItems: "flex-start", flexWrap: "wrap", gap: 40, marginBottom: 36 }}
+          >
+            {[
+              { label: "DATE & TIME", value: `${ev.date} · ${ev.time}` },
+              { label: "VENUE", value: `${ev.location}, ${ev.city}` },
+              { label: "PRICE", value: `₹${ev.price.toLocaleString()}` },
+              { label: "CAPACITY", value: `${ev.capacity} attendees` },
+            ].map(({ label, value }) => (
+              <div key={label}>
+                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginBottom: 4 }}>{label}</div>
+                <div style={{ fontSize: "0.9rem", color: "#fff", fontWeight: 500 }}>{value}</div>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Availability bar */}
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            style={{ width: "min(380px, 90vw)", marginBottom: 32 }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'Space Mono', monospace", fontSize: "0.58rem", color: "rgba(255,255,255,0.35)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <span>Availability</span>
+              <span style={{ color: isLow ? "#FF2E52" : "#C8FF2B" }}>
+                {isLow ? `⚠ Only ${ev.available} left` : `${ev.available} remaining`}
+              </span>
+            </div>
+            <div style={{ height: 2, background: "rgba(255,255,255,0.08)" }}>
+              <motion.div
+                initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+                transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
+                style={{ height: "100%", background: isLow ? "#FF2E52" : "#C8FF2B" }}
+              />
+            </div>
+          </motion.div>
+
+          {/* CTA Button */}
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+            <button
+              onClick={() => document.getElementById("book-tickets")?.scrollIntoView({ behavior: "smooth" })}
+              style={{
+                padding: "16px 44px", background: "#C8FF2B", color: "#080808",
+                border: "none", borderRadius: 0, cursor: "pointer",
+                fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.3rem",
+                letterSpacing: "0.15em", display: "inline-flex", alignItems: "center", gap: 10,
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#fff"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "#C8FF2B"; }}
+            >
+              BOOK TICKETS →
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      <Dash />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          ABOUT
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "80px 5vw" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div className="ed-about-grid">
+            {/* Left: description */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6 }}
+              style={{ borderRight: "1px dashed rgba(200,255,43,0.12)", padding: "0 5vw 0 0" }}
+            >
+              <Label text="About the Event" />
+              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#fff", margin: "0 0 24px", letterSpacing: "0.04em" }}>
+                The Experience
+              </h2>
+              <p style={{ color: "rgba(255,255,255,0.65)", lineHeight: 1.85, fontSize: "0.92rem", marginBottom: 20 }}>{ev.description}</p>
+              <p style={{ color: "rgba(255,255,255,0.4)", lineHeight: 1.75, fontSize: "0.87rem" }}>{ev.experienceOverview}</p>
+            </motion.div>
+
+            {/* Right: details + genres */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
+              style={{ padding: "0 0 0 5vw", display: "flex", flexDirection: "column", gap: 36 }}
+            >
+              {/* Genres */}
+              <div>
+                <Label text="Music Genres" />
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+                  {ev.genres.map(g => (
+                    <span key={g} style={{
+                      padding: "6px 16px",
+                      border: "1px dashed rgba(200,255,43,0.35)",
+                      fontFamily: "'Space Mono', monospace", fontSize: "0.65rem",
+                      color: "#C8FF2B", letterSpacing: "0.1em",
+                    }}>
+                      {g}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick facts */}
+              <div>
+                <Label text="Event Details" />
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {[
+                    ["DATE", ev.date],
+                    ["DOORS OPEN", ev.time],
+                    ["VENUE", ev.location],
+                    ["CITY", ev.city],
+                    ["CAPACITY", `${ev.capacity} attendees`],
+                    ["TICKET PRICE", `₹${ev.price.toLocaleString()} / person`],
+                  ].map(([key, val]) => (
+                    <div key={key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                      <span style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", letterSpacing: "0.15em" }}>{key}</span>
+                      <span style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.85)" }}>{val}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <Dash />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SCHEDULE
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "80px 5vw" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <Label text="Programme" />
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: "0 0 48px", letterSpacing: "0.04em" }}>
+            Event Schedule
+          </h2>
+
+          <div style={{ position: "relative" }}>
+            {/* Timeline line */}
+            <div style={{
+              position: "absolute", left: 84, top: 0, bottom: 0, width: 1,
+              background: "linear-gradient(to bottom, transparent, rgba(200,255,43,0.3) 10%, rgba(200,255,43,0.3) 90%, transparent)",
+            }} />
+
+            {ev.schedule.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                style={{ display: "flex", gap: 20, marginBottom: 20, position: "relative" }}
+              >
+                {/* Time */}
+                <div style={{
+                  minWidth: 72, textAlign: "right",
+                  fontFamily: "'Space Mono', monospace", fontSize: "0.65rem",
+                  color: "#C8FF2B", letterSpacing: "0.05em", paddingTop: 18,
+                }}>
+                  {item.time}
+                </div>
+
+                {/* Dot */}
+                <div style={{ display: "flex", alignItems: "flex-start", paddingTop: 18 }}>
+                  <div style={{
+                    width: 10, height: 10,
+                    background: i === 0 ? "#C8FF2B" : "transparent",
+                    border: `2px solid #C8FF2B`,
+                    flexShrink: 0,
+                  }} />
+                </div>
+
+                {/* Card */}
+                <div style={{
+                  flex: 1, background: "#111", border: "1px solid rgba(255,255,255,0.06)",
+                  padding: "16px 22px",
+                  transition: "border-color 0.2s",
+                }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(200,255,43,0.3)"}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"}
+                >
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.3rem", color: "#fff", letterSpacing: "0.06em", marginBottom: 4 }}>
+                    {item.act}
+                  </div>
+                  <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>
+                    {item.detail}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Dash />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          GALLERY
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <GallerySection ev={ev} />
+
+      <Dash />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          FAQ
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <FAQSection ev={ev} />
+
+      <Dash />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          BOOKING FORM
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <BookingSection ev={ev} />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          FOOTER
+      ═══════════════════════════════════════════════════════════════════════ */}
       <footer style={{
-        background: "linear-gradient(135deg, rgba(6,6,10,0.9) 0%, rgba(8,8,16,0.8) 100%)",
-        borderTop: "1px solid rgba(242, 109, 79,0.12)",
+        borderTop: "1px dashed rgba(200,255,43,0.18)",
         padding: "32px 5vw",
         display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16,
       }}>
-        <div style={{ color: "rgba(255,255,255,0.18)", fontSize: "0.73rem" }}>© 2025 Tangy Sessions. All rights reserved.</div>
-        <div style={{ color: "rgba(255,255,255,0.18)", fontSize: "0.73rem" }}>Bansilal Stepwell, Hyderabad</div>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(255,255,255,0.18)", letterSpacing: "0.15em" }}>© 2025 TANGY SESSIONS</div>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(255,255,255,0.18)", letterSpacing: "0.15em" }}>BANSILAL STEPWELL · HYDERABAD</div>
       </footer>
     </div>
+  );
+}
+
+// ─── GALLERY ─────────────────────────────────────────────────────────────────
+function GallerySection({ ev }) {
+  const [lightbox, setLightbox] = useState(null);
+  const handleKeyDown = useCallback(e => { if (e.key === "Escape") setLightbox(null); }, []);
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+
+  return (
+    <section style={{ padding: "80px 5vw" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <Label text="Photos" />
+        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: "0 0 40px", letterSpacing: "0.04em" }}>
+          Gallery
+        </h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 2 }}>
+          {ev.gallery.map((item, i) => (
+            <motion.div
+              key={i}
+              onClick={() => setLightbox(item)}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              style={{
+                aspectRatio: "4/3", cursor: "pointer",
+                overflow: "hidden", background: "#080808",
+                position: "relative",
+              }}
+            >
+              <img
+                src={item.img} alt={item.label} loading="lazy"
+                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.6s ease, filter 0.4s ease", filter: "grayscale(30%) brightness(0.75)", display: "block" }}
+                onMouseEnter={e => { e.target.style.transform = "scale(1.06)"; e.target.style.filter = "grayscale(0%) brightness(1)"; }}
+                onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.filter = "grayscale(30%) brightness(0.75)"; }}
+              />
+              {/* Hover label */}
+              <div style={{
+                position: "absolute", bottom: 0, left: 0, right: 0,
+                padding: "24px 14px 12px",
+                background: "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
+                fontFamily: "'Space Mono', monospace", fontSize: "0.6rem",
+                color: "#C8FF2B", letterSpacing: "0.2em", textTransform: "uppercase",
+              }}>
+                {item.label}
+              </div>
+              {/* Corner deco */}
+              <div style={{ position: "absolute", top: 0, left: 0, width: 16, height: 16, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            onClick={() => setLightbox(null)}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", backdropFilter: "blur(8px)" }}
+          >
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.7, opacity: 0 }}
+              transition={{ type: "spring", damping: 22 }}
+              onClick={e => e.stopPropagation()}
+              style={{ background: "#0e0e0e", border: "1px dashed rgba(200,255,43,0.4)", overflow: "hidden", maxWidth: "90vw", maxHeight: "85vh" }}
+            >
+              <img src={lightbox.img} alt={lightbox.label} style={{ display: "block", maxWidth: "90vw", maxHeight: "75vh", objectFit: "contain" }} />
+              <div style={{ padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2rem", color: "#fff", letterSpacing: "0.1em" }}>{lightbox.label}</div>
+                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.58rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em" }}>ESC TO CLOSE</div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
+
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+function FAQSection({ ev }) {
+  const [open, setOpen] = useState(null);
+  return (
+    <section style={{ padding: "80px 5vw" }}>
+      <div style={{ maxWidth: 820, margin: "0 auto" }}>
+        <Label text="FAQ" />
+        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: "0 0 40px", letterSpacing: "0.04em" }}>
+          Common Questions
+        </h2>
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {ev.faqs.map((faq, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-20px" }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+            >
+              <button
+                onClick={() => setOpen(open === i ? null : i)}
+                style={{
+                  width: "100%", padding: "20px 0",
+                  background: "transparent", border: "none", borderBottom: `1px solid ${open === i ? "rgba(200,255,43,0.4)" : "rgba(255,255,255,0.06)"}`,
+                  cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16,
+                  transition: "border-color 0.25s",
+                }}
+              >
+                <span style={{ color: "#fff", fontSize: "0.92rem", fontWeight: 500, lineHeight: 1.5, textAlign: "left", fontFamily: "'DM Sans', sans-serif" }}>
+                  {faq.q}
+                </span>
+                <motion.span
+                  animate={{ rotate: open === i ? 45 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ color: "#C8FF2B", fontSize: "1.4rem", flexShrink: 0, lineHeight: 1, fontFamily: "monospace" }}
+                >
+                  +
+                </motion.span>
+              </button>
+              <AnimatePresence>
+                {open === i && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: "easeInOut" }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <div style={{ padding: "16px 0 24px", color: "rgba(255,255,255,0.5)", fontSize: "0.87rem", lineHeight: 1.8, borderLeft: "2px solid #C8FF2B", paddingLeft: 20 }}>
+                      {faq.a}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── BOOKING FORM ─────────────────────────────────────────────────────────────
+function BookingSection({ ev }) {
+  const [form, setForm] = useState({
+    name: "", email: "", phone: "", qty: 1, notes: "",
+    dob: "", gender: "Woman", paymentTo: "7671836748 - Arjuna/ Tangy",
+    upiName: "", upiId: "", paymentMethod: "Google Pay",
+    attendedBefore: "Not yet, but can't wait.", cityPart: "",
+    artistCollab: "", seatingPreference: "", instagram: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const total = ev.price * form.qty;
+
+  const validate = () => {
+    const errs = {};
+    if (!form.name.trim()) errs.name = "Name is required";
+    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = "Valid email required";
+    if (!form.phone.match(/^[+\d\s\-()]{7,15}$/)) errs.phone = "Valid phone number required";
+    if (!form.qty || form.qty < 1) errs.qty = "Minimum 1 ticket";
+    if (form.qty > 10) errs.qty = "Maximum 10 tickets per booking";
+    if (!form.upiName.trim()) errs.upiName = "UPI Name required";
+    if (!form.upiId.trim()) errs.upiId = "Transaction ID required";
+    return errs;
+  };
+
+  const handleSubmit = () => {
+    const errs = validate();
+    setErrors(errs);
+    if (Object.keys(errs).length === 0) handlePaymentSuccess();
+  };
+
+  const handlePaymentSuccess = async () => {
+    setIsSubmitting(true);
+    const result = await bookingService.submitBooking({
+      ...form, eventName: ev.name, amountPaid: ev.price * form.qty,
+    });
+    setIsSubmitting(false);
+    if (result.success) {
+      setSubmitSuccess(true);
+      setForm({
+        name: "", email: "", phone: "", qty: 1, notes: "",
+        dob: "", gender: "Woman", paymentTo: "7671836748 - Arjuna/ Tangy",
+        upiName: "", upiId: "", paymentMethod: "Google Pay",
+        attendedBefore: "Not yet, but can't wait.", cityPart: "",
+        artistCollab: "", seatingPreference: "", instagram: "",
+      });
+    } else {
+      alert("Failed to submit booking. Please try again.");
+    }
+  };
+
+  const errStyle = { color: "#FF2E52", fontSize: "0.68rem", marginTop: 4, fontFamily: "'Space Mono', monospace" };
+  const labelStyle = { display: "block", fontFamily: "'Bebas Neue', sans-serif", fontSize: "0.95rem", letterSpacing: "0.12em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: 6 };
+
+  return (
+    <section id="book-tickets" style={{ padding: "80px 5vw" }}>
+      <div style={{ maxWidth: 640, margin: "0 auto" }}>
+        <Label text="Reserve Your Spot" />
+        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: "0 0 48px", letterSpacing: "0.04em" }}>
+          Book Tickets
+        </h2>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ type: "spring", bounce: 0.2 }}
+        >
+          {submitSuccess ? (
+            /* ── SUCCESS STATE ── */
+            <div style={{ border: "1px dashed rgba(200,255,43,0.5)", padding: "48px 36px", textAlign: "center" }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,6vw,3.5rem)", color: "#C8FF2B", letterSpacing: "0.1em", marginBottom: 12 }}>
+                BOOKING CONFIRMED ✓
+              </div>
+              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.9rem", lineHeight: 1.7, marginBottom: 32 }}>
+                Your tickets for <strong style={{ color: "#fff" }}>{ev.name}</strong> are secured. Confirmation sent to your inbox.
+              </p>
+
+              {/* Ticket mockup */}
+              <div style={{ border: "1px dashed rgba(200,255,43,0.3)", padding: "24px", maxWidth: 400, margin: "0 auto 32px", textAlign: "left" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px dashed rgba(255,255,255,0.1)", paddingBottom: 14, marginBottom: 14 }}>
+                  <div>
+                    <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", color: "#C8FF2B", letterSpacing: "0.2em", textTransform: "uppercase" }}>TANGY SESSIONS ENTRY PASS</div>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2rem", color: "#fff", marginTop: 4, letterSpacing: "0.06em" }}>{ev.name}</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", color: "rgba(255,255,255,0.3)" }}>QTY</div>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.5rem", color: "#fff" }}>{form.qty}x</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
+                  <div style={{ flex: 1 }}>
+                    {[["DATE", `${ev.date} · ${ev.time}`], ["VENUE", ev.location]].map(([k, v]) => (
+                      <div key={k} style={{ marginBottom: 10 }}>
+                        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", color: "rgba(255,255,255,0.3)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{k}</div>
+                        <div style={{ fontSize: "0.82rem", color: "#fff" }}>{v}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ width: 80, height: 80, background: "#fff", padding: 4, flexShrink: 0 }}>
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`TANGY_${ev.id}_${form.email}_${form.qty}`)}`}
+                      alt="QR" style={{ width: "100%", height: "100%", display: "block" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setSubmitSuccess(false)}
+                style={{
+                  padding: "12px 32px", background: "transparent",
+                  border: "1px solid rgba(200,255,43,0.4)", color: "#C8FF2B",
+                  cursor: "pointer", fontFamily: "'Space Mono', monospace",
+                  fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", borderRadius: 0,
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#C8FF2B"; e.currentTarget.style.color = "#080808"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#C8FF2B"; }}
+              >
+                Book Another Ticket
+              </button>
+            </div>
+          ) : (
+            /* ── BOOKING FORM ── */
+            <div style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+              {/* Event info banner */}
+              <div style={{ background: "#111", borderBottom: "1px dashed rgba(200,255,43,0.2)", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+                <div>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.15rem", color: "#fff", letterSpacing: "0.06em" }}>{ev.name}</div>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", marginTop: 2 }}>{ev.date} · {ev.location}</div>
+                </div>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: "#C8FF2B", letterSpacing: "0.04em" }}>₹{ev.price.toLocaleString()}</div>
+              </div>
+
+              <div style={{ padding: "32px 28px", display: "flex", flexDirection: "column", gap: 22 }}>
+
+                {/* Name */}
+                <div>
+                  <label style={labelStyle}>Full Name *</label>
+                  <input className="ed-input" type="text" placeholder="Your full name"
+                    value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: null })); }}
+                    style={{ borderBottomColor: errors.name ? "#FF2E52" : undefined }}
+                  />
+                  {errors.name && <div style={errStyle}>⚠ {errors.name}</div>}
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label style={labelStyle}>Email Address *</label>
+                  <input className="ed-input" type="email" placeholder="your@email.com"
+                    value={form.email} onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(er => ({ ...er, email: null })); }}
+                    style={{ borderBottomColor: errors.email ? "#FF2E52" : undefined }}
+                  />
+                  {errors.email && <div style={errStyle}>⚠ {errors.email}</div>}
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label style={labelStyle}>Phone Number (WhatsApp) *</label>
+                  <input className="ed-input" type="tel" placeholder="+91 98765 43210"
+                    value={form.phone} onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setErrors(er => ({ ...er, phone: null })); }}
+                    style={{ borderBottomColor: errors.phone ? "#FF2E52" : undefined }}
+                  />
+                  {errors.phone && <div style={errStyle}>⚠ {errors.phone}</div>}
+                </div>
+
+                {/* DOB + Gender */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                  <div>
+                    <label style={labelStyle}>Date of Birth</label>
+                    <input className="ed-input" type="text" placeholder="DD/MM/YYYY"
+                      value={form.dob} onChange={e => setForm(f => ({ ...f, dob: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Gender</label>
+                    <select className="ed-input" value={form.gender} onChange={e => setForm(f => ({ ...f, gender: e.target.value }))}>
+                      <option>Woman</option><option>Man</option>
+                      <option>Non-binary / Genderqueer</option><option>Prefer not to say</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* City + Instagram */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                  <div>
+                    <label style={labelStyle}>Part of City?</label>
+                    <input className="ed-input" type="text" placeholder="e.g. Jubilee Hills"
+                      value={form.cityPart} onChange={e => setForm(f => ({ ...f, cityPart: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Instagram ID</label>
+                    <input className="ed-input" type="text" placeholder="@username"
+                      value={form.instagram} onChange={e => setForm(f => ({ ...f, instagram: e.target.value }))} />
+                  </div>
+                </div>
+
+                {/* Attended Before */}
+                <div>
+                  <label style={labelStyle}>Attended Before?</label>
+                  <select className="ed-input" value={form.attendedBefore} onChange={e => setForm(f => ({ ...f, attendedBefore: e.target.value }))}>
+                    <option>Not yet, but can't wait.</option>
+                    <option>Once or twice — loved it.</option>
+                    <option>Yes, I'm a Tangy regular!</option>
+                  </select>
+                </div>
+
+                {/* Tickets quantity */}
+                <div>
+                  <label style={labelStyle}>Number of Tickets * (max 10)</label>
+                  <div style={{ display: "flex", alignItems: "center", gap: 20, marginTop: 4 }}>
+                    <button
+                      onClick={() => setForm(f => ({ ...f, qty: Math.max(1, f.qty - 1) }))}
+                      style={{ width: 40, height: 40, background: "transparent", border: "1px solid rgba(200,255,43,0.3)", color: "#C8FF2B", cursor: "pointer", fontSize: "1.3rem", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}
+                      onMouseEnter={e => e.currentTarget.style.background = "rgba(200,255,43,0.1)"}
+                      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                    >−</button>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.2rem", color: "#fff", minWidth: 36, textAlign: "center", lineHeight: 1 }}>{form.qty}</div>
+                    <button
+                      onClick={() => setForm(f => ({ ...f, qty: Math.min(10, f.qty + 1) }))}
+                      style={{ width: 40, height: 40, background: "transparent", border: "1px solid rgba(200,255,43,0.3)", color: "#C8FF2B", cursor: "pointer", fontSize: "1.3rem", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}
+                      onMouseEnter={e => e.currentTarget.style.background = "rgba(200,255,43,0.1)"}
+                      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                    >+</button>
+                  </div>
+                  {errors.qty && <div style={errStyle}>⚠ {errors.qty}</div>}
+                </div>
+
+                {/* Seating Preference */}
+                <div>
+                  <label style={labelStyle}>Seating Preference</label>
+                  <input className="ed-input" type="text" placeholder="Chairs / Mattress?"
+                    value={form.seatingPreference} onChange={e => setForm(f => ({ ...f, seatingPreference: e.target.value }))} />
+                </div>
+
+                {/* Artist Collab */}
+                <div>
+                  <label style={labelStyle}>Are you an Artist? / Collab Ideas</label>
+                  <textarea className="ed-input" placeholder="We love hearing your story!"
+                    value={form.artistCollab} onChange={e => setForm(f => ({ ...f, artistCollab: e.target.value }))} />
+                </div>
+
+                {/* Notes */}
+                <div>
+                  <label style={labelStyle}>Anything else to share?</label>
+                  <textarea className="ed-input" placeholder="Feedback, stories, etc..."
+                    value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
+                </div>
+
+                {/* Total */}
+                <div style={{ border: "1px dashed rgba(200,255,43,0.25)", padding: "18px 20px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", color: "rgba(255,255,255,0.35)", fontFamily: "'Space Mono', monospace", fontSize: "0.65rem", marginBottom: 8 }}>
+                    <span>{form.qty} × ₹{ev.price.toLocaleString()} per ticket</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.65rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.15em" }}>TOTAL</span>
+                    <motion.span
+                      key={total}
+                      initial={{ scale: 1.15, color: "#fff" }} animate={{ scale: 1, color: "#C8FF2B" }}
+                      transition={{ duration: 0.3 }}
+                      style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.4rem", letterSpacing: "0.04em" }}
+                    >
+                      ₹{total.toLocaleString()}
+                    </motion.span>
+                  </div>
+                </div>
+
+                {/* Payment section */}
+                <div style={{ border: "1px solid rgba(255,255,255,0.07)", padding: "24px 20px" }}>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.3rem", color: "#C8FF2B", marginBottom: 14, letterSpacing: "0.08em" }}>PAYMENT DETAILS</div>
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem", color: "rgba(255,255,255,0.45)", marginBottom: 20, lineHeight: 1.6 }}>
+                    Make the payment of <strong style={{ color: "#fff" }}>₹{total.toLocaleString()}</strong> to one of the numbers below, then fill in the transaction details.
+                  </p>
+
+                  <div style={{ marginBottom: 18 }}>
+                    <label style={labelStyle}>Payment Made To *</label>
+                    <select className="ed-input" value={form.paymentTo} onChange={e => setForm(f => ({ ...f, paymentTo: e.target.value }))}>
+                      <option>7671836748 - Arjuna/ Tangy</option>
+                      <option>8686299924 - Deepa</option>
+                    </select>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 18 }}>
+                    <div>
+                      <label style={labelStyle}>Your UPI Name *</label>
+                      <input className="ed-input" type="text" placeholder="Name on your UPI App"
+                        value={form.upiName} onChange={e => { setForm(f => ({ ...f, upiName: e.target.value })); setErrors(er => ({ ...er, upiName: null })); }}
+                        style={{ borderBottomColor: errors.upiName ? "#FF2E52" : undefined }}
+                      />
+                      {errors.upiName && <div style={errStyle}>⚠ {errors.upiName}</div>}
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Payment Method *</label>
+                      <select className="ed-input" value={form.paymentMethod} onChange={e => setForm(f => ({ ...f, paymentMethod: e.target.value }))}>
+                        <option>Google Pay</option><option>PhonePe</option><option>UPI ID</option><option>Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={labelStyle}>UPI Transaction ID *</label>
+                    <input className="ed-input" type="text" placeholder="12–35 digit reference number"
+                      value={form.upiId} onChange={e => { setForm(f => ({ ...f, upiId: e.target.value })); setErrors(er => ({ ...er, upiId: null })); }}
+                      style={{ borderBottomColor: errors.upiId ? "#FF2E52" : undefined }}
+                    />
+                    {errors.upiId && <div style={errStyle}>⚠ {errors.upiId}</div>}
+                  </div>
+                </div>
+
+                {/* Submit */}
+                <motion.button
+                  id="proceed-to-payment"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  whileHover={!isSubmitting ? { scale: 1.01 } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                  style={{
+                    width: "100%", padding: "18px 0",
+                    background: isSubmitting ? "rgba(200,255,43,0.4)" : "#C8FF2B",
+                    color: "#080808", border: "none", borderRadius: 0,
+                    cursor: isSubmitting ? "not-allowed" : "pointer",
+                    fontFamily: "'Bebas Neue', sans-serif",
+                    letterSpacing: "0.18em", textTransform: "uppercase",
+                    fontSize: "1.3rem",
+                    display: "flex", justifyContent: "center", alignItems: "center", gap: 12,
+                    transition: "background 0.2s",
+                  }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                        style={{ width: 18, height: 18, border: "2px solid rgba(8,8,8,0.3)", borderTopColor: "#080808", borderRadius: "50%" }}
+                      />
+                      <span>Confirming Booking...</span>
+                    </>
+                  ) : "Proceed to Payment →"}
+                </motion.button>
+
+                <div style={{ textAlign: "center", fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", color: "rgba(255,255,255,0.18)", letterSpacing: "0.15em" }}>
+                  🔒 SECURE CHECKOUT · INSTANT CONFIRMATION · FREE CANCELLATION WITHIN 48H
+                </div>
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </div>
+    </section>
   );
 }

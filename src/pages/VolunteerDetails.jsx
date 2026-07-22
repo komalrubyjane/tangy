@@ -6,16 +6,16 @@ import VolunteerForm from "../components/VolunteerForm";
 /* ─── GLOBAL STYLES ─────────────────────────────────────────────────────────── */
 const GlobalStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body, #root { margin: 0; padding: 0; overflow-x: hidden; background: #080808; }
     body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     .vol-page { background: #080808; min-height: 100vh; color: #fff; overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; }
-    ::selection { background: rgba(242, 109, 79,0.4); }
+    ::selection { background: rgba(200,255,43,0.35); }
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: #080808; }
-    ::-webkit-scrollbar-thumb { background: #F26D4F; border-radius: 2px; }
-    
+    ::-webkit-scrollbar-thumb { background: #C8FF2B; }
+
     @keyframes floatUp {
       0% { transform: translateY(0) translateX(0); opacity: 0; }
       10% { opacity: 0.6; }
@@ -26,30 +26,33 @@ const GlobalStyles = () => (
       0%, 100% { opacity: 0.4; }
       50% { opacity: 0.8; }
     }
-    @keyframes scanline {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(100vh); }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
     }
-    
-    .vol-input:focus { border-color: #F9E0A2 !important; box-shadow: 0 0 0 1px rgba(168,85,247,0.5), 0 0 20px rgba(168,85,247,0.2) !important; outline: none !important; }
-    .vol-input { transition: all 0.3s ease !important; }
-    
-    .panel-hover { transition: all 0.6s cubic-bezier(0.16,1,0.3,1); }
-    .panel-hover:hover .panel-img { transform: scale(1.06) !important; }
-    .panel-hover:hover .panel-overlay { background: rgba(5,5,5,0.4) !important; }
-    .panel-hover:hover .panel-label { letter-spacing: 0.4em !important; }
-    .panel-img { transition: transform 0.8s cubic-bezier(0.16,1,0.3,1); }
-    .panel-overlay { transition: background 0.6s ease; }
-    .panel-label { transition: letter-spacing 0.4s ease; }
+
+    .vol-panel { transition: all 0.5s cubic-bezier(0.16,1,0.3,1); border-left: 3px solid transparent; }
+    .vol-panel:hover { background: #111 !important; border-left-color: #C8FF2B !important; }
+    .vol-panel:hover .vol-panel-img { transform: scale(1.04) !important; }
+    .vol-panel-img { transition: transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+
+    @media (max-width: 768px) {
+      .vol-editorial-grid { grid-template-columns: 1fr !important; }
+      .vol-panels-row { flex-direction: column !important; }
+    }
+    @media (max-width: 600px) {
+      .vol-nav { padding: 0 16px !important; }
+      .vol-stat-row { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+    }
   `}</style>
 );
 
 /* ─── FLOATING PARTICLES ─────────────────────────────────────────────────────── */
-const Particles = ({ count = 18 }) => {
+const Particles = ({ count = 14 }) => {
   const particles = useRef(
     [...Array(count)].map(() => ({
       left: `${Math.random() * 100}%`,
-      size: Math.random() * 3 + 1,
+      size: Math.random() * 2 + 1,
       duration: Math.random() * 15 + 12,
       delay: Math.random() * 10,
     }))
@@ -59,29 +62,12 @@ const Particles = ({ count = 18 }) => {
       {particles.current.map((p, i) => (
         <div key={i} style={{
           position: "absolute", bottom: "-5%", left: p.left,
-          width: p.size, height: p.size, borderRadius: "50%",
-          background: "#2A593E", filter: "blur(1px)",
+          width: p.size, height: p.size,
+          background: "#C8FF2B", opacity: 0.5,
           animation: `floatUp ${p.duration}s linear ${p.delay}s infinite`,
-          boxShadow: "0 0 6px #F26D4F",
         }} />
       ))}
     </div>
-  );
-};
-
-/* ─── MOUSE GLOW ─────────────────────────────────────────────────────────────── */
-const MouseGlow = () => {
-  const [pos, setPos] = useState({ x: -9999, y: -9999 });
-  useEffect(() => {
-    const h = (e) => setPos({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", h);
-    return () => window.removeEventListener("mousemove", h);
-  }, []);
-  return (
-    <div style={{
-      position: "fixed", inset: 0, pointerEvents: "none", zIndex: 2,
-      background: `radial-gradient(700px circle at ${pos.x}px ${pos.y}px, rgba(242, 109, 79,0.06), transparent 40%)`,
-    }} />
   );
 };
 
@@ -109,8 +95,7 @@ function useTypewriter(text, speed = 50, start = false) {
   const [done, setDone] = useState(false);
   useEffect(() => {
     if (!start) return;
-    setDisplayed("");
-    setDone(false);
+    setDisplayed(""); setDone(false);
     let i = 0;
     const timer = setInterval(() => {
       i++;
@@ -130,27 +115,23 @@ const StatNumber = ({ target, suffix = "+", label, delay = 0 }) => {
   useEffect(() => { if (inView) setTimeout(() => setTriggered(true), delay); }, [inView, delay]);
   const count = useCountUp(target, 2000, triggered);
   return (
-    <div ref={ref} style={{ textAlign: "center" }}>
+    <div ref={ref}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={triggered ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          fontFamily: "'Instrument Serif', sans-serif",
-          fontSize: "clamp(5rem, 10vw, 9rem)",
-          lineHeight: 1,
-          background: "linear-gradient(135deg, #fff 30%, #2A593E 100%)",
-          WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-          filter: "drop-shadow(0 0 30px rgba(242, 109, 79,0.3))",
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "clamp(4rem, 9vw, 8rem)",
+          lineHeight: 0.95, color: "#C8FF2B",
         }}
       >
         {count}{suffix}
       </motion.div>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={triggered ? { opacity: 1 } : {}}
+        initial={{ opacity: 0 }} animate={triggered ? { opacity: 1 } : {}}
         transition={{ delay: 0.4, duration: 0.5 }}
-        style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginTop: 12 }}
+        style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.35em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginTop: 8 }}
       >
         {label}
       </motion.div>
@@ -166,42 +147,43 @@ const TypewriterStat = ({ text, delay = 0 }) => {
   useEffect(() => { if (inView) setTimeout(() => setTriggered(true), delay); }, [inView, delay]);
   const { displayed, done } = useTypewriter(text, 55, triggered);
   return (
-    <div ref={ref} style={{ textAlign: "center" }}>
+    <div ref={ref}>
       <div style={{
-        fontFamily: "'Instrument Serif', sans-serif",
+        fontFamily: "'Bebas Neue', sans-serif",
         fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-        lineHeight: 1,
-        background: "linear-gradient(135deg, #fff 30%, #2A593E 100%)",
-        WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-        minHeight: "1.2em", display: "flex", alignItems: "center", justifyContent: "center",
-        filter: "drop-shadow(0 0 20px rgba(242, 109, 79,0.25))",
+        lineHeight: 0.95, color: "#C8FF2B",
+        minHeight: "1.1em", display: "flex", alignItems: "center",
       }}>
         {displayed}
         {!done && (
           <span style={{
             display: "inline-block", width: 3, height: "0.85em",
-            background: "#2A593E", marginLeft: 4, verticalAlign: "middle",
+            background: "#C8FF2B", marginLeft: 4, verticalAlign: "middle",
             animation: "pulseGlow 0.7s ease-in-out infinite",
           }} />
         )}
       </div>
-      <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginTop: 12 }}>
-        Community
-      </div>
+      <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.35em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginTop: 8 }}>Community</div>
     </div>
   );
 };
 
-/* ─── SECTION DIVIDER ────────────────────────────────────────────────────────── */
+/* ─── DASHED DIVIDER ─────────────────────────────────────────────────────────── */
 const Divider = () => (
-  <div style={{ width: "100%", height: 1, background: "linear-gradient(to right, transparent, rgba(242, 109, 79,0.15) 50%, transparent)" }} />
+  <div style={{ width: "100%", borderTop: "1px dashed rgba(200,255,43,0.15)" }} />
+);
+
+/* ─── SECTION LABEL ─────────────────────────────────────────────────────────── */
+const Label = ({ text }) => (
+  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.4em", color: "#C8FF2B", textTransform: "uppercase", marginBottom: 16 }}>
+    // {text} //
+  </div>
 );
 
 /* ─── MAIN COMPONENT ─────────────────────────────────────────────────────────── */
 export default function VolunteerDetails() {
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
-
   const heroY = useTransform(scrollYProgress, [0, 0.3], ["0%", "25%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0.4]);
 
@@ -209,7 +191,6 @@ export default function VolunteerDetails() {
     document.getElementById("apply-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  /* ─ Manifesto lines ─ */
   const manifestoLines = [
     "You don't need experience.",
     "You don't need credentials.",
@@ -223,178 +204,200 @@ export default function VolunteerDetails() {
   return (
     <div className="vol-page">
       <GlobalStyles />
-      <MouseGlow />
 
       {/* ─── NAVBAR ─── */}
-      <nav style={{
+      <nav className="vol-nav" style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        padding: "20px 5vw", display: "flex", justifyContent: "space-between", alignItems: "center",
-        background: "linear-gradient(to bottom, rgba(5,5,5,0.95), transparent)",
-        backdropFilter: "blur(0px)",
+        padding: "0 5vw", height: 64,
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        background: "rgba(8,8,8,0.97)", borderBottom: "1px solid rgba(200,255,43,0.1)",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <img src="/logo.svg" alt="Tangy" style={{ height: 36, cursor: "pointer" }} onClick={() => navigate("/")} />
-          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.12em" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <div
+            onClick={() => navigate("/")} style={{ cursor: "pointer" }}
+          >
+            <img src="/logo.svg" alt="Tangy" style={{ height: 34, display: "block" }} />
+          </div>
+          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.15em", display: "flex", alignItems: "center", gap: 8 }}>
             <span
-              style={{ cursor: "pointer", transition: "color 0.2s" }}
-              onClick={() => navigate("/")}
-              onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.7)"}
-              onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.3)"}
-            >
-              Home
-            </span>
-            <span style={{ margin: "0 10px", opacity: 0.3 }}>›</span>
-            <span style={{ color: "#2A593E" }}>Community</span>
+              onClick={() => navigate("/")} style={{ cursor: "pointer", transition: "color 0.2s" }}
+              onMouseEnter={e => e.target.style.color = "#C8FF2B"}
+              onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.25)"}
+            >HOME</span>
+            <span style={{ opacity: 0.3 }}>›</span>
+            <span style={{ color: "#C8FF2B" }}>COMMUNITY</span>
           </div>
         </div>
-        <motion.button
+        <button
           onClick={scrollToApply}
-          whileHover={{ scale: 1.03, backgroundColor: "#D4AF37" }}
-          whileTap={{ scale: 0.97 }}
           style={{
-            padding: "10px 24px", background: "#F26D4F", color: "#fff", border: "none",
-            borderRadius: 30, cursor: "pointer", fontSize: "0.78rem", fontWeight: 700,
-            letterSpacing: "0.12em", textTransform: "uppercase",
+            padding: "9px 22px", background: "#C8FF2B", color: "#080808", border: "none",
+            cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif",
+            fontSize: "1rem", letterSpacing: "0.15em", textTransform: "uppercase", borderRadius: 0,
+            transition: "all 0.2s",
           }}
+          onMouseEnter={e => e.currentTarget.style.background = "#fff"}
+          onMouseLeave={e => e.currentTarget.style.background = "#C8FF2B"}
         >
-          Apply Now
-        </motion.button>
+          Apply Now →
+        </button>
       </nav>
 
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 1 — HERO
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ position: "relative", height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+      <section style={{ position: "relative", height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
         {/* Parallax background */}
-        <motion.div style={{ position: "absolute", inset: 0, y: heroY, scale: 1.15 }}>
+        <motion.div style={{ position: "absolute", inset: 0, y: heroY, scale: 1.12 }}>
           <div style={{
             position: "absolute", inset: 0,
             backgroundImage: "url('/gallery/tngy7.jpg')",
             backgroundSize: "cover", backgroundPosition: "center 30%",
           }} />
-          <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.72)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, transparent 40%, rgba(5,5,5,0.6) 80%, #080808 100%)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 60% 50%, rgba(242, 109, 79,0.12) 0%, transparent 65%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "rgba(8,8,8,0.65)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 40%, #080808 100%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(8,8,8,0.7) 0%, transparent 60%)" }} />
         </motion.div>
 
-        <Particles count={20} />
+        <Particles count={14} />
 
-        {/* Hero content */}
+        {/* Marquee strip */}
+        <div style={{ position: "absolute", top: 64, left: 0, right: 0, overflow: "hidden", height: 28, borderBottom: "1px solid rgba(200,255,43,0.12)", background: "rgba(200,255,43,0.04)", display: "flex", alignItems: "center", zIndex: 5 }}>
+          <div style={{ display: "flex", animation: "marqueeScroll 22s linear infinite", whiteSpace: "nowrap" }}>
+            {Array(8).fill("UNDERGROUND MUSIC · ANCIENT SPACES · TANGY SESSIONS · JOIN THE COLLECTIVE · ").map((t, i) => (
+              <span key={i} style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(200,255,43,0.55)", letterSpacing: "0.25em", paddingRight: "2rem", textTransform: "uppercase" }}>{t}</span>
+            ))}
+          </div>
+        </div>
+
+        {/* Vertical rotated label */}
+        <div style={{
+          position: "absolute", left: 24, top: "50%",
+          transform: "translateY(-50%) rotate(-90deg)",
+          fontFamily: "'Space Mono', monospace", fontSize: "0.52rem",
+          color: "rgba(200,255,43,0.35)", letterSpacing: "0.4em", textTransform: "uppercase",
+          whiteSpace: "nowrap", zIndex: 2,
+        }}>
+          COMMUNITY · TANGY SESSIONS · HYD
+        </div>
+
+        {/* Hero content — left aligned */}
         <motion.div
-          style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "100px 5vw 0", maxWidth: 1000, opacity: heroOpacity }}
+          style={{ position: "relative", zIndex: 2, padding: "0 5vw 72px", maxWidth: 1100, opacity: heroOpacity }}
         >
-          {/* Label */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{
-              fontSize: "0.72rem", letterSpacing: "0.45em", color: "#2A593E",
-              textTransform: "uppercase", fontFamily: "monospace", marginBottom: 32,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 16,
-            }}
+            initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.4em", color: "#C8FF2B", textTransform: "uppercase", marginBottom: 24 }}
           >
-            <span style={{ display: "inline-block", width: 40, height: 1, background: "rgba(243, 229, 171,0.5)" }} />
-            COMMUNITY • TANGY SESSIONS
-            <span style={{ display: "inline-block", width: 40, height: 1, background: "rgba(243, 229, 171,0.5)" }} />
+            // COMMUNITY · TANGY SESSIONS //
           </motion.div>
 
-          {/* Massive headline */}
+          {/* Headline */}
           <div style={{ overflow: "hidden" }}>
             <motion.h1
-              initial={{ y: "100%", opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              initial={{ y: "100%", opacity: 0 }} animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               style={{
-                fontFamily: "'Instrument Serif', sans-serif",
-                fontSize: "clamp(5rem, 14vw, 13rem)",
-                lineHeight: 0.88, letterSpacing: "0.02em",
-                margin: 0, color: "#fff",
-                textShadow: "0 0 80px rgba(242, 109, 79,0.15)",
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: "clamp(3rem, 8vw, 7rem)",
+                lineHeight: 0.9, letterSpacing: "0.03em",
+                margin: "0 0 4px", color: "#fff",
               }}
             >
-              NOT EVERYONE<br />
-              <span style={{ color: "#fff", WebkitTextStroke: "1px rgba(243, 229, 171,0.6)", WebkitTextFillColor: "transparent" }}>JUST ARRIVES.</span>
+              NOT EVERYONE
             </motion.h1>
+          </div>
+          <div style={{ overflow: "hidden" }}>
+            <motion.div
+              initial={{ y: "100%", opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1.1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: "clamp(3rem, 8vw, 7rem)",
+                lineHeight: 0.9, letterSpacing: "0.03em",
+                margin: "0 0 28px",
+                WebkitTextStroke: "2px #C8FF2B", WebkitTextFillColor: "transparent",
+              }}
+            >
+              JUST ARRIVES.
+            </motion.div>
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.8 }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.85 }}
             style={{
-              fontFamily: "'Instrument Serif', sans-serif",
-              fontSize: "clamp(2rem, 5vw, 4.5rem)",
-              letterSpacing: "0.06em", color: "#2A593E",
-              margin: "8px 0 32px",
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(1.1rem, 2.5vw, 2rem)",
+              letterSpacing: "0.06em", color: "rgba(255,255,255,0.45)",
+              margin: "0 0 20px",
             }}
           >
             Some people HELP CREATE THE MAGIC.
           </motion.div>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 1.1 }}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 1.0 }}
             style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: "italic", fontSize: "clamp(1rem, 2.2vw, 1.4rem)",
-              color: "rgba(255,255,255,0.65)", lineHeight: 1.7,
-              maxWidth: 680, margin: "0 auto 48px",
+              fontStyle: "italic", fontSize: "clamp(1rem, 2vw, 1.3rem)",
+              color: "rgba(255,255,255,0.5)", lineHeight: 1.7,
+              maxWidth: 580, marginBottom: 40,
+              borderLeft: "2px solid #C8FF2B", paddingLeft: 20,
             }}
           >
             Behind every Tangy Session is a collective of artists, dreamers, builders, volunteers and creators shaping moments that stay with people long after the music ends.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.3 }}
-            style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+            style={{ display: "flex", gap: 16, flexWrap: "wrap" }}
           >
-            <motion.button
+            <button
               onClick={scrollToApply}
-              whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(242, 109, 79,0.5)" }}
-              whileTap={{ scale: 0.97 }}
               style={{
-                padding: "18px 48px", background: "#F26D4F", color: "#fff", border: "none",
-                borderRadius: 40, cursor: "pointer", fontFamily: "inherit", fontSize: "0.9rem",
-                fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase",
-                boxShadow: "0 8px 30px rgba(242, 109, 79,0.35)",
+                padding: "16px 44px", background: "#C8FF2B", color: "#080808", border: "none",
+                cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.25rem",
+                letterSpacing: "0.15em", textTransform: "uppercase", borderRadius: 0,
+                transition: "all 0.2s",
               }}
+              onMouseEnter={e => e.currentTarget.style.background = "#fff"}
+              onMouseLeave={e => e.currentTarget.style.background = "#C8FF2B"}
             >
-              Join The Collective
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.04, background: "rgba(255,255,255,0.08)" }}
-              whileTap={{ scale: 0.97 }}
+              Join The Collective →
+            </button>
+            <button
               style={{
-                padding: "18px 48px", background: "transparent", color: "#fff",
-                border: "1px solid rgba(255,255,255,0.2)", borderRadius: 40, cursor: "pointer",
-                fontFamily: "inherit", fontSize: "0.9rem", fontWeight: 700,
-                letterSpacing: "0.18em", textTransform: "uppercase",
+                padding: "16px 44px", background: "transparent", color: "#fff",
+                border: "1px solid rgba(255,255,255,0.25)", cursor: "pointer",
+                fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.25rem",
+                letterSpacing: "0.15em", textTransform: "uppercase", borderRadius: 0,
+                transition: "all 0.2s",
               }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "#C8FF2B"; e.currentTarget.style.color = "#C8FF2B"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "#fff"; }}
             >
               Watch The Journey
-            </motion.button>
+            </button>
           </motion.div>
         </motion.div>
 
         {/* Scroll cue */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
           style={{
-            position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)",
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 8, zIndex: 2,
+            position: "absolute", bottom: 32, right: "5vw",
+            display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, zIndex: 2,
           }}
         >
-          <div style={{ fontSize: "0.65rem", letterSpacing: "0.35em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>Scroll</div>
+          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", letterSpacing: "0.35em", color: "rgba(255,255,255,0.25)", textTransform: "uppercase" }}>SCROLL</div>
           <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            style={{ width: 1, height: 40, background: "linear-gradient(to bottom, rgba(243, 229, 171,0.6), transparent)" }}
+            animate={{ y: [0, 8, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            style={{ width: 1, height: 40, background: "linear-gradient(to bottom, rgba(200,255,43,0.6), transparent)" }}
           />
         </motion.div>
       </section>
@@ -404,124 +407,108 @@ export default function VolunteerDetails() {
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 2 — EDITORIAL QUOTE
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "160px 5vw", position: "relative", overflow: "hidden" }}>
+      <section style={{ padding: "120px 5vw", position: "relative", overflow: "hidden" }}>
         {/* Giant bg text */}
         <div style={{
           position: "absolute", top: "50%", left: "50%",
           transform: "translate(-50%, -50%)",
-          fontFamily: "'Instrument Serif', sans-serif",
-          fontSize: "clamp(10rem, 30vw, 40rem)",
-          color: "#fff", opacity: 0.025, pointerEvents: "none",
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "clamp(8rem, 25vw, 35rem)",
+          color: "#fff", opacity: 0.02, pointerEvents: "none",
           whiteSpace: "nowrap", userSelect: "none", lineHeight: 1,
-          filter: "blur(3px)",
         }}>
           MOMENT
         </div>
 
         <div style={{
-          maxWidth: 1400, margin: "0 auto",
+          maxWidth: 1300, margin: "0 auto",
           display: "grid", gridTemplateColumns: "1fr 1fr",
           gap: "6vw", alignItems: "center", position: "relative", zIndex: 1,
-        }}
-          className="editorial-grid"
-        >
+        }} className="vol-editorial-grid">
           {/* Left – Image */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             style={{ position: "relative" }}
           >
             <div style={{
-              position: "relative", borderRadius: 4, overflow: "hidden",
-              height: "clamp(400px, 55vw, 700px)",
+              position: "relative", overflow: "hidden",
+              height: "clamp(360px, 50vw, 660px)",
+              border: "1px solid rgba(200,255,43,0.15)",
             }}>
               <motion.div
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 0.8 }}
+                whileHover={{ scale: 1.04 }} transition={{ duration: 0.8 }}
                 style={{
                   width: "100%", height: "100%",
                   backgroundImage: "url('/gallery/tangy8.jpg')",
                   backgroundSize: "cover", backgroundPosition: "center",
+                  filter: "grayscale(20%)", transition: "filter 0.6s",
                 }}
+                onMouseEnter={e => e.currentTarget.style.filter = "grayscale(0%)"}
+                onMouseLeave={e => e.currentTarget.style.filter = "grayscale(20%)"}
               />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(242, 109, 79,0.15), transparent 60%)" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(200,255,43,0.08), transparent 60%)" }} />
+              {/* Corner deco */}
+              <div style={{ position: "absolute", top: 0, left: 0, width: 24, height: 24, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
+              <div style={{ position: "absolute", bottom: 0, right: 0, width: 24, height: 24, borderBottom: "2px solid #C8FF2B", borderRight: "2px solid #C8FF2B" }} />
             </div>
-            {/* Floating accent card */}
+            {/* Floating stat */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.8 }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: 0.6, duration: 0.7 }}
               style={{
-                position: "absolute", bottom: -28, right: -28,
-                background: "rgba(11,11,15,0.9)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid rgba(242, 109, 79,0.2)",
-                borderRadius: 16, padding: "24px 28px",
-                boxShadow: "0 20px 50px rgba(0,0,0,0.7)",
+                position: "absolute", bottom: -20, right: -20,
+                background: "#111", border: "1px dashed rgba(200,255,43,0.4)",
+                padding: "18px 24px", boxShadow: "0 20px 50px rgba(0,0,0,0.8)",
               }}
             >
-              <div style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.4rem", color: "#2A593E", lineHeight: 1 }}>3+</div>
-              <div style={{ fontSize: "0.7rem", letterSpacing: "0.25em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginTop: 4 }}>Sessions</div>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.4rem", color: "#C8FF2B", lineHeight: 1 }}>3+</div>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", letterSpacing: "0.25em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginTop: 4 }}>Sessions</div>
             </motion.div>
           </motion.div>
 
           {/* Right – Quote */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.35em", color: "#2A593E", textTransform: "uppercase", marginBottom: 24, fontFamily: "monospace" }}>
-              The Manifesto
-            </div>
+            <Label text="The Manifesto" />
             <blockquote style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(2rem, 4vw, 3.2rem)",
+              fontSize: "clamp(1.8rem, 3.5vw, 3rem)",
               fontStyle: "italic", fontWeight: 300, lineHeight: 1.35,
-              color: "#fff", margin: "0 0 36px",
-              borderLeft: "2px solid rgba(242, 109, 79,0.4)", paddingLeft: 32,
+              color: "#fff", margin: "0 0 32px",
+              borderLeft: "3px solid #C8FF2B", paddingLeft: 28,
             }}>
               "We don't build events.<br />We build moments people remember."
             </blockquote>
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "1.15rem", color: "rgba(255,255,255,0.55)",
-              lineHeight: 1.8, fontStyle: "italic",
+              fontSize: "1.1rem", color: "rgba(255,255,255,0.45)",
+              lineHeight: 1.85, fontStyle: "italic",
             }}>
               Tangy Sessions is a living, breathing collective — each session shaped by the hands, hearts, and presence of the people who show up to create it together.
             </p>
           </motion.div>
         </div>
-
-        <style>{`
-          @media (max-width: 768px) {
-            .editorial-grid { grid-template-columns: 1fr !important; }
-          }
-        `}</style>
       </section>
 
       <Divider />
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          SECTION 3 — INSIDE THE MOVEMENT (Horizontal panels)
+          SECTION 3 — INSIDE THE MOVEMENT
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "160px 0", background: "#080808" }}>
+      <section style={{ padding: "120px 0" }}>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          style={{ textAlign: "center", marginBottom: 80, padding: "0 5vw" }}
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.7 }}
+          style={{ marginBottom: 64, padding: "0 5vw" }}
         >
-          <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#2A593E", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
-            Exclusive Access
-          </div>
+          <Label text="Exclusive Access" />
           <h2 style={{
-            fontFamily: "'Instrument Serif', sans-serif",
+            fontFamily: "'Bebas Neue', sans-serif",
             fontSize: "clamp(3rem, 8vw, 7rem)",
             letterSpacing: "0.04em", color: "#fff",
             lineHeight: 0.9, margin: 0,
@@ -530,64 +517,45 @@ export default function VolunteerDetails() {
           </h2>
         </motion.div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }} className="vol-panels-row">
           {[
-            {
-              id: "01", title: "BEHIND THE MUSIC", sub: "The moments before the music starts",
-              img: "/gallery/tangy10.jpg",
-              accent: "#F26D4F",
-            },
-            {
-              id: "02", title: "THE PEOPLE", sub: "A community built on shared presence",
-              img: "/gallery/tangy3.jpg",
-              accent: "#EC4899",
-            },
-            {
-              id: "03", title: "THE PROCESS", sub: "Creation before the crowd arrives",
-              img: "/gallery/tabgy2.jpg",
-              accent: "#D4AF37",
-            },
+            { id: "01", title: "BEHIND THE MUSIC", sub: "The moments before the music starts", img: "/gallery/tangy10.jpg" },
+            { id: "02", title: "THE PEOPLE", sub: "A community built on shared presence", img: "/gallery/tangy3.jpg" },
+            { id: "03", title: "THE PROCESS", sub: "Creation before the crowd arrives", img: "/gallery/tabgy2.jpg" },
           ].map((panel, i) => (
             <motion.div
               key={i}
-              className="panel-hover"
+              className="vol-panel"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7, delay: i * 0.12 }}
+              transition={{ duration: 0.7, delay: i * 0.1 }}
               style={{
-                position: "relative", height: "clamp(220px, 32vw, 440px)",
-                overflow: "hidden", cursor: "pointer",
+                position: "relative", height: "clamp(200px, 30vw, 420px)",
+                overflow: "hidden", cursor: "pointer", background: "#0a0a0a",
               }}
             >
               <div
-                className="panel-img"
+                className="vol-panel-img"
                 style={{
                   position: "absolute", inset: 0,
                   backgroundImage: `url('${panel.img}')`,
                   backgroundSize: "cover", backgroundPosition: "center",
+                  filter: "grayscale(30%) brightness(0.55)",
                 }}
               />
-              <div
-                className="panel-overlay"
-                style={{
-                  position: "absolute", inset: 0,
-                  background: "rgba(5,5,5,0.62)",
-                }}
-              />
-              <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to right, ${panel.accent}22 0%, transparent 60%)` }} />
+              <div style={{ position: "absolute", inset: 0, background: "rgba(8,8,8,0.4)" }} />
 
-              {/* Content */}
               <div style={{
                 position: "absolute", inset: 0,
                 display: "flex", alignItems: "center",
-                padding: "0 8vw",
-                justifyContent: "space-between",
+                padding: "0 8vw", justifyContent: "space-between",
               }}>
                 <div>
+                  {/* oversized bg number */}
                   <div style={{
-                    fontFamily: "'Instrument Serif', sans-serif", fontSize: "5rem",
-                    color: panel.accent, opacity: 0.3, lineHeight: 1,
+                    fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(6rem, 12vw, 10rem)",
+                    color: "rgba(200,255,43,0.06)", lineHeight: 1,
                     position: "absolute", left: "5vw", top: "50%",
                     transform: "translateY(-50%)", userSelect: "none",
                   }}>
@@ -595,15 +563,16 @@ export default function VolunteerDetails() {
                   </div>
                   <div style={{ position: "relative", zIndex: 1 }}>
                     <h3 style={{
-                      fontFamily: "'Instrument Serif', sans-serif",
+                      fontFamily: "'Bebas Neue', sans-serif",
                       fontSize: "clamp(2rem, 5vw, 4rem)",
                       letterSpacing: "0.08em", color: "#fff", margin: "0 0 8px",
                     }}>
                       {panel.title}
                     </h3>
-                    <p className="panel-label" style={{
-                      fontSize: "0.78rem", letterSpacing: "0.25em",
-                      color: "rgba(255,255,255,0.5)", textTransform: "uppercase",
+                    <p style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: "0.65rem", letterSpacing: "0.25em",
+                      color: "rgba(255,255,255,0.4)", textTransform: "uppercase",
                     }}>
                       {panel.sub}
                     </p>
@@ -612,10 +581,9 @@ export default function VolunteerDetails() {
                 <motion.div
                   whileHover={{ x: 8 }}
                   style={{
-                    width: 48, height: 48, border: `1px solid ${panel.accent}55`,
-                    borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "rgba(255,255,255,0.5)", fontSize: "1.2rem",
-                    flexShrink: 0,
+                    width: 48, height: 48, border: "1px solid rgba(200,255,43,0.35)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "rgba(255,255,255,0.5)", fontSize: "1.2rem", flexShrink: 0,
                   }}
                 >
                   →
@@ -629,50 +597,28 @@ export default function VolunteerDetails() {
       <Divider />
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          SECTION 4 — STATISTICS (Cinematic count-up)
+          SECTION 4 — STATISTICS
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "180px 5vw", position: "relative", overflow: "hidden" }}>
+      <section style={{ padding: "140px 5vw", position: "relative", overflow: "hidden" }}>
+        {/* bg word */}
         <div style={{
           position: "absolute", top: "50%", left: "50%",
           transform: "translate(-50%, -50%)",
-          fontFamily: "'Instrument Serif', sans-serif",
-          fontSize: "clamp(8rem, 20vw, 30rem)",
-          color: "#F26D4F", opacity: 0.04,
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "clamp(8rem, 20vw, 28rem)",
+          color: "#C8FF2B", opacity: 0.03,
           pointerEvents: "none", whiteSpace: "nowrap", userSelect: "none",
-          filter: "blur(4px)",
         }}>
           TANGY
         </div>
 
-        {/* Ambient orbs */}
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.06, 0.1, 0.06] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute", top: "20%", left: "10%",
-            width: "40vw", height: "40vw",
-            background: "radial-gradient(circle, rgba(242, 109, 79,0.25) 0%, transparent 70%)",
-            filter: "blur(60px)", pointerEvents: "none",
-          }}
-        />
-        <motion.div
-          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.08, 0.05] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-          style={{
-            position: "absolute", bottom: "20%", right: "10%",
-            width: "35vw", height: "35vw",
-            background: "radial-gradient(circle, rgba(236,72,153,0.2) 0%, transparent 70%)",
-            filter: "blur(60px)", pointerEvents: "none",
-          }}
-        />
-
         <div style={{
-          maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1,
+          maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1,
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
           gap: "clamp(40px, 6vw, 80px)",
-          alignItems: "center",
-        }}>
+          alignItems: "flex-start",
+        }} className="vol-stat-row">
           <StatNumber target={1200} suffix="+" label="Attendees" delay={0} />
           <StatNumber target={12} suffix="" label="Artists" delay={150} />
           <StatNumber target={3} suffix="" label="Sessions" delay={300} />
@@ -683,23 +629,19 @@ export default function VolunteerDetails() {
       <Divider />
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          SECTION 5 — THE PEOPLE WE LOOK FOR (Manifesto lines)
+          SECTION 5 — THE PEOPLE WE LOOK FOR
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "180px 5vw", position: "relative" }}>
+      <section style={{ padding: "120px 5vw", position: "relative" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            style={{ marginBottom: 80 }}
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} style={{ marginBottom: 64 }}
           >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#2A593E", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
-              No Prerequisites
-            </div>
+            <Label text="No Prerequisites" />
             <h2 style={{
-              fontFamily: "'Instrument Serif', sans-serif",
+              fontFamily: "'Bebas Neue', sans-serif",
               fontSize: "clamp(3rem, 7vw, 6rem)",
-              letterSpacing: "0.04em", color: "#fff", lineHeight: 0.95, margin: 0,
+              letterSpacing: "0.04em", color: "#fff", lineHeight: 0.93, margin: 0,
             }}>
               THE PEOPLE<br />WE LOOK FOR
             </h2>
@@ -707,7 +649,7 @@ export default function VolunteerDetails() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
             {manifestoLines.map((line, i) => {
-              if (!line) return <div key={i} style={{ height: 40 }} />;
+              if (!line) return <div key={i} style={{ height: 32 }} />;
               const isAccent = line.startsWith("You only");
               return (
                 <motion.div
@@ -715,26 +657,28 @@ export default function VolunteerDetails() {
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.7, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                   style={{
-                    padding: "20px 0",
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    padding: "18px 0",
+                    borderBottom: `1px solid ${isAccent ? "rgba(200,255,43,0.12)" : "rgba(255,255,255,0.04)"}`,
                     position: "relative",
-                    overflow: "hidden",
                   }}
                 >
+                  {isAccent && (
+                    <span style={{
+                      position: "absolute", left: 0, top: 0, bottom: 0, width: 3,
+                      background: "#C8FF2B",
+                    }} />
+                  )}
                   <span style={{
-                    fontFamily: isAccent ? "'Instrument Serif', sans-serif" : "'Cormorant Garamond', serif",
-                    fontSize: isAccent ? "clamp(2rem, 4vw, 3rem)" : "clamp(1.5rem, 3vw, 2.2rem)",
+                    fontFamily: isAccent ? "'Bebas Neue', sans-serif" : "'Cormorant Garamond', serif",
+                    fontSize: isAccent ? "clamp(1.8rem, 4vw, 3rem)" : "clamp(1.4rem, 2.8vw, 2.2rem)",
                     fontStyle: isAccent ? "normal" : "italic",
                     letterSpacing: isAccent ? "0.06em" : "0",
-                    color: isAccent ? "#fff" : "rgba(255,255,255,0.45)",
-                    fontWeight: isAccent ? 400 : 300,
+                    color: isAccent ? "#fff" : "rgba(255,255,255,0.38)",
                     display: "block",
+                    paddingLeft: isAccent ? 20 : 0,
                   }}>
-                    {isAccent && (
-                      <span style={{ color: "#2A593E", marginRight: 16 }}>—</span>
-                    )}
                     {line}
                   </span>
                 </motion.div>
@@ -749,54 +693,46 @@ export default function VolunteerDetails() {
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 6 — APPLICATION FORM
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section id="apply-section" style={{ padding: "160px 5vw", position: "relative" }}>
-        {/* Full-bleed bg image */}
+      <section id="apply-section" style={{ padding: "120px 5vw", position: "relative" }}>
+        {/* Background */}
         <div style={{
           position: "absolute", inset: 0,
           backgroundImage: "url('/gallery/tangy4.jpg')",
           backgroundSize: "cover", backgroundPosition: "center",
-          filter: "blur(50px) brightness(0.3)", opacity: 0.5, zIndex: 0,
+          filter: "blur(50px) brightness(0.2)", opacity: 0.5, zIndex: 0,
         }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #080808, rgba(5,5,5,0.5) 40%, rgba(5,5,5,0.5) 60%, #080808)", zIndex: 0 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #080808, rgba(8,8,8,0.6) 40%, rgba(8,8,8,0.6) 60%, #080808)", zIndex: 0 }} />
 
         <div style={{ maxWidth: 860, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            style={{ textAlign: "center", marginBottom: 64 }}
+            initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} style={{ marginBottom: 56 }}
           >
-            <div style={{ fontSize: "0.72rem", letterSpacing: "0.4em", color: "#2A593E", textTransform: "uppercase", fontFamily: "monospace", marginBottom: 20 }}>
-              Join The Collective
-            </div>
+            <Label text="Join The Collective" />
             <h2 style={{
-              fontFamily: "'Instrument Serif', sans-serif",
+              fontFamily: "'Bebas Neue', sans-serif",
               fontSize: "clamp(3rem, 7vw, 5.5rem)",
-              letterSpacing: "0.04em", color: "#fff", lineHeight: 0.95, margin: "0 0 24px",
+              letterSpacing: "0.04em", color: "#fff", lineHeight: 0.93, margin: "0 0 20px",
             }}>
               YOUR APPLICATION
             </h2>
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: "italic", fontSize: "1.2rem",
-              color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto",
+              fontStyle: "italic", fontSize: "1.15rem",
+              color: "rgba(255,255,255,0.45)", lineHeight: 1.7,
+              borderLeft: "2px solid #C8FF2B", paddingLeft: 20, maxWidth: 540,
             }}>
               This is not a job application. It's an invitation to become part of something real.
             </p>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, delay: 0.1 }}
+            initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.1 }}
             style={{
-              background: "rgba(24,24,24,0.7)",
-              backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
-              border: "1px solid rgba(242, 109, 79,0.2)",
-              borderRadius: 24,
-              boxShadow: "0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03)",
-              overflow: "hidden",
+              border: "1px solid rgba(255,255,255,0.07)",
+              background: "rgba(10,10,10,0.85)",
+              backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
             }}
           >
             <VolunteerForm />
@@ -805,54 +741,48 @@ export default function VolunteerDetails() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          SECTION 7 — FINAL CTA: SEE YOU INSIDE
+          SECTION 7 — FINAL CTA
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ position: "relative", height: "80vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {/* Video / image bg */}
+      <section style={{ position: "relative", height: "80vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
         <div style={{ position: "absolute", inset: 0 }}>
           <div style={{
             position: "absolute", inset: 0,
             backgroundImage: "url('/gallery/tangy1.jpg')",
             backgroundSize: "cover", backgroundPosition: "center 40%",
           }} />
-          <div style={{ position: "absolute", inset: 0, background: "rgba(5,5,5,0.78)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "rgba(8,8,8,0.72)" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #080808 0%, transparent 25%, transparent 75%, #080808 100%)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at center, rgba(242, 109, 79,0.1) 0%, transparent 65%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(8,8,8,0.85) 0%, transparent 60%)" }} />
         </div>
 
-        <Particles count={12} />
+        <Particles count={10} />
 
-        <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 5vw" }}>
+        <div style={{ position: "relative", zIndex: 2, padding: "0 5vw" }}>
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2 style={{
-              fontFamily: "'Instrument Serif', sans-serif",
-              fontSize: "clamp(5rem, 18vw, 16rem)",
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(4rem, 15vw, 14rem)",
               lineHeight: 0.88, letterSpacing: "0.02em", color: "#fff",
-              margin: "0 0 32px",
-              textShadow: "0 0 80px rgba(242, 109, 79,0.2)",
+              margin: "0 0 24px",
             }}>
               SEE YOU<br />
-              <span style={{ WebkitTextStroke: "1px rgba(243, 229, 171,0.6)", WebkitTextFillColor: "transparent" }}>
+              <span style={{ WebkitTextStroke: "2px #C8FF2B", WebkitTextFillColor: "transparent" }}>
                 INSIDE.
               </span>
             </h2>
           </motion.div>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.8 }}
+            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ delay: 0.3, duration: 0.8 }}
             style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: "italic", fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
-              color: "rgba(255,255,255,0.55)", lineHeight: 1.7,
-              marginBottom: 48, maxWidth: 600, margin: "0 auto 48px",
+              fontStyle: "italic", fontSize: "clamp(1rem, 2.2vw, 1.4rem)",
+              color: "rgba(255,255,255,0.45)", lineHeight: 1.7,
+              marginBottom: 40, maxWidth: 500,
             }}
           >
             Some people attend Tangy.<br />Others become part of it.
@@ -860,22 +790,19 @@ export default function VolunteerDetails() {
 
           <motion.button
             onClick={scrollToApply}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(242, 109, 79,0.5)" }}
-            whileTap={{ scale: 0.97 }}
+            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.8 }}
             style={{
-              padding: "20px 56px",
-              background: "linear-gradient(135deg, #F26D4F, #D4AF37)",
-              color: "#fff", border: "none", borderRadius: 40,
-              cursor: "pointer", fontFamily: "inherit", fontSize: "0.95rem",
-              fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase",
-              boxShadow: "0 12px 40px rgba(242, 109, 79,0.3)",
+              padding: "18px 52px",
+              background: "#C8FF2B", color: "#080808", border: "none",
+              cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "1.3rem", letterSpacing: "0.15em", textTransform: "uppercase", borderRadius: 0,
+              transition: "all 0.2s",
             }}
+            onMouseEnter={e => e.currentTarget.style.background = "#fff"}
+            onMouseLeave={e => e.currentTarget.style.background = "#C8FF2B"}
           >
-            Begin Your Journey
+            Begin Your Journey →
           </motion.button>
         </div>
       </section>

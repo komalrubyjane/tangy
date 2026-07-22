@@ -3,27 +3,25 @@ import { motion, AnimatePresence } from "framer-motion";
 import { volunteerService } from "../services/volunteerService";
 
 const GlassCard = ({ children, style, className }) => (
-  <div className={className} style={{
-    background: "transparent",
-    ...style
-  }}>
+  <div className={className} style={{ background: "transparent", ...style }}>
     {children}
   </div>
 );
 
 const INPUT_STYLE = {
-  width: "100%", padding: "16px 20px",
-  background: "rgba(0, 0, 0, 0.4)",
-  border: "1px solid rgba(255, 255, 255, 0.1)",
-  borderRadius: 12, color: "#fff", fontSize: "0.95rem",
+  width: "100%", padding: "14px 0",
+  background: "transparent",
+  border: "none", borderBottom: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: 0, color: "#fff", fontSize: "0.9rem",
   outline: "none", boxSizing: "border-box", fontFamily: "inherit",
-  transition: "all 0.3s ease",
+  transition: "border-color 0.2s",
 };
 
 const LABEL_STYLE = {
-  display: "block", fontSize: "0.75rem", letterSpacing: "0.15em",
-  color: "rgba(255,255,255,0.6)", textTransform: "uppercase", marginBottom: 12,
-  fontWeight: 600
+  display: "block",
+  fontFamily: "'Bebas Neue', sans-serif",
+  fontSize: "0.95rem", letterSpacing: "0.12em",
+  color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 6,
 };
 
 const DEPTS = [
@@ -146,34 +144,43 @@ export default function VolunteerForm() {
 
   if (submitSuccess) {
     return (
-      <GlassCard style={{ padding: "60px 40px", textAlign: "center", border: "1px solid rgba(16, 185, 129, 0.4)" }}>
-        <div style={{ fontSize: "4rem", marginBottom: 20 }}>🎉</div>
-        <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2.5rem", color: "#10b981", margin: "0 0 16px" }}>Application Received!</h3>
-        <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, marginBottom: 30 }}>
-          Welcome to the Tangy Sessions community. Our team will review your application and get in touch with you at <strong>{form.email}</strong> soon.
+      <div style={{ padding: "60px 40px", textAlign: "center", border: "1px dashed rgba(200,255,43,0.5)" }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,6vw,3.5rem)", color: "#C8FF2B", letterSpacing: "0.1em", marginBottom: 12 }}>APPLICATION RECEIVED ✓</div>
+        <p style={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem" }}>
+          Welcome to the Tangy Sessions community. Our team will review your application and get in touch with you at <strong style={{ color: "#fff" }}>{form.email}</strong> soon.
         </p>
-      </GlassCard>
+      </div>
     );
   }
 
   return (
-    <GlassCard className="volunteer-form-container" style={{ padding: "40px" }}>
+    <GlassCard className="volunteer-form-container" style={{ padding: "36px 40px" }}>
       <style>{`
         .volunteer-form-container input:focus,
         .volunteer-form-container select:focus,
         .volunteer-form-container textarea:focus {
-          border-color: #F9E0A2 !important;
-          box-shadow: 0 0 15px rgba(168,85,247,0.3) !important;
+          border-bottom-color: #C8FF2B !important;
         }
+        .volunteer-form-container textarea {
+          border: 1px solid rgba(255,255,255,0.12) !important;
+          padding: 12px !important;
+          resize: vertical;
+        }
+        .volunteer-form-container textarea:focus {
+          border-color: #C8FF2B !important;
+          outline: none !important;
+        }
+        .volunteer-form-container select { appearance: none; cursor: pointer; }
+        .volunteer-form-container input::placeholder,
+        .volunteer-form-container textarea::placeholder { color: rgba(255,255,255,0.2); }
       `}</style>
       {/* Progress Bar */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 40 }}>
+      <div style={{ display: "flex", gap: 2, marginBottom: 32 }}>
         {[1, 2, 3, 4, 5].map(s => (
-          <div key={s} style={{ height: 4, flex: 1, borderRadius: 2, background: s <= step ? "#F26D4F" : "rgba(255,255,255,0.1)", transition: "background 0.3s" }} />
+          <div key={s} style={{ height: 3, flex: 1, background: s <= step ? "#C8FF2B" : "rgba(255,255,255,0.08)", transition: "background 0.3s" }} />
         ))}
       </div>
-      
-      <div style={{ fontSize: "0.8rem", color: "#2A593E", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>Step {step} of 5</div>
+      <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "#C8FF2B", letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: 16 }}>// STEP {step} OF 5 //</div>
 
       <AnimatePresence mode="wait">
         <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
@@ -181,7 +188,7 @@ export default function VolunteerForm() {
           {/* STEP 1: BASIC INFO */}
           {step === 1 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Basic Information</h3>
+              <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Basic Information</h3>
               <div>
                 <label style={LABEL_STYLE}>Full Name *</label>
                 <input type="text" value={form.name} onChange={e => handleChange("name", e.target.value)} style={{...INPUT_STYLE, borderColor: errors.name ? "#ef4444" : INPUT_STYLE.border}} />
@@ -224,7 +231,7 @@ export default function VolunteerForm() {
           {/* STEP 2: DEPARTMENT */}
           {step === 2 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Choose Your Department</h3>
+              <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Choose Your Department</h3>
               <div>
                 <label style={LABEL_STYLE}>Primary Department *</label>
                 <select value={form.primaryDept} onChange={e => handleChange("primaryDept", e.target.value)} style={{...INPUT_STYLE, appearance: "none", cursor: "pointer", borderColor: errors.primaryDept ? "#ef4444" : INPUT_STYLE.border}}>
@@ -240,8 +247,8 @@ export default function VolunteerForm() {
 
               {/* CONDITIONALS */}
               {form.primaryDept === "Creative Direction & Show Design" && (
-                <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#2A593E" }}>Creative Direction Section</h4>
+                <div style={{ background: "rgba(200,255,43,0.03)", padding: 20, borderLeft: "2px solid rgba(200,255,43,0.3)", marginTop: 16, display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "#C8FF2B", letterSpacing: "0.3em", textTransform: "uppercase" }}>// Creative Direction Section //</div>
                   <div><label style={LABEL_STYLE}>Role *</label>
                     <select value={form.cdRole} onChange={e => handleChange("cdRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Show Director">Show Director</option><option value="Show Crew">Show Crew</option></select>
                   </div>
@@ -254,8 +261,8 @@ export default function VolunteerForm() {
               )}
 
               {form.primaryDept === "Stage Designer & Decor Lead" && (
-                <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#2A593E" }}>Stage Design Section</h4>
+                <div style={{ background: "rgba(200,255,43,0.03)", padding: 20, borderLeft: "2px solid rgba(200,255,43,0.3)", marginTop: 16, display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "#C8FF2B", letterSpacing: "0.3em", textTransform: "uppercase" }}>// Stage Design Section //</div>
                   <div><label style={LABEL_STYLE}>Background *</label><select value={form.sdBg} onChange={e => handleChange("sdBg", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Interior Design">Interior Design</option><option value="Architecture">Architecture</option><option value="Event Decor">Event Decor</option><option value="Fashion / Set Design">Fashion / Set Design</option><option value="Self Taught">Self Taught</option><option value="Beginner">Beginner</option></select></div>
                   <div><label style={LABEL_STYLE}>Role *</label><select value={form.sdRole} onChange={e => handleChange("sdRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Decor Lead">Decor Lead</option><option value="Decor Crew">Decor Crew</option><option value="Either">Either</option></select></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><select value={form.sdExp} onChange={e => handleChange("sdExp", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Professional">Professional</option><option value="Independent">Independent</option><option value="Idea-based">Idea-based</option><option value="No experience">No experience</option></select></div>
@@ -267,8 +274,8 @@ export default function VolunteerForm() {
 
               {/* Add other conditionals similarly */}
               {form.primaryDept === "Costume Design" && (
-                <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#2A593E" }}>Costume Design Section</h4>
+                <div style={{ background: "rgba(200,255,43,0.03)", padding: 20, borderLeft: "2px solid rgba(200,255,43,0.3)", marginTop: 16, display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "#C8FF2B", letterSpacing: "0.3em", textTransform: "uppercase" }}>// Costume Design Section //</div>
                   <div><label style={LABEL_STYLE}>Role *</label><select value={form.csRole} onChange={e => handleChange("csRole", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Costume Head">Costume Head</option><option value="Costume Crew">Costume Crew</option></select></div>
                   <div><label style={LABEL_STYLE}>Background *</label><input type="text" value={form.csBg} onChange={e => handleChange("csBg", e.target.value)} style={INPUT_STYLE} /></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><input type="text" value={form.csExp} onChange={e => handleChange("csExp", e.target.value)} style={INPUT_STYLE} /></div>
@@ -277,8 +284,8 @@ export default function VolunteerForm() {
               )}
 
               {form.primaryDept === "Visual & Content" && (
-                <div style={{ background: "rgba(242, 109, 79,0.05)", padding: 20, borderRadius: 12, marginTop: 10, display: "flex", flexDirection: "column", gap: 16 }}>
-                  <h4 style={{ margin: 0, color: "#2A593E" }}>Visual & Content Section</h4>
+                <div style={{ background: "rgba(200,255,43,0.03)", padding: 20, borderLeft: "2px solid rgba(200,255,43,0.3)", marginTop: 16, display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "#C8FF2B", letterSpacing: "0.3em", textTransform: "uppercase" }}>// Visual & Content Section //</div>
                   <div><label style={LABEL_STYLE}>Skills *</label><select value={form.vcSkills} onChange={e => handleChange("vcSkills", e.target.value)} style={INPUT_STYLE}><option value="">Select</option><option value="Photographer">Photographer</option><option value="Videographer">Videographer</option><option value="Editor">Editor</option><option value="Reels Creator">Reels Creator</option><option value="Colourist">Colourist</option><option value="Graphic Designer">Graphic Designer</option><option value="Motion Designer">Motion Designer</option></select></div>
                   <div><label style={LABEL_STYLE}>Experience *</label><input type="text" value={form.vcExp} onChange={e => handleChange("vcExp", e.target.value)} style={INPUT_STYLE} /></div>
                   <div><label style={LABEL_STYLE}>Equipment & Software *</label><input type="text" value={form.vcEquip} onChange={e => handleChange("vcEquip", e.target.value)} style={INPUT_STYLE} /></div>
@@ -292,7 +299,7 @@ export default function VolunteerForm() {
           {/* STEP 3: COMMITMENT */}
           {step === 3 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Commitment</h3>
+              <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Commitment</h3>
               <div>
                 <label style={LABEL_STYLE}>How Would You Like To Be Involved? *</label>
                 <select value={form.involvement} onChange={e => handleChange("involvement", e.target.value)} style={{...INPUT_STYLE, appearance: "none", cursor: "pointer", borderColor: errors.involvement ? "#ef4444" : INPUT_STYLE.border}}>
@@ -308,10 +315,10 @@ export default function VolunteerForm() {
 
               <div>
                 <label style={LABEL_STYLE}>Available Dates *</label>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: 16, background: "rgba(0,0,0,0.3)", borderRadius: 8, border: `1px solid ${errors.dates ? "#ef4444" : "rgba(255,255,255,0.1)"}` }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: 16, background: "rgba(0,0,0,0.3)", border: `1px solid ${errors.dates ? "#FF2E52" : "rgba(255,255,255,0.08)"}` }}>
                   {DATES.map(date => (
                     <label key={date} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontSize: "0.85rem", color: "rgba(255,255,255,0.8)" }}>
-                      <input type="checkbox" checked={form.dates.includes(date)} onChange={() => handleMultiSelect("dates", date)} style={{ width: 16, height: 16, accentColor: "#F26D4F" }} />
+                      <input type="checkbox" checked={form.dates.includes(date)} onChange={() => handleMultiSelect("dates", date)} style={{ width: 16, height: 16, accentColor: "#C8FF2B" }} />
                       {date}
                     </label>
                   ))}
@@ -324,7 +331,7 @@ export default function VolunteerForm() {
           {/* STEP 4: ABOUT YOU */}
           {step === 4 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>About You</h3>
+              <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>About You</h3>
               <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                 <div style={{ flex: "1 1 200px" }}>
                   <label style={LABEL_STYLE}>Emergency Contact Name *</label>
@@ -356,10 +363,10 @@ export default function VolunteerForm() {
 
               <div>
                 <label style={LABEL_STYLE}>What Do You Hope To Gain?</label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: 16, background: "rgba(0,0,0,0.3)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: 16, background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.08)" }}>
                   {["Event Experience", "Portfolio Building", "Community", "Learning", "Career Growth", "Contribution", "Networking", "All Of The Above", "Other"].map(opt => (
                     <label key={opt} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontSize: "0.85rem", color: "rgba(255,255,255,0.8)" }}>
-                      <input type="checkbox" checked={form.hopeGain.includes(opt)} onChange={() => handleMultiSelect("hopeGain", opt)} style={{ width: 16, height: 16, accentColor: "#F26D4F" }} />
+                      <input type="checkbox" checked={form.hopeGain.includes(opt)} onChange={() => handleMultiSelect("hopeGain", opt)} style={{ width: 16, height: 16, accentColor: "#C8FF2B" }} />
                       {opt}
                     </label>
                   ))}
@@ -371,11 +378,11 @@ export default function VolunteerForm() {
           {/* STEP 5: DECLARATION */}
           {step === 5 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <h3 style={{ fontFamily: "'Instrument Serif', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Final Declaration</h3>
+              <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", margin: "0 0 10px" }}>Final Declaration</h3>
               
-              <div style={{ display: "flex", flexDirection: "column", gap: 24, padding: 24, background: "rgba(242, 109, 79,0.05)", borderRadius: 12, border: "1px solid rgba(242, 109, 79,0.2)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 24, padding: 24, background: "rgba(200,255,43,0.03)", border: "1px dashed rgba(200,255,43,0.25)" }}>
                 <label style={{ display: "flex", alignItems: "flex-start", gap: 16, cursor: "pointer", fontSize: "0.9rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.5 }}>
-                  <input type="checkbox" checked={form.dec1} onChange={e => handleChange("dec1", e.target.checked)} style={{ width: 20, height: 20, accentColor: "#F26D4F", marginTop: 2 }} />
+                  <input type="checkbox" checked={form.dec1} onChange={e => handleChange("dec1", e.target.checked)} style={{ width: 20, height: 20, accentColor: "#C8FF2B", marginTop: 2 }} />
                   <div>
                     I understand that I'm joining the Tangy Sessions community and contributing my skills and energy to build something meaningful. *
                     {errors.dec1 && <div style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: 6 }}>⚠ {errors.dec1}</div>}
@@ -383,7 +390,7 @@ export default function VolunteerForm() {
                 </label>
 
                 <label style={{ display: "flex", alignItems: "flex-start", gap: 16, cursor: "pointer", fontSize: "0.9rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.5 }}>
-                  <input type="checkbox" checked={form.dec2} onChange={e => handleChange("dec2", e.target.checked)} style={{ width: 20, height: 20, accentColor: "#F26D4F", marginTop: 2 }} />
+                  <input type="checkbox" checked={form.dec2} onChange={e => handleChange("dec2", e.target.checked)} style={{ width: 20, height: 20, accentColor: "#C8FF2B", marginTop: 2 }} />
                   <div>
                     I agree to be contacted by Tangy Sessions via WhatsApp and email regarding this application and future show updates. *
                     {errors.dec2 && <div style={{ color: "#ef4444", fontSize: "0.75rem", marginTop: 6 }}>⚠ {errors.dec2}</div>}
@@ -396,20 +403,33 @@ export default function VolunteerForm() {
         </motion.div>
       </AnimatePresence>
 
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 40, paddingTop: 30, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 40, paddingTop: 28, borderTop: "1px dashed rgba(200,255,43,0.15)" }}>
         {step > 1 ? (
-          <motion.button onClick={prevStep} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            style={{ padding: "14px 28px", background: "transparent", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", borderRadius: 8, cursor: "pointer", textTransform: "uppercase", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
-            Back
-          </motion.button>
+          <button onClick={prevStep}
+            style={{ padding: "13px 28px", background: "transparent", border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.6)", borderRadius: 0, cursor: "pointer", fontFamily: "'Space Mono', monospace", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.12em", transition: "all 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#C8FF2B"; e.currentTarget.style.color = "#C8FF2B"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
+          >
+            ← Back
+          </button>
         ) : <div />}
         
         <motion.button
           onClick={step === 5 ? handleSubmit : nextStep} disabled={isSubmitting}
-          whileHover={!isSubmitting ? { scale: 1.05, backgroundColor: "#D4AF37" } : {}}
-          whileTap={!isSubmitting ? { scale: 0.95 } : {}}
-          style={{ padding: "14px 36px", background: isSubmitting ? "rgba(242, 109, 79,0.5)" : "#F26D4F", color: "#fff", border: "none", borderRadius: 8, cursor: isSubmitting ? "not-allowed" : "pointer", textTransform: "uppercase", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.1em", boxShadow: "0 0 20px rgba(242, 109, 79,0.3)" }}>
-          {isSubmitting ? "Submitting..." : step === 5 ? "Submit Application" : "Continue"}
+          whileTap={!isSubmitting ? { scale: 0.97 } : {}}
+          style={{
+            padding: "14px 40px",
+            background: isSubmitting ? "rgba(200,255,43,0.4)" : "#C8FF2B",
+            color: "#080808", border: "none", borderRadius: 0,
+            cursor: isSubmitting ? "not-allowed" : "pointer",
+            fontFamily: "'Bebas Neue', sans-serif",
+            textTransform: "uppercase", fontSize: "1.1rem", letterSpacing: "0.15em",
+            transition: "background 0.2s",
+          }}
+          onMouseEnter={e => { if (!isSubmitting) e.currentTarget.style.background = "#fff"; }}
+          onMouseLeave={e => { if (!isSubmitting) e.currentTarget.style.background = "#C8FF2B"; }}
+        >
+          {isSubmitting ? "Submitting..." : step === 5 ? "Submit Application →" : "Continue →"}
         </motion.button>
       </div>
 
