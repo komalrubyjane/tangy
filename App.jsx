@@ -5,6 +5,7 @@
 //   PaymentModal.jsx       — NEW (replace with the PaymentModal.jsx output)
 //   Volunteer.jsx          — NEW (replace with the Volunteer.jsx output)
 //   AdminDashboard.jsx     — NEW (replace with the AdminDashboard.jsx output)
+//   TVPlayer.jsx           — NEW (replace with the RetroTV/TVPlayer.jsx output)
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
@@ -18,6 +19,7 @@ import { ModalProvider, useModal } from "./src/components/ModalProvider";
 import ArtistDetails from "./src/components/ArtistDetails";
 import EventDetails from "./src/pages/EventDetails";
 import VolunteerDetails from "./src/pages/VolunteerDetails";
+import TVPlayer from "./src/components/RetroTV/TVPlayer.jsx";
 
 // ─── ERROR BOUNDARY ───────────────────────────────────────────────────────────
 class ErrorBoundary extends React.Component {
@@ -300,172 +302,6 @@ function Navbar() {
 }
 
 
-// ─── RETRO TV STATE MACHINE ──────────────────────────────────────────────────
-const rawVideos = import.meta.glob('/public/background-video/*.mp4', { query: '?url', import: 'default', eager: true });
-const allVideos = Object.values(rawVideos);
-const playlistFiles = allVideos.filter(url => !url.endsWith('first.mp4') && !url.endsWith('middle.mp4'));
-const fallbackVideo = '/background_video/0723.mp4';
-
-// Use uploaded files or fallback to the sample video
-const playlist = playlistFiles.length > 0 ? playlistFiles : [fallbackVideo];
-const firstVideoUrl = allVideos.find(url => url.endsWith('first.mp4')) || fallbackVideo;
-const middleVideoUrl = allVideos.find(url => url.endsWith('middle.mp4')) || fallbackVideo;
-
-function shuffleArray(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-function RetroTV() {
-  const videoRef = useRef(null);
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { margin: "200px 0px 200px 0px" });
-  const [isHovered, setIsHovered] = useState(false);
-  const [power, setPower] = useState(true);
-
-  // States: 'BOOTING', 'PLAYING', 'SWITCHING'
-  const [tvState, setTvState] = useState('BOOTING');
-  const [shuffledPlaylist, setShuffledPlaylist] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [targetIndex, setTargetIndex] = useState(null);
-
-  useEffect(() => {
-    const shuffled = shuffleArray(playlist);
-    setShuffledPlaylist(shuffled);
-    setCurrentIndex(0);
-
-    const booted = sessionStorage.getItem("tvBooted");
-    if (booted === "true") {
-      setTvState('PLAYING');
-    } else {
-      setTvState('BOOTING');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (videoRef.current && power) {
-      if (isInView) {
-        videoRef.current.play().catch(e => console.log("Play failed", e));
-      } else {
-        videoRef.current.pause();
-      }
-    }
-  }, [isInView, power, tvState, currentIndex]);
-
-  const handleVideoEnd = () => {
-    if (tvState === 'BOOTING') {
-      sessionStorage.setItem("tvBooted", "true");
-      setTvState('PLAYING');
-    } else if (tvState === 'SWITCHING') {
-      setCurrentIndex(targetIndex !== null ? targetIndex : 0);
-      setTargetIndex(null);
-      setTvState('PLAYING');
-    } else if (tvState === 'PLAYING') {
-      setCurrentIndex((prev) => (prev + 1) % shuffledPlaylist.length);
-    }
-  };
-
-  const changeChannel = (direction) => {
-    if (tvState !== 'PLAYING') return;
-    let nextIdx = currentIndex + direction;
-    if (nextIdx < 0) nextIdx = shuffledPlaylist.length - 1;
-    if (nextIdx >= shuffledPlaylist.length) nextIdx = 0;
-    
-    setTargetIndex(nextIdx);
-    setTvState('SWITCHING');
-  };
-
-  const togglePower = () => {
-    if (power) {
-      sessionStorage.removeItem("tvBooted");
-      setPower(false);
-    } else {
-      setTvState('BOOTING');
-      setPower(true);
-      const shuffled = shuffleArray(playlist);
-      setShuffledPlaylist(shuffled);
-      setCurrentIndex(0);
-    }
-  };
-
-  let currentSrc = '';
-  if (tvState === 'BOOTING') currentSrc = firstVideoUrl;
-  else if (tvState === 'SWITCHING') currentSrc = middleVideoUrl;
-  else currentSrc = shuffledPlaylist[currentIndex] || '';
-
-  return (
-    <div 
-      ref={containerRef}
-      className="retro-tv-wrapper"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="tv-label-top" style={{ justifyContent: 'space-between', width: '100%', padding: '0 10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div className="blinking-red-dot" style={{ opacity: power ? 1 : 0.2 }} /> 
-          {tvState === 'BOOTING' ? 'BOOTING...' : 'LIVE ARCHIVE'}
-        </div>
-      </div>
-      <motion.div
-        className="tv-chassis"
-        animate={{ y: [0, -10, 0], rotate: [-1, 1, -1], scale: (isHovered && power) ? 1.03 : 1 }}
-        transition={{ y: { duration: 6, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" }, scale: { duration: 0.3 } }}
-      >
-        <div className={`tv-screen-container ${(isHovered && power) ? 'hovered' : ''}`}>
-          {power ? (
-            <>
-              <video
-                key={currentSrc}
-                ref={videoRef}
-                src={currentSrc}
-                muted
-                autoPlay
-                playsInline
-                preload="auto"
-                poster="/gallery/tangy1.jpg"
-                className="tv-video"
-                onEnded={handleVideoEnd}
-              />
-              <div className="tv-glass-overlay"></div>
-              {isHovered && <div className="tv-scanlines"></div>}
-              
-              {tvState === 'BOOTING' && (
-                <div className="tv-osd">
-                  SEARCHING FOR SIGNAL...<br/>
-                  TANGY SESSIONS TV
-                </div>
-              )}
-              {tvState === 'SWITCHING' && (
-                <div className="tv-osd">
-                  SWITCHING CHANNEL...<br/>
-                  CH {String((targetIndex !== null ? targetIndex : currentIndex) + 1).padStart(2, '0')}
-                </div>
-              )}
-            </>
-          ) : (
-            <div style={{ width: '100%', height: '100%', background: '#050505', boxShadow: 'inset 0 0 30px #000' }} />
-          )}
-        </div>
-        
-        <div className="tv-controls">
-          <button className={`tv-power-btn ${power ? 'on' : 'off'}`} onClick={togglePower}></button>
-          <div className="tv-channel-knobs">
-            <button onClick={() => changeChannel(-1)}>◀</button>
-            <button onClick={() => changeChannel(1)}>▶</button>
-          </div>
-        </div>
-      </motion.div>
-      <div className="tv-label-bottom">
-        {power ? (tvState === 'PLAYING' ? '▶ PLAYING NOW' : '⏸ TUNING') : 'OFF'}
-      </div>
-    </div>
-  );
-}
-
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   const gramophoneHover = useAutoHover(0.4);
@@ -623,7 +459,7 @@ function Hero() {
         </motion.div>
       </div>
 
-      <RetroTV />
+      <TVPlayer />
 
       {/* VINTAGE RADIO GRAPHIC - HERO ACCENT */}
       <motion.div
@@ -2707,95 +2543,9 @@ function LandingPage({ showArtistOverlay = false }) {
         @keyframes blinkCursor { 50% { opacity: 0; } }
         @keyframes scanline { 0% { transform: translate3d(0, -100%, 0); } 100% { transform: translate3d(0, 100vh, 0); } }
 
-        /* Retro TV styles */
-        @keyframes tvFlicker { 0%, 10%, 100% { opacity: 1; } 5% { opacity: 0.85; } }
-        @keyframes tvScanlines { 0% { background-position: 0 0; } 100% { background-position: 0 10px; } }
+        /* TV animations are now handled inside TVPlayer.jsx */
         @keyframes blinkDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-        
-        .retro-tv-wrapper {
-          position: absolute; right: 5vw; top: 45%; transform: translateY(-50%);
-          z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 12px;
-          pointer-events: auto;
-        }
-        .tv-label-top {
-          font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em;
-          color: #C8FF2B; text-transform: uppercase; display: flex; align-items: center; gap: 8px; opacity: 0.8;
-        }
-        .blinking-red-dot {
-          width: 6px; height: 6px; background: #ff2e52; border-radius: 50%;
-          animation: blinkDot 1s infinite; box-shadow: 0 0 6px #ff2e52;
-        }
-        .tv-chassis {
-          width: clamp(280px, 30vw, 500px); aspect-ratio: 4/3; background: #111;
-          border-radius: 20px; padding: 12px; border: 2px solid rgba(255,255,255,0.05);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 40px rgba(200,255,43,0.15);
-          transition: box-shadow 0.3s ease;
-        }
-        .tv-chassis:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.9), 0 0 60px rgba(200,255,43,0.3); }
-        .tv-screen-container {
-          width: 100%; height: 100%; border-radius: 12px; overflow: hidden;
-          position: relative; background: #000; box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
-        }
-        .tv-video {
-          width: 100%; height: 100%; object-fit: cover;
-          filter: brightness(1.05) contrast(1.08); transition: filter 0.3s;
-        }
-        .tv-screen-container.hovered .tv-video {
-          animation: tvFlicker 3s infinite; filter: brightness(1.1) contrast(1.15);
-        }
-        .tv-glass-overlay {
-          position: absolute; inset: 0; border-radius: 12px;
-          background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.02) 100%);
-          pointer-events: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-        }
-        .tv-scanlines {
-          position: absolute; inset: 0;
-          background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
-          background-size: 100% 2px; animation: tvScanlines 1s linear infinite;
-          pointer-events: none; opacity: 0.6; z-index: 2;
-        }
-        .tv-label-bottom {
-          font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em;
-          color: rgba(255,255,255,0.4);
-        }
-        .tv-controls {
-          display: flex; justify-content: space-between; align-items: center;
-          margin-top: 12px; padding: 0 10px;
-        }
-        .tv-power-btn {
-          width: 14px; height: 14px; border-radius: 50%; border: none; cursor: pointer;
-          background: #444; box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.2);
-          transition: all 0.2s;
-        }
-        .tv-power-btn.on { background: #ff2e52; box-shadow: 0 0 10px #ff2e52, inset 0 1px 2px rgba(255,255,255,0.5); }
-        .tv-power-btn:active { transform: scale(0.9); }
-        .tv-channel-knobs { display: flex; gap: 8px; }
-        .tv-channel-knobs button {
-          background: #222; color: #888; border: 1px solid #333; border-radius: 4px;
-          padding: 4px 8px; font-size: 0.7rem; cursor: pointer; transition: all 0.2s;
-        }
-        .tv-channel-knobs button:hover { background: #333; color: #C8FF2B; border-color: #C8FF2B; }
-        .tv-channel-knobs button:active { transform: scale(0.9); }
-        .tv-osd {
-          position: absolute; top: 10%; left: 8%; color: #C8FF2B;
-          font-family: 'Space Mono', monospace; font-size: clamp(0.7rem, 2vw, 1.2rem);
-          text-shadow: 0 0 8px #C8FF2B; letter-spacing: 0.1em; line-height: 1.4;
-          z-index: 3; pointer-events: none; opacity: 0.85;
-          animation: tvFlicker 3s infinite;
-        }
-
-        @media (max-width: 1024px) {
-          .retro-tv-wrapper { right: 2vw; }
-        }
-        @media (max-width: 768px) {
-          .retro-tv-wrapper {
-            position: relative; right: auto; top: auto; transform: none;
-            margin: 32px auto 0; width: clamp(240px, 80vw, 320px);
-          }
-          .tv-chassis {
-            width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.6), 0 0 20px rgba(200,255,43,0.1);
-          }
-        }
+        @keyframes tvFlicker { 0%, 95%, 100% { opacity: 1; } 96% { opacity: 0.7; } 97% { opacity: 1; } 98% { opacity: 0.4; } 99% { opacity: 0.9; } }
         @keyframes textFlicker { 0%,100% { opacity:1; } 92% { opacity:1; } 93% { opacity:0.4; } 94% { opacity:1; } 96% { opacity:0.7; } 97% { opacity:1; } }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
