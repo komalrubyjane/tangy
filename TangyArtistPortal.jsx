@@ -10,7 +10,7 @@ import { useModal } from './src/components/ModalProvider';
 // ── Fonts & Global Styles ────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -24,26 +24,22 @@ const GlobalStyles = () => (
 
     :root {
       --tangy-black:    #080808;
-      --tangy-deep:     #080808;
-      --tangy-card:     rgba(8,8,12,0.72);
-      --tangy-border:   rgba(200, 255, 43,0.22);
+      --tangy-deep:     #111111;
+      --tangy-card:     #111111;
+      --tangy-border:   rgba(200, 255, 43, 0.3);
       --tangy-amber:    #C8FF2B;
       --tangy-amber-dim:#2A593E;
       --tangy-rust:     #06b6d4;
       --tangy-cream:    #ffffff;
       --tangy-muted:    rgba(255,255,255,0.65);
       --tangy-glow:     rgba(200, 255, 43,0.2);
-      --glass-bg:       linear-gradient(135deg, rgba(8,8,12,0.82) 0%, rgba(8,8,12,0.62) 100%);
-      --glass-border:   rgba(200, 255, 43,0.28);
-      --glass-blur:     24px;
-      --glass-shadow:   0 20px 40px rgba(0,0,0,0.7), 0 0 30px rgba(200, 255, 43,0.12), inset 0 1px 1px rgba(255,255,255,0.05);
     }
 
     ::selection { background: var(--tangy-amber); color: #080808; }
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--tangy-black); }
-    ::-webkit-scrollbar-thumb { background: var(--tangy-amber-dim); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb { background: var(--tangy-amber); border-radius: 0px; }
 
     /* Grain overlay */
     .grain::after {
@@ -51,65 +47,34 @@ const GlobalStyles = () => (
       position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       background-size: 180px;
-      opacity: 0.032;
+      opacity: 0.05;
       pointer-events: none;
       z-index: 9999;
     }
 
     .font-display { font-family: 'Bebas Neue', sans-serif; }
-    .font-mono    { font-family: 'DM Sans', sans-serif; }
-    .font-syne    { font-family: 'DM Sans', sans-serif; }
+    .font-mono    { font-family: 'Space Mono', monospace; }
 
     /* Animations */
     @keyframes fadeUp   { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
     @keyframes pulse    { 0%,100%{opacity:.4;} 50%{opacity:1;} }
-    @keyframes float    { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
-    @keyframes shimmer  { 0%{background-position:-200% center;} 100%{background-position:200% center;} }
-    @keyframes rotateSlow { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
-    @keyframes slideIn  { from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;} }
-    @keyframes ambientPulse { 0%,100%{opacity:0.3;transform:scale(1);} 50%{opacity:0.6;transform:scale(1.08);} }
-    @keyframes subtleZoom {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.1); }
-    }
 
     .anim-fadeup  { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
     .anim-fadein  { animation: fadeIn 0.6s ease both; }
-    .anim-float   { animation: float 6s ease-in-out infinite; }
     .anim-pulse   { animation: pulse 2.5s ease-in-out infinite; }
 
-    /* Glass card — premium glassmorphism system */
-    .glass {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-      box-shadow: var(--glass-shadow);
+    /* Brutalist block */
+    .brutal-box {
+      background: #111111;
+      border: 1px solid var(--tangy-amber);
+      border-radius: 0;
+      box-shadow: 4px 4px 0 var(--tangy-amber);
+      transition: all 0.2s;
     }
-
-    /* Lighter glass for nested elements */
-    .glass-sm {
-      background: rgba(8,8,12,0.55);
-      border: 1px solid rgba(200, 255, 43,0.18);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
-    }
-
-    /* Card component — for dashboard cards, artist cards etc. */
-    .t-card {
-      background: linear-gradient(135deg, rgba(8,8,12,0.78) 0%, rgba(8,8,12,0.55) 100%);
-      border: 1px solid rgba(200, 255, 43,0.22);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 16px 32px rgba(0,0,0,0.6), 0 0 20px rgba(200, 255, 43,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
-      border-radius: 12px;
-      transition: box-shadow 0.3s, border-color 0.3s;
-    }
-    .t-card:hover {
-      border-color: rgba(200, 255, 43,0.38);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 30px rgba(200, 255, 43,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+    .brutal-box:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--tangy-amber);
     }
 
     /* Amber glow text */
@@ -120,22 +85,20 @@ const GlobalStyles = () => (
     /* Input */
     .t-input {
       width: 100%;
-      background: rgba(0,0,0,0.45);
-      border: 1px solid rgba(200, 255, 43,0.2);
-      border-radius: 6px;
+      background: #080808;
+      border: 1px dashed rgba(255,255,255,0.4);
+      border-radius: 0;
       padding: 0.85rem 1rem;
       color: var(--tangy-cream);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Space Mono', monospace;
       font-size: 0.875rem;
-      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+      transition: all 0.25s;
       outline: none;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
     }
     .t-input:focus {
-      border-color: var(--tangy-amber);
-      background: rgba(200, 255, 43,0.08);
-      box-shadow: 0 0 0 3px rgba(200, 255, 43,0.12), 0 0 16px rgba(200, 255, 43,0.1);
+      border: 1px solid var(--tangy-amber);
+      background: #111111;
+      box-shadow: 4px 4px 0 var(--tangy-amber);
     }
     .t-input::placeholder { color: rgba(255,255,255,0.3); }
 
@@ -143,41 +106,49 @@ const GlobalStyles = () => (
     .t-btn-primary {
       background: var(--tangy-amber);
       color: #080808;
-      border: none;
+      border: 1px solid var(--tangy-amber);
       padding: 0.9rem 2rem;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Space Mono', monospace;
       font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       cursor: pointer;
-      border-radius: 3px;
+      border-radius: 0;
       transition: all 0.25s;
       position: relative;
-      overflow: hidden;
+      box-shadow: 4px 4px 0 #ffffff;
     }
-    .t-btn-primary:hover { background: #C8FF2B; transform: translateY(-1px); box-shadow: 0 8px 32px rgba(200, 255, 43,0.3); }
-    .t-btn-primary:active { transform: translateY(0); }
+    .t-btn-primary:hover { 
+      transform: translate(-2px, -2px); 
+      box-shadow: 6px 6px 0 #ffffff; 
+    }
+    .t-btn-primary:active { transform: translateY(0); box-shadow: 0 0 0 #ffffff; }
 
     .t-btn-ghost {
       background: transparent;
       color: var(--tangy-cream);
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px dashed rgba(255,255,255,0.4);
       padding: 0.85rem 1.8rem;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Space Mono', monospace;
       font-size: 0.72rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       cursor: pointer;
-      border-radius: 3px;
+      border-radius: 0;
       transition: all 0.25s;
     }
-    .t-btn-ghost:hover { border-color: var(--tangy-amber); color: var(--tangy-amber); background: rgba(200, 255, 43,0.05); }
+    .t-btn-ghost:hover { 
+      border: 1px solid var(--tangy-amber); 
+      color: var(--tangy-amber); 
+      background: #111111; 
+      box-shadow: 4px 4px 0 var(--tangy-amber);
+    }
 
     /* Nav */
     .nav-link {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.65rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--tangy-muted);
@@ -197,52 +168,45 @@ const GlobalStyles = () => (
     /* Notification badge */
     .notif-badge {
       position: absolute; top: -4px; right: -4px;
-      width: 16px; height: 16px; border-radius: 50%;
+      width: 16px; height: 16px; border-radius: 0;
       background: var(--tangy-rust);
       font-size: 0.55rem; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
-      color: #fff; font-family: 'DM Sans', sans-serif;
+      color: #fff; font-family: 'Space Mono', monospace;
     }
-
-    /* Step progress */
-    .step-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
-    .step-line.done { background: var(--tangy-amber); }
 
     /* Calendar cell */
     .cal-cell {
       aspect-ratio: 1;
-      border-radius: 4px;
+      border-radius: 0;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem; font-family: 'Space Mono', monospace;
       cursor: pointer;
       transition: all 0.15s;
-      border: 1px solid transparent;
+      border: 1px dashed rgba(255,255,255,0.2);
       position: relative;
     }
-    .cal-cell:hover { border-color: rgba(200, 255, 43,0.3); background: rgba(200, 255, 43,0.06); }
-    .cal-cell.today { border-color: var(--tangy-amber); color: var(--tangy-amber); font-weight: 700; }
-    .cal-cell.selected { background: var(--tangy-amber); color: #080808; font-weight: 700; border-color: var(--tangy-amber); }
+    .cal-cell:hover { border: 1px solid var(--tangy-amber); background: #111111; }
+    .cal-cell.today { border: 1px solid var(--tangy-amber); color: var(--tangy-amber); font-weight: 700; }
+    .cal-cell.selected { background: var(--tangy-amber); color: #080808; font-weight: 700; border: 1px solid var(--tangy-amber); box-shadow: 2px 2px 0 #ffffff; }
 
     /* Tag */
     .tag {
       display: inline-flex; align-items: center;
       padding: 0.3rem 0.75rem;
-      background: rgba(8,8,12,0.6);
-      border: 1px solid rgba(200, 255, 43,0.3);
-      border-radius: 999px;
+      background: #111111;
+      border: 1px solid var(--tangy-amber);
+      border-radius: 0;
       font-size: 0.65rem;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Space Mono', monospace;
       letter-spacing: 0.08em;
       color: var(--tangy-amber);
-      background: rgba(200, 255, 43,0.06);
     }
-
-    /* Scroll reveal */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media(max-width:768px){
       .hide-mobile { display: none !important; }
+      .mobile-stack { flex-direction: column !important; }
+      .nav-container { flex-wrap: wrap; gap: 1rem; }
     }
     @media(min-width:769px){
       .hide-desktop { display: none !important; }
@@ -272,45 +236,13 @@ const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={{ user, login, logout, updateUser, loading }}>{children}</AuthContext.Provider>;
 };
 
-// ── Router Context ───────────────────────────────────────────
-const RouterContext = createContext(null);
-const useRouter = () => useContext(RouterContext);
-
-// ── Ambient Background ───────────────────────────────────────
 const AmbientBg = ({ variant = 'default' }) => {
-  const configs = {
-    default: { c1: '#C8FF2B', c2: '#06b6d4', c3: '#1a0f2e' },
-    blue:    { c1: '#2a4a8a', c2: '#1a2a5a', c3: '#0a0f1e' },
-    green:   { c1: '#1a4a2a', c2: '#0a2a1a', c3: '#050f0a' },
-  };
-  const c = configs[variant] || configs.default;
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-      <div style={{
-        position: 'absolute', top: '-20%', left: '-10%',
-        width: '60vw', height: '60vw', borderRadius: '50%',
-        background: `radial-gradient(circle, ${c.c1}18 0%, transparent 70%)`,
-        animation: 'ambientPulse 8s ease-in-out infinite',
-      }} />
-      <div style={{
-        position: 'absolute', bottom: '-15%', right: '-5%',
-        width: '50vw', height: '50vw', borderRadius: '50%',
-        background: `radial-gradient(circle, ${c.c2}12 0%, transparent 70%)`,
-        animation: 'ambientPulse 11s ease-in-out infinite reverse',
-      }} />
-      <div style={{
-        position: 'absolute', top: '40%', left: '40%',
-        width: '30vw', height: '30vw', borderRadius: '50%',
-        background: `radial-gradient(circle, ${c.c3}20 0%, transparent 70%)`,
-        animation: 'ambientPulse 14s ease-in-out infinite',
-      }} />
-    </div>
-  );
+  // In brutalist mode, we keep a pure dark background.
+  return <div style={{ position: 'fixed', inset: 0, zIndex: 0, background: '#080808' }} />;
 };
 
 // ── Nav ────────────────────────────────────────────────────────
 const Nav = ({ page, setPage }) => {
-  const [scrolled, setScrolled] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const { user, logout } = useAuth();
   const modal = useModal();
@@ -327,15 +259,12 @@ const Nav = ({ page, setPage }) => {
   ];
 
   return (
-    <nav style={{
+    <nav className="nav-container" style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
       padding: '1.2rem 2rem',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      background: 'linear-gradient(to bottom, rgba(5,5,8,0.92) 0%, rgba(5,5,8,0.6) 100%)',
-      backdropFilter: 'blur(24px)',
-      WebkitBackdropFilter: 'blur(24px)',
-      borderBottom: '1px solid rgba(200, 255, 43,0.12)',
-      boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
+      background: '#111111',
+      borderBottom: '1px solid var(--tangy-amber)',
     }}>
       {/* Logo */}
       <button onClick={() => setPage('home')} style={{
@@ -364,10 +293,10 @@ const Nav = ({ page, setPage }) => {
           <>
             <NotificationBell setPage={setPage} />
             <button onClick={() => setPage('profile')} style={{
-              width: 36, height: 36, borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--tangy-amber), var(--tangy-rust))',
-              border: 'none', cursor: 'pointer',
-              fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: '0.85rem',
+              width: 36, height: 36, borderRadius: 0,
+              background: 'var(--tangy-amber)',
+              border: '1px solid #ffffff', cursor: 'pointer',
+              fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: '0.85rem',
               color: '#080808', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               {user.name[0]}
@@ -377,7 +306,7 @@ const Nav = ({ page, setPage }) => {
         ) : (
           <>
             <button className="nav-link" onClick={() => setPage('login')}>Login</button>
-            <button className="t-btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.6rem' }} onClick={() => setPage('signup')}>
+            <button className="t-btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.6rem', boxShadow: '2px 2px 0 #ffffff' }} onClick={() => setPage('signup')}>
               Join
             </button>
           </>
@@ -401,8 +330,8 @@ const NotificationBell = ({ setPage }) => {
   return (
     <div style={{ position: 'relative' }}>
       <button onClick={() => setShow(s => !s)} style={{
-        background: 'rgba(255,255,255,0.06)', border: '1px solid var(--tangy-border)',
-        borderRadius: '50%', width: 36, height: 36, cursor: 'pointer',
+        background: '#111111', border: '1px solid var(--tangy-amber)',
+        borderRadius: 0, width: 36, height: 36, cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--tangy-cream)',
         transition: 'all 0.2s',
       }}>
@@ -414,22 +343,22 @@ const NotificationBell = ({ setPage }) => {
       </button>
 
       {show && (
-        <div className="glass" style={{
+        <div className="brutal-box" style={{
           position: 'absolute', top: '110%', right: 0, width: 320,
-          borderRadius: 8, padding: '1rem', zIndex: 999,
+          padding: '1rem', zIndex: 999,
           animation: 'fadeUp 0.3s ease',
         }}>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', letterSpacing: '0.1em', color: 'var(--tangy-amber)', marginBottom: '0.8rem', textTransform: 'uppercase' }}>Notifications</p>
+          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', letterSpacing: '0.1em', color: 'var(--tangy-amber)', marginBottom: '0.8rem', textTransform: 'uppercase' }}>Notifications</p>
           {notifs.map(n => (
             <div key={n.id} onClick={() => { setShow(false); setPage('dashboard'); modal.toast({ message: `Navigating to: ${n.title}` }); }} style={{
-              padding: '0.75rem', borderRadius: 6,
-              background: n.unread ? 'rgba(200, 255, 43,0.06)' : 'transparent',
-              borderLeft: n.unread ? '2px solid var(--tangy-amber)' : '2px solid transparent',
+              padding: '0.75rem', borderRadius: 0,
+              background: n.unread ? '#111111' : 'transparent',
+              border: n.unread ? '1px dashed var(--tangy-amber)' : '1px dashed transparent',
               marginBottom: '0.5rem', cursor: 'pointer',
             }}>
-              <p style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{n.title}</p>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.78rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{n.title}</p>
               <p style={{ fontSize: '0.7rem', color: 'var(--tangy-muted)' }}>{n.msg}</p>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', marginTop: '0.3rem' }}>{n.time}</p>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', marginTop: '0.3rem' }}>{n.time}</p>
             </div>
           ))}
         </div>
@@ -450,15 +379,15 @@ const ProtectedRoute = ({ children, setPage }) => {
 const Divider = ({ label }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.5rem 0' }}>
     <div style={{ flex: 1, height: 1, background: 'var(--tangy-border)' }} />
-    {label && <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em' }}>{label}</span>}
+    {label && <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em' }}>{label}</span>}
     <div style={{ flex: 1, height: 1, background: 'var(--tangy-border)' }} />
   </div>
 );
 
 // ── Stat Card ────────────────────────────────────────────────
 const StatCard = ({ label, value, sub, accent }) => (
-  <div className="glass" style={{ borderRadius: 8, padding: '1.2rem', flex: 1, minWidth: 120 }}>
-    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{label}</p>
+  <div className="brutal-box" style={{ padding: '1.2rem', flex: 1, minWidth: 120 }}>
+    <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{label}</p>
     <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', fontWeight: 700, color: accent || 'var(--tangy-amber)', lineHeight: 1 }}>{value}</p>
     {sub && <p style={{ fontSize: '0.7rem', color: 'var(--tangy-muted)', marginTop: '0.3rem' }}>{sub}</p>}
   </div>
@@ -469,6 +398,7 @@ const ArtistCard = ({ artist, setPage, setSelectedArtist }) => {
   const [hov, setHov] = useState(false);
   return (
     <div
+      className="brutal-box"
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       onClick={() => {
@@ -476,22 +406,12 @@ const ArtistCard = ({ artist, setPage, setSelectedArtist }) => {
         setPage('artist-profile');
       }}
       style={{
-        borderRadius: 14, overflow: 'hidden', cursor: 'pointer',
-        background: hov
-          ? 'linear-gradient(135deg, rgba(8,8,12,0.88) 0%, rgba(8,8,12,0.72) 100%)'
-          : 'linear-gradient(135deg, rgba(8,8,12,0.80) 0%, rgba(8,8,12,0.60) 100%)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: `1px solid ${hov ? 'rgba(200, 255, 43,0.45)' : 'rgba(200, 255, 43,0.2)'}`,
-        transform: hov ? 'translateY(-6px)' : 'translateY(0)',
-        transition: 'all 0.35s cubic-bezier(0.16,1,0.3,1)',
-        boxShadow: hov
-          ? '0 24px 60px rgba(0,0,0,0.75), 0 0 40px rgba(200, 255, 43,0.18), inset 0 1px 0 rgba(255,255,255,0.06)'
-          : '0 12px 32px rgba(0,0,0,0.6), 0 0 20px rgba(200, 255, 43,0.06), inset 0 1px 0 rgba(255,255,255,0.03)',
+        overflow: 'hidden', cursor: 'pointer',
+        padding: 0,
       }}
     >
       {/* Image area */}
-      <div style={{ position: 'relative', height: 220, overflow: 'hidden', background: '#080808' }}>
+      <div style={{ position: 'relative', height: 220, overflow: 'hidden', background: '#080808', borderBottom: '1px solid var(--tangy-amber)' }}>
         {artist.avatar ? (
           <img 
             src={artist.avatar} 
@@ -504,7 +424,7 @@ const ArtistCard = ({ artist, setPage, setSelectedArtist }) => {
               objectFit: 'cover',
               transform: hov ? 'scale(1.08)' : 'scale(1.02)',
               transition: 'transform 0.8s cubic-bezier(0.16,1,0.3,1)',
-              filter: hov ? 'brightness(1.05) contrast(1.1)' : 'brightness(0.8) contrast(1.1) grayscale(20%)',
+              filter: hov ? 'brightness(1.05) contrast(1.1)' : 'brightness(0.8) contrast(1.1) grayscale(100%)',
             }} 
           />
         ) : (
@@ -513,36 +433,18 @@ const ArtistCard = ({ artist, setPage, setSelectedArtist }) => {
             background: `radial-gradient(circle at 40% 40%, ${artist.color}40, transparent 70%)`,
           }} />
         )}
-        
-        {/* Color tinted glow */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: `radial-gradient(circle at top right, ${artist.color}30, transparent 70%)`,
-          mixBlendMode: 'overlay',
-          opacity: hov ? 1 : 0.6,
-          transition: 'opacity 0.5s ease',
-          zIndex: 1,
-        }} />
-
-        {/* Cinematic blend into card body — now matches glass bg */}
-        <div style={{
-          position: 'absolute', bottom: -1, left: 0, right: 0, height: '80%',
-          background: 'linear-gradient(to top, rgba(8,8,12,0.95) 0%, transparent 100%)',
-          zIndex: 1,
-        }} />
 
         {/* Availability Badge */}
         <div style={{
           position: 'absolute', top: '0.8rem', right: '0.8rem',
           display: 'flex', alignItems: 'center', gap: '0.4rem',
-          padding: '0.35rem 0.8rem', borderRadius: 999,
-          background: 'rgba(5,5,8,0.65)', backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid rgba(200, 255, 43,0.2)',
+          padding: '0.35rem 0.8rem', borderRadius: 0,
+          background: '#111111',
+          border: '1px solid var(--tangy-amber)',
           zIndex: 2,
         }}>
-          <div className={`dot-${artist.status}`} style={{ width: 6, height: 6, borderRadius: '50%', boxShadow: `0 0 8px var(--tangy-${artist.status === 'available' ? 'green' : 'amber'})` }} />
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.55rem', color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          <div className={`dot-${artist.status}`} style={{ width: 6, height: 6, borderRadius: 0 }} />
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
             {artist.status}
           </span>
         </div>
@@ -551,11 +453,10 @@ const ArtistCard = ({ artist, setPage, setSelectedArtist }) => {
       {/* Info */}
       <div style={{
         padding: '1.4rem', position: 'relative', zIndex: 2,
-        background: 'transparent',
-        borderTop: '1px solid rgba(200, 255, 43,0.1)',
+        background: '#111111',
       }}>
-        <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.3rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '0.3rem', letterSpacing: '0.04em' }}>{artist.name}</h3>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-amber)', letterSpacing: '0.1em', marginBottom: '0.8rem', textTransform: 'uppercase' }}>{artist.genre}</p>
+        <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.5rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '0.3rem', letterSpacing: '0.04em' }}>{artist.name}</h3>
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: 'var(--tangy-amber)', letterSpacing: '0.1em', marginBottom: '0.8rem', textTransform: 'uppercase' }}>{artist.genre}</p>
         <p style={{ fontSize: '0.8rem', color: 'var(--tangy-muted)', lineHeight: 1.6, marginBottom: '1.2rem' }}>{artist.bio}</p>
         <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
           {artist.tags.map(t => <span key={t} className="tag">{t}</span>)}
@@ -579,7 +480,7 @@ const HomePage = ({ setPage }) => {
     <div style={{ minHeight: '100vh', padding: '6rem 2rem', position: 'relative' }}>
       <AmbientBg />
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', letterSpacing: '0.3em', color: 'var(--tangy-amber)', textTransform: 'uppercase', marginBottom: '1.5rem', animation: 'fadeUp 0.6s ease both' }}>
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', letterSpacing: '0.3em', color: 'var(--tangy-amber)', textTransform: 'uppercase', marginBottom: '1.5rem', animation: 'fadeUp 0.6s ease both' }}>
           Underground Electronic · Bansilal Stepwell · Hyderabad
         </p>
         <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(3.5rem, 10vw, 8rem)', fontWeight: 900, lineHeight: 0.95, color: 'var(--tangy-cream)', marginBottom: '1.5rem', animation: 'fadeUp 0.8s 0.1s ease both' }}>
@@ -600,10 +501,10 @@ const HomePage = ({ setPage }) => {
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.5rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '1.5rem' }}>Upcoming Events</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {events.map((ev, i) => (
-              <div key={i} className="glass" style={{ padding: '1.5rem', borderRadius: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+              <div key={i} className="brutal-box" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.5rem', color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{ev.name}</h3>
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.8rem', color: 'var(--tangy-muted)' }}>{ev.date} · {ev.venue}</p>
+                  <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.8rem', color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{ev.name}</h3>
+                  <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.8rem', color: 'var(--tangy-muted)' }}>{ev.date} · {ev.venue}</p>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: 140 }}>
                   {!user && <button className="t-btn-primary" style={{ padding: '0.7rem 1.5rem' }} onClick={() => modal.alert({ title: "Redirecting", message: "Redirecting to tickets..." })}>Get Tickets</button>}
@@ -641,23 +542,24 @@ const LoginPage = ({ setPage }) => {
       <div className="hide-mobile" style={{
         flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: '5rem', position: 'relative', zIndex: 1,
-        borderRight: '1px solid var(--tangy-border)',
+        borderRight: '1px dashed var(--tangy-border)',
+        background: '#080808'
       }}>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', letterSpacing: '0.3em', color: 'var(--tangy-amber)', textTransform: 'uppercase', marginBottom: '3rem' }}>
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', letterSpacing: '0.3em', color: 'var(--tangy-amber)', textTransform: 'uppercase', marginBottom: '3rem' }}>
           Artist Portal
         </p>
         <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(2.5rem, 4vw, 4rem)', fontWeight: 900, lineHeight: 1.05, color: 'var(--tangy-cream)', marginBottom: '1.5rem' }}>
           Your Stage<br />Awaits.
         </h2>
         <p style={{ fontSize: '0.95rem', color: 'var(--tangy-muted)', lineHeight: 1.75, maxWidth: 400, marginBottom: '3rem' }}>
-          Manage your artist identity, performance schedule, and creative journey — all from one cinematic workspace.
+          Manage your artist identity, performance schedule, and creative journey — all from one brutalist workspace.
         </p>
         {/* Decorative lines */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
           {['Secure Authentication', 'Performance Calendar', 'Media Upload', 'Event Invitations'].map((f, i) => (
             <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{ width: 20, height: 1, background: 'var(--tangy-amber)' }} />
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-muted)', letterSpacing: '0.06em' }}>{f}</span>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: 'var(--tangy-muted)', letterSpacing: '0.06em' }}>{f}</span>
             </div>
           ))}
         </div>
@@ -668,6 +570,7 @@ const LoginPage = ({ setPage }) => {
         width: '100%', maxWidth: 480, margin: 'auto',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: '5rem 3rem', position: 'relative', zIndex: 1,
+        background: '#111111'
       }}>
         <button onClick={() => setPage('home')} style={{
           background: 'none', border: 'none', cursor: 'pointer', marginBottom: '3rem',
@@ -680,7 +583,7 @@ const LoginPage = ({ setPage }) => {
           />
         </button>
 
-        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.2rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '0.5rem' }}>
+        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.5rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '0.5rem' }}>
           Welcome back
         </h1>
         <p style={{ color: 'var(--tangy-muted)', fontSize: '0.85rem', marginBottom: '2.5rem' }}>
@@ -689,11 +592,11 @@ const LoginPage = ({ setPage }) => {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>Email</label>
+            <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>Email</label>
             <input className="t-input" type="email" placeholder="artist@example.com" value={email} onChange={e => setEmail(e.target.value)} />
           </div>
           <div>
-            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>Password</label>
+            <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>Password</label>
             <input className="t-input" type="password" placeholder="••••••••" value={pass} onChange={e => setPass(e.target.value)} />
           </div>
 
@@ -701,14 +604,14 @@ const LoginPage = ({ setPage }) => {
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
               <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}
                 style={{ accentColor: 'var(--tangy-amber)', width: 14, height: 14 }} />
-              <span style={{ fontSize: '0.75rem', color: 'var(--tangy-muted)' }}>Remember me</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--tangy-muted)', fontFamily: "'Space Mono', monospace" }}>Remember me</span>
             </label>
-            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--tangy-amber)', fontSize: '0.75rem', fontFamily: "'DM Sans', sans-serif" }}>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--tangy-amber)', fontSize: '0.75rem', fontFamily: "'Space Mono', monospace" }}>
               Forgot password?
             </button>
           </div>
 
-          {err && <p style={{ color: '#f87171', fontSize: '0.75rem', fontFamily: "'DM Sans', sans-serif" }}>{err}</p>}
+          {err && <p style={{ color: '#f87171', fontSize: '0.75rem', fontFamily: "'Space Mono', monospace" }}>{err}</p>}
 
           <button className="t-btn-primary" onClick={handleSubmit} disabled={loading} style={{ width: '100%', marginTop: '0.5rem', opacity: loading ? 0.7 : 1 }}>
             {loading ? 'Authenticating...' : 'Enter Portal →'}
@@ -725,7 +628,7 @@ const LoginPage = ({ setPage }) => {
 
         <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--tangy-muted)', marginTop: '2rem' }}>
           New artist?{' '}
-          <button onClick={() => setPage('signup')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--tangy-amber)', fontFamily: "'DM Sans', sans-serif", fontSize: '0.75rem' }}>
+          <button onClick={() => setPage('signup')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--tangy-amber)', fontFamily: "'Space Mono', monospace", fontSize: '0.75rem' }}>
             Apply here
           </button>
         </p>
@@ -773,7 +676,7 @@ const SignupPage = ({ setPage }) => {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem', position: 'relative' }}>
       <AmbientBg />
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 480 }}>
-        <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'linear-gradient(135deg, var(--tangy-amber), var(--tangy-rust))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', fontSize: '2rem', animation: 'float 3s ease-in-out infinite' }}>✦</div>
+        <div style={{ width: 80, height: 80, borderRadius: 0, border: '1px solid var(--tangy-amber)', background: '#111111', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', fontSize: '2rem' }}>✦</div>
         <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.5rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '1rem' }}>Application Submitted</h2>
         <p style={{ color: 'var(--tangy-muted)', lineHeight: 1.7, marginBottom: '2rem' }}>Your artist application has been received. The Tangy Sessions team will review your profile and be in touch within 3–5 days.</p>
         <button className="t-btn-primary" onClick={() => setPage('login')}>Go to Login</button>
@@ -790,30 +693,31 @@ const SignupPage = ({ setPage }) => {
 
         {/* Progress */}
         <div style={{ marginBottom: '2.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
             {stepTitles.map((t, i) => (
-              <>
-                <div key={t} style={{
+              <div key={t} style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: '100px' }}>
+                <div style={{
                   display: 'flex', alignItems: 'center', gap: '0.4rem',
                 }}>
                   <div style={{
-                    width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
-                    background: i + 1 <= step ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.08)',
+                    width: 24, height: 24, borderRadius: 0, flexShrink: 0,
+                    background: i + 1 <= step ? 'var(--tangy-amber)' : 'transparent',
+                    border: i + 1 <= step ? 'none' : '1px dashed rgba(255,255,255,0.4)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem',
+                    fontFamily: "'Space Mono', monospace", fontSize: '0.6rem',
                     color: i + 1 <= step ? '#080808' : 'var(--tangy-muted)',
                     transition: 'all 0.3s',
                   }}>{i + 1 < step ? '✓' : i + 1}</div>
-                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.55rem', color: i + 1 === step ? 'var(--tangy-amber)' : 'var(--tangy-muted)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t}</span>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', color: i + 1 === step ? 'var(--tangy-amber)' : 'var(--tangy-muted)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t}</span>
                 </div>
-                {i < stepTitles.length - 1 && <div style={{ flex: 1, height: 1, background: i + 1 < step ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.08)', transition: 'background 0.3s' }} />}
-              </>
+                {i < stepTitles.length - 1 && <div style={{ flex: 1, height: 1, background: i + 1 < step ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.08)', transition: 'background 0.3s', marginLeft: '0.5rem' }} />}
+              </div>
             ))}
           </div>
         </div>
 
-        <div className="glass" style={{ borderRadius: 12, padding: '2.5rem' }}>
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.8rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '0.5rem' }}>
+        <div className="brutal-box" style={{ padding: '2.5rem' }}>
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.2rem', fontWeight: 700, color: 'var(--tangy-cream)', marginBottom: '0.5rem' }}>
             {step === 1 && 'Who are you?'}
             {step === 2 && 'What\'s your sound?'}
             {step === 3 && 'Tell your story'}
@@ -829,15 +733,15 @@ const SignupPage = ({ setPage }) => {
           {step === 1 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Artist Name</label>
+                <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Artist Name</label>
                 <input className="t-input" placeholder="Your artist name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Email</label>
+                <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Email</label>
                 <input className="t-input" type="email" placeholder="artist@example.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Password</label>
+                <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Password</label>
                 <input className="t-input" type="password" placeholder="Create a strong password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
               </div>
             </div>
@@ -845,20 +749,20 @@ const SignupPage = ({ setPage }) => {
 
           {step === 2 && (
             <div>
-              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.75rem' }}>Select Genres (multiple)</label>
+              <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.75rem' }}>Select Genres (multiple)</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem' }}>
                 {genres.map(g => (
                   <button key={g} onClick={() => toggleGenre(g)} style={{
-                    padding: '0.4rem 0.9rem', borderRadius: 999, cursor: 'pointer',
-                    fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem',
-                    border: `1px solid ${form.genre.includes(g) ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.12)'}`,
-                    background: form.genre.includes(g) ? 'rgba(200, 255, 43,0.15)' : 'transparent',
-                    color: form.genre.includes(g) ? 'var(--tangy-amber)' : 'var(--tangy-muted)',
+                    padding: '0.4rem 0.9rem', borderRadius: 0, cursor: 'pointer',
+                    fontFamily: "'Space Mono', monospace", fontSize: '0.62rem',
+                    border: `1px solid ${form.genre.includes(g) ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.4)'}`,
+                    background: form.genre.includes(g) ? 'var(--tangy-amber)' : 'transparent',
+                    color: form.genre.includes(g) ? '#080808' : 'var(--tangy-muted)',
                     transition: 'all 0.2s',
                   }}>{g}</button>
                 ))}
               </div>
-              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Experience Level</label>
+              <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Experience Level</label>
               <select className="t-input" value={form.experience} onChange={e => setForm(f => ({ ...f, experience: e.target.value }))}>
                 <option value="">Select level</option>
                 <option>Emerging (1–2 years)</option>
@@ -872,11 +776,11 @@ const SignupPage = ({ setPage }) => {
           {step === 3 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>City / Location</label>
+                <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>City / Location</label>
                 <input className="t-input" placeholder="e.g. Hyderabad, India" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} />
               </div>
               <div>
-                <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Artist Bio</label>
+                <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>Artist Bio</label>
                 <textarea className="t-input" rows={5} placeholder="Write a compelling artist bio... Tell us who you are, what you do, and what makes your sound unique." value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} style={{ resize: 'vertical' }} />
               </div>
             </div>
@@ -889,12 +793,12 @@ const SignupPage = ({ setPage }) => {
                 { key: 'soundcloud', label: 'SoundCloud', placeholder: 'soundcloud.com/yourname' },
               ].map(({ key, label, placeholder }) => (
                 <div key={key}>
-                  <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>{label}</label>
+                  <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>{label}</label>
                   <input className="t-input" placeholder={placeholder} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} />
                 </div>
               ))}
-              <div style={{ border: '2px dashed rgba(255,255,255,0.1)', borderRadius: 8, padding: '2rem', textAlign: 'center', cursor: 'pointer', transition: 'border-color 0.2s' }} onMouseEnter={e => e.target.style.borderColor = 'rgba(200, 255, 43,0.3)'} onMouseLeave={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em' }}>↑ UPLOAD PROFILE IMAGE</p>
+              <div style={{ border: '2px dashed rgba(255,255,255,0.4)', borderRadius: 0, padding: '2rem', textAlign: 'center', cursor: 'pointer', transition: 'border-color 0.2s' }} onMouseEnter={e => e.target.style.borderColor = 'var(--tangy-amber)'} onMouseLeave={e => e.target.style.borderColor = 'rgba(255,255,255,0.4)'}>
+                <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em' }}>↑ UPLOAD PROFILE IMAGE</p>
                 <p style={{ fontSize: '0.7rem', color: 'var(--tangy-muted)', marginTop: '0.4rem' }}>JPG, PNG up to 10MB</p>
               </div>
             </div>
@@ -937,7 +841,7 @@ const ArtistsPage = ({ setPage, setSelectedArtist }) => {
 
       {/* Hero */}
       <div style={{ textAlign: 'center', padding: '4rem 2rem 3rem', position: 'relative', zIndex: 1 }}>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', letterSpacing: '0.3em', color: 'var(--tangy-amber)', textTransform: 'uppercase', marginBottom: '1rem', animation: 'fadeUp 0.6s ease both' }}>
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', letterSpacing: '0.3em', color: 'var(--tangy-amber)', textTransform: 'uppercase', marginBottom: '1rem', animation: 'fadeUp 0.6s ease both' }}>
           The Roster
         </p>
         <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(3rem, 7vw, 6rem)', fontWeight: 900, color: 'var(--tangy-cream)', marginBottom: '1rem', lineHeight: 0.95, animation: 'fadeUp 0.7s 0.1s ease both' }}>
@@ -954,11 +858,11 @@ const ArtistsPage = ({ setPage, setSelectedArtist }) => {
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {genres.map(g => (
             <button key={g} onClick={() => setFilter(g)} style={{
-              padding: '0.5rem 1rem', borderRadius: 999, cursor: 'pointer',
-              fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', letterSpacing: '0.06em',
-              border: `1px solid ${filter === g ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.1)'}`,
-              background: filter === g ? 'rgba(200, 255, 43,0.12)' : 'transparent',
-              color: filter === g ? 'var(--tangy-amber)' : 'var(--tangy-muted)',
+              padding: '0.5rem 1rem', borderRadius: 0, cursor: 'pointer',
+              fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', letterSpacing: '0.06em',
+              border: `1px solid ${filter === g ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.4)'}`,
+              background: filter === g ? 'var(--tangy-amber)' : 'transparent',
+              color: filter === g ? '#080808' : 'var(--tangy-muted)',
               transition: 'all 0.2s',
             }}>{g}</button>
           ))}
@@ -968,7 +872,7 @@ const ArtistsPage = ({ setPage, setSelectedArtist }) => {
       {/* Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: '1.5rem',
         padding: '0 2rem 5rem',
         maxWidth: 1200, margin: '0 auto',
@@ -1030,8 +934,7 @@ const ArtistProfilePage = ({ setPage, artist: propArtist }) => {
               objectFit: 'cover', 
               objectPosition: 'center 20%',
               opacity: 0.65, 
-              filter: 'grayscale(15%) contrast(1.1) brightness(0.9)',
-              animation: 'subtleZoom 20s linear infinite alternate'
+              filter: 'grayscale(100%) contrast(1.1) brightness(0.9)',
             }} 
           />
         )}
@@ -1059,13 +962,13 @@ const ArtistProfilePage = ({ setPage, artist: propArtist }) => {
         {/* Content */}
         <div style={{ padding: '4rem 3rem', position: 'relative', zIndex: 2, width: '100%', maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.2rem', animation: 'fadeUp 0.6s ease both' }}>
-            <div className={`dot-${artist.status}`} style={{ width: 8, height: 8, borderRadius: '50%', boxShadow: `0 0 12px var(--tangy-${artist.status === 'available' ? 'green' : 'amber'})` }} />
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'rgba(255,255,255,0.8)', letterSpacing: '0.15em', textTransform: 'uppercase', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>{artist.status} for bookings</span>
+            <div className={`dot-${artist.status}`} style={{ width: 8, height: 8, borderRadius: 0, border: '1px solid #000' }} />
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: 'rgba(255,255,255,0.8)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>{artist.status} for bookings</span>
           </div>
-          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(5rem, 15vw, 11rem)', fontWeight: 900, lineHeight: 0.85, color: '#fff', marginBottom: '0.8rem', animation: 'fadeUp 0.8s 0.1s ease both', textShadow: '0 10px 40px rgba(0,0,0,0.8)' }}>
+          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(5rem, 15vw, 11rem)', fontWeight: 900, lineHeight: 0.85, color: '#fff', marginBottom: '0.8rem', animation: 'fadeUp 0.8s 0.1s ease both' }}>
             {artist.name}
           </h1>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.8rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', animation: 'fadeUp 0.8s 0.2s ease both', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.8rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', animation: 'fadeUp 0.8s 0.2s ease both' }}>
             {artist.genre} · {artist.city}
           </p>
         </div>
@@ -1073,43 +976,43 @@ const ArtistProfilePage = ({ setPage, artist: propArtist }) => {
 
       {/* Content */}
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '4rem 2rem', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '4rem', alignItems: 'start' }}>
+        <div className="mobile-stack" style={{ display: 'flex', gap: '4rem', alignItems: 'flex-start' }}>
 
           {/* Left */}
-          <div>
+          <div style={{ flex: '1 1 60%' }}>
             {/* Tags */}
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
               {artist.tags.map(t => <span key={t} className="tag">{t}</span>)}
             </div>
 
             {/* Bio */}
-            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1rem' }}>Biography</p>
+            <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1rem' }}>Biography</p>
             {artist.bio.split('\n\n').map((p, i) => (
               <p key={i} style={{ fontSize: '0.92rem', color: 'var(--tangy-muted)', lineHeight: 1.85, marginBottom: '1.2rem' }}>{p}</p>
             ))}
 
             {/* Gallery */}
             <div style={{ marginTop: '3rem' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1rem' }}>Gallery</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1rem' }}>Gallery</p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '0.5rem' }}>
                 {artist.gallery.map((c, i) => (
-                  <div key={i} style={{ aspectRatio: '1', borderRadius: 6, background: `linear-gradient(135deg, ${c}, #080808)`, border: '1px solid var(--tangy-border)' }} />
+                  <div key={i} style={{ aspectRatio: '1', borderRadius: 0, background: '#111111', border: '1px solid var(--tangy-amber)' }} />
                 ))}
               </div>
             </div>
 
             {/* Upcoming */}
             <div style={{ marginTop: '3rem' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>Upcoming Performances</p>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>Upcoming Performances</p>
               {artist.upcoming.map((u, i) => (
-                <div key={i} className="glass" style={{ padding: '1.2rem 1.5rem', borderRadius: 8, marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div key={i} className="brutal-box" style={{ padding: '1.2rem 1.5rem', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <div>
                     <p style={{ fontWeight: 600, color: 'var(--tangy-cream)', fontSize: '0.9rem', marginBottom: '0.25rem' }}>{u.event}</p>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'var(--tangy-muted)' }}>{u.venue}</p>
+                    <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: 'var(--tangy-muted)' }}>{u.venue}</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-amber)' }}>{u.date}</p>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)' }}>{u.time}</p>
+                    <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: 'var(--tangy-amber)' }}>{u.date}</p>
+                    <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)' }}>{u.time}</p>
                   </div>
                 </div>
               ))}
@@ -1117,24 +1020,24 @@ const ArtistProfilePage = ({ setPage, artist: propArtist }) => {
           </div>
 
           {/* Right sidebar */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', position: 'sticky', top: '6rem' }}>
+          <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '1.2rem', position: 'sticky', top: '6rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
               <StatCard label="Performances" value={artist.performances} accent={artist.color} />
               <StatCard label="Years Active" value={artist.years} />
             </div>
 
             {/* Booking CTA */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.5rem', textAlign: 'center' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Book This Artist</p>
+            <div className="brutal-box" style={{ padding: '1.5rem', textAlign: 'center' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Book This Artist</p>
               <button className="t-btn-primary" style={{ width: '100%', marginBottom: '0.75rem' }} onClick={() => modal.toast({ message: `Inquiry sent to ${artist.name}!` })}>Send Inquiry →</button>
               <button className="t-btn-ghost" style={{ width: '100%', fontSize: '0.6rem' }} onClick={() => modal.alert({ title: "Availability", message: `Viewing availability calendar for ${artist.name}...` })}>View Availability</button>
             </div>
 
             {/* Social links */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.2rem' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Links</p>
+            <div className="brutal-box" style={{ padding: '1.2rem' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Links</p>
               {['Instagram', 'SoundCloud', 'Resident Advisor', 'Bandcamp'].map(s => (
-                <div key={s} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 0', borderBottom: '1px solid var(--tangy-border)' }}>
+                <div key={s} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 0', borderBottom: '1px dashed rgba(255,255,255,0.2)' }}>
                   <span style={{ fontSize: '0.78rem', color: 'var(--tangy-muted)' }}>{s}</span>
                   <span style={{ color: 'var(--tangy-amber)', fontSize: '0.75rem' }}>↗</span>
                 </div>
@@ -1174,10 +1077,10 @@ const DashboardPage = ({ setPage }) => {
 
         {/* Header */}
         <div style={{ marginBottom: '3rem' }}>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem', animation: 'fadeUp 0.5s ease both' }}>
+          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem', animation: 'fadeUp 0.5s ease both' }}>
             Artist Portal
           </p>
-          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, color: 'var(--tangy-cream)', animation: 'fadeUp 0.6s 0.1s ease both' }}>
+          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 700, color: 'var(--tangy-cream)', animation: 'fadeUp 0.6s 0.1s ease both' }}>
             Good evening, <em style={{ color: 'var(--tangy-amber)' }}>{user?.name}</em>
           </h1>
           <p style={{ color: 'var(--tangy-muted)', fontSize: '0.85rem', marginTop: '0.4rem', animation: 'fadeUp 0.6s 0.2s ease both' }}>
@@ -1186,7 +1089,7 @@ const DashboardPage = ({ setPage }) => {
         </div>
 
         {/* Stats row */}
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.5rem', animation: 'fadeUp 0.6s 0.25s ease both' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2.5rem', animation: 'fadeUp 0.6s 0.25s ease both' }}>
           <StatCard label="Upcoming Shows" value="2" sub="Next: Jun 14" />
           <StatCard label="Profile Complete" value={`${user?.profileComplete}%`} sub="Add media to reach 100%" accent="#4ade80" />
           <StatCard label="Pending Invites" value="1" sub="Respond by Jun 1" accent="var(--tangy-rust)" />
@@ -1194,31 +1097,31 @@ const DashboardPage = ({ setPage }) => {
         </div>
 
         {/* Main grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem', alignItems: 'start' }}>
+        <div className="mobile-stack" style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
 
           {/* Left col */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div style={{ flex: '1 1 60%', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
             {/* Upcoming performances */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.8rem', animation: 'fadeUp 0.6s 0.3s ease both' }}>
+            <div className="brutal-box" style={{ padding: '1.8rem', animation: 'fadeUp 0.6s 0.3s ease both' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Upcoming Performances</p>
+                <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Upcoming Performances</p>
                 <button className="nav-link" onClick={() => setPage('calendar')}>View Calendar →</button>
               </div>
               {upcomingShows.map((s, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0', borderBottom: i < upcomingShows.length - 1 ? '1px solid var(--tangy-border)' : 'none', gap: '1rem', flexWrap: 'wrap' }}>
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0', borderBottom: i < upcomingShows.length - 1 ? '1px dashed rgba(255,255,255,0.2)' : 'none', gap: '1rem', flexWrap: 'wrap' }}>
                   <div>
-                    <p style={{ fontWeight: 600, color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{s.event}</p>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)' }}>{s.venue} · {s.time}</p>
+                    <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.5rem', color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{s.event}</p>
+                    <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)' }}>{s.venue} · {s.time}</p>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-muted)' }}>{s.date}</span>
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: 'var(--tangy-muted)' }}>{s.date}</span>
                     <span style={{
-                      padding: '0.25rem 0.65rem', borderRadius: 999, fontSize: '0.6rem',
-                      fontFamily: "'DM Sans', sans-serif",
-                      background: s.status === 'confirmed' ? 'rgba(74,222,128,0.12)' : 'rgba(200, 255, 43,0.12)',
-                      color: s.status === 'confirmed' ? '#4ade80' : 'var(--tangy-amber)',
-                      border: `1px solid ${s.status === 'confirmed' ? 'rgba(74,222,128,0.3)' : 'rgba(200, 255, 43,0.3)'}`,
+                      padding: '0.25rem 0.65rem', borderRadius: 0, fontSize: '0.6rem',
+                      fontFamily: "'Space Mono', monospace",
+                      background: s.status === 'confirmed' ? 'var(--tangy-amber)' : '#111111',
+                      color: s.status === 'confirmed' ? '#080808' : 'var(--tangy-amber)',
+                      border: `1px solid ${s.status === 'confirmed' ? 'var(--tangy-amber)' : 'rgba(200, 255, 43,0.3)'}`,
                     }}>{s.status}</span>
                   </div>
                 </div>
@@ -1226,14 +1129,14 @@ const DashboardPage = ({ setPage }) => {
             </div>
 
             {/* Event invitations */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.8rem', animation: 'fadeUp 0.6s 0.4s ease both' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Event Invitations</p>
+            <div className="brutal-box" style={{ padding: '1.8rem', animation: 'fadeUp 0.6s 0.4s ease both' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Event Invitations</p>
               {invites.map((inv, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem', background: 'rgba(200, 255, 43,0.05)', borderRadius: 8, border: '1px solid rgba(200, 255, 43,0.15)', flexWrap: 'wrap', gap: '1rem' }}>
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem', background: '#080808', border: '1px dashed var(--tangy-amber)', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
-                    <p style={{ fontWeight: 600, color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{inv.event}</p>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-muted)' }}>{inv.organizer} · {inv.date}</p>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-rust)', marginTop: '0.3rem' }}>⏱ {inv.deadline}</p>
+                    <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.5rem', color: 'var(--tangy-cream)', marginBottom: '0.2rem' }}>{inv.event}</p>
+                    <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-muted)' }}>{inv.organizer} · {inv.date}</p>
+                    <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-rust)', marginTop: '0.3rem' }}>⏱ {inv.deadline}</p>
                   </div>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button className="t-btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.6rem' }}>Accept</button>
@@ -1244,15 +1147,15 @@ const DashboardPage = ({ setPage }) => {
             </div>
 
             {/* Profile completion */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.8rem', animation: 'fadeUp 0.6s 0.5s ease both' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Profile Completion</p>
+            <div className="brutal-box" style={{ padding: '1.8rem', animation: 'fadeUp 0.6s 0.5s ease both' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Profile Completion</p>
               <div style={{ marginBottom: '1.2rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
                   <span style={{ fontSize: '0.8rem', color: 'var(--tangy-muted)' }}>Overall progress</span>
-                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.75rem', color: 'var(--tangy-amber)' }}>{user?.profileComplete}%</span>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.75rem', color: 'var(--tangy-amber)' }}>{user?.profileComplete}%</span>
                 </div>
-                <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${user?.profileComplete}%`, background: 'linear-gradient(90deg, var(--tangy-amber), var(--tangy-rust))', borderRadius: 2, transition: 'width 1s ease' }} />
+                <div style={{ height: 10, background: '#080808', border: '1px solid var(--tangy-amber)' }}>
+                  <div style={{ height: '100%', width: `${user?.profileComplete}%`, background: 'var(--tangy-amber)' }} />
                 </div>
               </div>
               {[
@@ -1263,8 +1166,8 @@ const DashboardPage = ({ setPage }) => {
                 { label: 'Media upload', done: false },
                 { label: 'Availability set', done: false },
               ].map(item => (
-                <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                  <div style={{ width: 18, height: 18, borderRadius: '50%', background: item.done ? 'rgba(74,222,128,0.2)' : 'rgba(255,255,255,0.06)', border: `1px solid ${item.done ? '#4ade80' : 'rgba(255,255,255,0.1)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', color: item.done ? '#4ade80' : 'transparent', flexShrink: 0 }}>✓</div>
+                <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0', borderBottom: '1px dashed rgba(255,255,255,0.2)' }}>
+                  <div style={{ width: 18, height: 18, borderRadius: 0, background: item.done ? 'var(--tangy-amber)' : 'transparent', border: `1px solid ${item.done ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.4)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', color: item.done ? '#080808' : 'transparent', flexShrink: 0 }}>✓</div>
                   <span style={{ fontSize: '0.78rem', color: item.done ? 'var(--tangy-cream)' : 'var(--tangy-muted)' }}>{item.label}</span>
                 </div>
               ))}
@@ -1272,22 +1175,22 @@ const DashboardPage = ({ setPage }) => {
           </div>
 
           {/* Right sidebar */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
             {/* Quick actions */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.5rem', animation: 'fadeUp 0.6s 0.35s ease both' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>Quick Actions</p>
+            <div className="brutal-box" style={{ padding: '1.5rem', animation: 'fadeUp 0.6s 0.35s ease both' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>Quick Actions</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 {quickActions.map((qa, i) => (
                   <button key={i} onClick={qa.action} style={{
-                    padding: '1rem', borderRadius: 8, cursor: 'pointer',
-                    background: 'rgba(255,255,255,0.03)', border: '1px solid var(--tangy-border)',
+                    padding: '1rem', borderRadius: 0, cursor: 'pointer',
+                    background: '#080808', border: '1px dashed var(--tangy-amber)',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem',
                     transition: 'all 0.2s', color: 'var(--tangy-muted)', fontSize: '0.72rem',
-                    fontFamily: "'DM Sans', sans-serif",
+                    fontFamily: "'Space Mono', monospace",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(200, 255, 43,0.3)'; e.currentTarget.style.background = 'rgba(200, 255, 43,0.05)'; e.currentTarget.style.color = 'var(--tangy-cream)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--tangy-border)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = 'var(--tangy-muted)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#111111'; e.currentTarget.style.color = 'var(--tangy-cream)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = '#080808'; e.currentTarget.style.color = 'var(--tangy-muted)'; }}
                   >
                     <span style={{ fontSize: '1.2rem' }}>{qa.icon}</span>
                     {qa.label}
@@ -1297,37 +1200,37 @@ const DashboardPage = ({ setPage }) => {
             </div>
 
             {/* Mini calendar preview */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.5rem', animation: 'fadeUp 0.6s 0.45s ease both' }}>
+            <div className="brutal-box" style={{ padding: '1.5rem', animation: 'fadeUp 0.6s 0.45s ease both' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>June 2025</p>
+                <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>June 2025</p>
                 <button className="nav-link" onClick={() => setPage('calendar')}>Full Calendar →</button>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.2rem' }}>
                 {['S','M','T','W','T','F','S'].map(d => (
-                  <div key={d} style={{ textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontSize: '0.55rem', color: 'var(--tangy-muted)', padding: '0.3rem 0' }}>{d}</div>
+                  <div key={d} style={{ textAlign: 'center', fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', color: 'var(--tangy-muted)', padding: '0.3rem 0' }}>{d}</div>
                 ))}
                 {Array.from({ length: 30 }, (_, i) => i + 1).map(d => (
                   <div key={d} className="cal-cell" style={{
                     fontSize: '0.62rem',
-                    background: d === 14 ? 'var(--tangy-amber)' : d === 2 ? 'rgba(196,92,42,0.3)' : 'transparent',
-                    color: d === 14 ? '#080808' : d === 2 ? 'var(--tangy-rust)' : 'var(--tangy-muted)',
-                    border: d === 14 ? '1px solid var(--tangy-amber)' : '1px solid transparent',
+                    background: d === 14 ? 'var(--tangy-amber)' : d === 2 ? 'var(--tangy-rust)' : 'transparent',
+                    color: d === 14 ? '#080808' : d === 2 ? '#080808' : 'var(--tangy-muted)',
+                    border: d === 14 ? '1px solid var(--tangy-amber)' : '1px dashed rgba(255,255,255,0.2)',
                   }}>{d}</div>
                 ))}
               </div>
             </div>
 
             {/* Recent activity */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.5rem', animation: 'fadeUp 0.6s 0.55s ease both' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1rem' }}>Recent Activity</p>
+            <div className="brutal-box" style={{ padding: '1.5rem', animation: 'fadeUp 0.6s 0.55s ease both' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: 'var(--tangy-amber)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1rem' }}>Recent Activity</p>
               {[
                 { msg: 'Booking confirmed for Stepwell Vol. 12', time: '2h ago' },
                 { msg: 'New invitation received from Tangy', time: '1d ago' },
                 { msg: 'Profile viewed 23 times this week', time: '3d ago' },
               ].map((a, i) => (
-                <div key={i} style={{ padding: '0.6rem 0', borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
+                <div key={i} style={{ padding: '0.6rem 0', borderBottom: i < 2 ? '1px dashed rgba(255,255,255,0.2)' : 'none' }}>
                   <p style={{ fontSize: '0.75rem', color: 'var(--tangy-muted)', lineHeight: 1.5, marginBottom: '0.2rem' }}>{a.msg}</p>
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'rgba(200, 255, 43,0.5)' }}>{a.time}</p>
+                  <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-amber)' }}>{a.time}</p>
                 </div>
               ))}
             </div>
@@ -1370,16 +1273,16 @@ const CalendarPage = () => {
   ];
 
   const bgForStatus = s => ({
-    available: 'rgba(74,222,128,0.15)',
-    booked: 'rgba(196,92,42,0.2)',
-    tentative: 'rgba(200, 255, 43,0.15)',
-    unavailable: 'rgba(255,255,255,0.04)',
-  }[s] || 'transparent');
-
-  const colorForStatus = s => ({
     available: '#4ade80',
     booked: 'var(--tangy-rust)',
     tentative: 'var(--tangy-amber)',
+    unavailable: '#080808',
+  }[s] || 'transparent');
+
+  const colorForStatus = s => ({
+    available: '#080808',
+    booked: '#080808',
+    tentative: '#080808',
     unavailable: 'rgba(255,255,255,0.25)',
   }[s] || 'var(--tangy-muted)');
 
@@ -1389,21 +1292,21 @@ const CalendarPage = () => {
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 2rem', position: 'relative', zIndex: 1 }}>
 
         <div style={{ marginBottom: '2.5rem' }}>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Artist Portal</p>
-          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 700, color: 'var(--tangy-cream)' }}>
+          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Artist Portal</p>
+          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 700, color: 'var(--tangy-cream)' }}>
             Availability <em>Calendar</em>
           </h1>
           <p style={{ color: 'var(--tangy-muted)', fontSize: '0.82rem', marginTop: '0.4rem' }}>Click any date and select a status to manage your availability</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 260px', gap: '2rem', alignItems: 'start' }}>
+        <div className="mobile-stack" style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
 
           {/* Calendar */}
-          <div className="glass" style={{ borderRadius: 12, padding: '2rem' }}>
+          <div className="brutal-box" style={{ flex: '1 1 60%', padding: '2rem' }}>
             {/* Month nav */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <button onClick={() => setMonth(m => Math.max(0, m - 1))} className="t-btn-ghost" style={{ padding: '0.4rem 0.8rem', fontSize: '0.65rem' }}>←</button>
-              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.4rem', fontWeight: 700, color: 'var(--tangy-cream)' }}>
+              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.8rem', fontWeight: 700, color: 'var(--tangy-cream)' }}>
                 {monthNames[month]} {year}
               </h2>
               <button onClick={() => setMonth(m => Math.min(11, m + 1))} className="t-btn-ghost" style={{ padding: '0.4rem 0.8rem', fontSize: '0.65rem' }}>→</button>
@@ -1412,7 +1315,7 @@ const CalendarPage = () => {
             {/* Day headers */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.25rem', marginBottom: '0.5rem' }}>
               {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => (
-                <div key={d} style={{ textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontSize: '0.55rem', color: 'var(--tangy-muted)', padding: '0.3rem' }}>{d}</div>
+                <div key={d} style={{ textAlign: 'center', fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', color: 'var(--tangy-muted)', padding: '0.3rem' }}>{d}</div>
               ))}
             </div>
 
@@ -1427,19 +1330,18 @@ const CalendarPage = () => {
                     key={day}
                     onClick={() => setDay(day)}
                     style={{
-                      aspectRatio: '1', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: "'DM Sans', sans-serif", fontSize: '0.68rem', cursor: 'pointer',
+                      aspectRatio: '1', borderRadius: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontFamily: "'Space Mono', monospace", fontSize: '0.68rem', cursor: 'pointer',
                       background: selected === day ? bgForStatus(mode) : status ? bgForStatus(status) : 'transparent',
                       color: status ? colorForStatus(status) : isToday ? 'var(--tangy-amber)' : 'var(--tangy-muted)',
-                      border: `1px solid ${isToday ? 'var(--tangy-amber)' : status ? colorForStatus(status) + '40' : 'transparent'}`,
+                      border: `1px dashed ${isToday ? 'var(--tangy-amber)' : status ? 'transparent' : 'rgba(255,255,255,0.2)'}`,
                       fontWeight: isToday ? 700 : 400,
                       transition: 'all 0.15s',
                     }}
-                    onMouseEnter={e => { if (!status) e.currentTarget.style.background = 'rgba(200, 255, 43,0.06)'; }}
-                    onMouseLeave={e => { if (!status) e.currentTarget.style.background = 'transparent'; }}
+                    onMouseEnter={e => { if (!status) { e.currentTarget.style.background = '#111111'; e.currentTarget.style.borderColor = 'var(--tangy-amber)'; } }}
+                    onMouseLeave={e => { if (!status) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; } }}
                   >
                     {day}
-                    {status === 'booked' && <span style={{ position: 'absolute', bottom: 3, left: '50%', transform: 'translateX(-50%)', width: 3, height: 3, borderRadius: '50%', background: colorForStatus(status) }} />}
                   </div>
                 );
               })}
@@ -1447,46 +1349,35 @@ const CalendarPage = () => {
           </div>
 
           {/* Sidebar */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          <div style={{ flex: '1 1 260px', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
 
             {/* Mode selector */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.4rem' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Set Status</p>
+            <div className="brutal-box" style={{ padding: '1.4rem' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Set Status</p>
               {legendItems.map(item => (
                 <button key={item.key} onClick={() => setMode(item.key)} style={{
-                  width: '100%', textAlign: 'left', padding: '0.65rem 0.85rem', borderRadius: 6, marginBottom: '0.4rem',
+                  width: '100%', textAlign: 'left', padding: '0.65rem 0.85rem', borderRadius: 0, marginBottom: '0.4rem',
                   display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer',
-                  background: mode === item.key ? 'rgba(255,255,255,0.06)' : 'transparent',
-                  border: `1px solid ${mode === item.key ? 'rgba(255,255,255,0.12)' : 'transparent'}`,
+                  background: mode === item.key ? '#080808' : 'transparent',
+                  border: `1px dashed ${mode === item.key ? 'var(--tangy-amber)' : 'transparent'}`,
                   transition: 'all 0.15s',
                 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: item.color, flexShrink: 0 }} />
-                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: mode === item.key ? 'var(--tangy-cream)' : 'var(--tangy-muted)', letterSpacing: '0.06em' }}>{item.label}</span>
+                  <div style={{ width: 12, height: 12, borderRadius: 0, background: item.color, flexShrink: 0, border: '1px solid #000' }} />
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: mode === item.key ? 'var(--tangy-cream)' : 'var(--tangy-muted)', letterSpacing: '0.06em' }}>{item.label}</span>
                   {mode === item.key && <span style={{ marginLeft: 'auto', color: 'var(--tangy-amber)', fontSize: '0.6rem' }}>●</span>}
                 </button>
               ))}
             </div>
 
-            {/* Legend */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.4rem' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Legend</p>
-              {legendItems.map(item => (
-                <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: item.color }} />
-                  <span style={{ fontSize: '0.72rem', color: 'var(--tangy-muted)' }}>{item.label}</span>
-                </div>
-              ))}
-            </div>
-
             {/* Summary */}
-            <div className="glass" style={{ borderRadius: 10, padding: '1.4rem' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>This Month</p>
+            <div className="brutal-box" style={{ padding: '1.4rem' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.8rem' }}>This Month</p>
               {legendItems.map(item => {
                 const count = Object.values(availability).filter(v => v === item.key).length;
                 return (
                   <div key={item.key} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--tangy-muted)' }}>{item.label}</span>
-                    <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.7rem', color: item.color }}>{count} days</span>
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.7rem', color: item.color }}>{count} days</span>
                   </div>
                 );
               })}
@@ -1515,14 +1406,14 @@ const ProfilePage = ({ setPage }) => {
         {/* Profile header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
           <div style={{
-            width: 90, height: 90, borderRadius: '50%', flexShrink: 0,
-            background: 'linear-gradient(135deg, var(--tangy-amber), var(--tangy-rust))',
+            width: 90, height: 90, borderRadius: 0, flexShrink: 0,
+            background: 'var(--tangy-amber)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.2rem', fontWeight: 700, color: '#080808',
-            boxShadow: '0 0 40px rgba(200, 255, 43,0.3)', cursor: 'pointer', position: 'relative', overflow: 'hidden'
+            fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.5rem', fontWeight: 700, color: '#080808',
+            boxShadow: '4px 4px 0 #ffffff', cursor: 'pointer', position: 'relative', overflow: 'hidden'
           }} title="Click to change photo" onClick={() => document.getElementById('photoUpload').click()}>
             {user?.avatar ? <img src={user.avatar} alt={user.name} style={{width:'100%', height:'100%', objectFit:'cover'}} /> : user?.name[0]}
-            <div style={{position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '0.6rem'}} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>CHANGE</div>
+            <div style={{position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.8)', opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--tangy-amber)', fontSize: '0.6rem'}} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>CHANGE</div>
           </div>
           <input type="file" id="photoUpload" style={{ display: 'none' }} accept="image/*" onChange={(e) => {
             if(e.target.files && e.target.files[0]) {
@@ -1531,29 +1422,30 @@ const ProfilePage = ({ setPage }) => {
             }
           }} />
           <div>
-            <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', fontWeight: 700, color: 'var(--tangy-cream)' }}>{user?.name}</h1>
-            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-amber)', letterSpacing: '0.08em', marginTop: '0.3rem' }}>{user?.genre}</p>
+            <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.5rem', fontWeight: 700, color: 'var(--tangy-cream)' }}>{user?.name}</h1>
+            <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: 'var(--tangy-amber)', letterSpacing: '0.08em', marginTop: '0.3rem' }}>{user?.genre}</p>
             <p style={{ fontSize: '0.8rem', color: 'var(--tangy-muted)', marginTop: '0.2rem' }}>{user?.city}</p>
           </div>
           <button className="t-btn-ghost" style={{ marginLeft: 'auto' }} onClick={() => setPage('artist-profile')}>View Public Profile ↗</button>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '2rem', borderBottom: '1px solid var(--tangy-border)', paddingBottom: '0' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', borderBottom: '1px solid var(--tangy-amber)', paddingBottom: '0', flexWrap: 'wrap' }}>
           {tabs.map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
-              padding: '0.6rem 1.2rem', background: 'none', border: 'none', cursor: 'pointer',
-              fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', letterSpacing: '0.08em', textTransform: 'uppercase',
+              padding: '0.8rem 1.5rem', background: tab === t ? '#111111' : 'transparent',
+              border: '1px solid var(--tangy-amber)', borderBottom: 'none',
+              cursor: 'pointer',
+              fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', letterSpacing: '0.08em', textTransform: 'uppercase',
               color: tab === t ? 'var(--tangy-amber)' : 'var(--tangy-muted)',
-              borderBottom: `2px solid ${tab === t ? 'var(--tangy-amber)' : 'transparent'}`,
               transition: 'all 0.2s', marginBottom: '-1px',
             }}>{t}</button>
           ))}
         </div>
 
         {tab === 'info' && (
-          <div className="glass" style={{ borderRadius: 12, padding: '2rem' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
+          <div className="brutal-box" style={{ padding: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.2rem' }}>
               {[
                 { label: 'Artist Name', val: user?.name },
                 { label: 'Email', val: user?.email },
@@ -1561,13 +1453,13 @@ const ProfilePage = ({ setPage }) => {
                 { label: 'City', val: user?.city },
               ].map(f => (
                 <div key={f.label}>
-                  <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.4rem' }}>{f.label}</label>
+                  <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.4rem' }}>{f.label}</label>
                   <input className="t-input" defaultValue={f.val} />
                 </div>
               ))}
             </div>
             <div style={{ marginTop: '1.2rem' }}>
-              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.4rem' }}>Bio</label>
+              <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.4rem' }}>Bio</label>
               <textarea className="t-input" rows={5} defaultValue="Sonic architect whose sets descend like ancient rituals — dark, ceremonial, and utterly consuming." style={{ resize: 'vertical' }} />
             </div>
             <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.75rem' }}>
@@ -1578,28 +1470,28 @@ const ProfilePage = ({ setPage }) => {
         )}
 
         {tab === 'media' && (
-          <div className="glass" style={{ borderRadius: 12, padding: '2rem' }}>
-            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Media Upload</p>
-            <div style={{ border: '2px dashed rgba(200, 255, 43,0.2)', borderRadius: 10, padding: '3rem', textAlign: 'center', marginBottom: '1.5rem', cursor: 'pointer' }}>
+          <div className="brutal-box" style={{ padding: '2rem' }}>
+            <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Media Upload</p>
+            <div style={{ border: '2px dashed var(--tangy-amber)', background: '#080808', padding: '3rem', textAlign: 'center', marginBottom: '1.5rem', cursor: 'pointer' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🎵</div>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.65rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', marginBottom: '0.4rem' }}>DROP FILES HERE</p>
-              <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.25)' }}>MP3, WAV, FLAC · Images · Videos</p>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', marginBottom: '0.4rem' }}>DROP FILES HERE</p>
+              <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>MP3, WAV, FLAC · Images · Videos</p>
               <button className="t-btn-ghost" style={{ marginTop: '1.2rem', fontSize: '0.6rem' }}>Browse Files</button>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '0.75rem' }}>
               {['#1a1225','#0f1a2e','#2a0f1e','#1a2a0f'].map((c, i) => (
-                <div key={i} style={{ aspectRatio: '1', borderRadius: 8, background: `linear-gradient(135deg, ${c}, #080808)`, border: '1px solid var(--tangy-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', cursor: 'pointer' }}>🖼</div>
+                <div key={i} style={{ aspectRatio: '1', background: '#111111', border: '1px solid var(--tangy-amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', cursor: 'pointer' }}>🖼</div>
               ))}
             </div>
           </div>
         )}
 
         {tab === 'links' && (
-          <div className="glass" style={{ borderRadius: 12, padding: '2rem' }}>
-            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Social & Platform Links</p>
+          <div className="brutal-box" style={{ padding: '2rem' }}>
+            <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Social & Platform Links</p>
             {['Instagram', 'SoundCloud', 'Resident Advisor', 'Bandcamp', 'YouTube', 'Spotify'].map(platform => (
               <div key={platform} style={{ marginBottom: '1rem' }}>
-                <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.4rem' }}>{platform}</label>
+                <label style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.4rem' }}>{platform}</label>
                 <input className="t-input" placeholder={`Your ${platform} URL or handle`} />
               </div>
             ))}
@@ -1608,28 +1500,28 @@ const ProfilePage = ({ setPage }) => {
         )}
 
         {tab === 'settings' && (
-          <div className="glass" style={{ borderRadius: 12, padding: '2rem' }}>
-            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Account Settings</p>
+          <div className="brutal-box" style={{ padding: '2rem' }}>
+            <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>Account Settings</p>
             {[
               { label: 'Email notifications for bookings', on: true },
               { label: 'Event invitation alerts', on: true },
               { label: 'Profile visibility (public)', on: true },
               { label: 'Available for booking', on: false },
             ].map((s, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0', borderBottom: i < 3 ? '1px solid var(--tangy-border)' : 'none' }}>
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0', borderBottom: i < 3 ? '1px dashed rgba(255,255,255,0.2)' : 'none' }}>
                 <span style={{ fontSize: '0.85rem', color: 'var(--tangy-muted)' }}>{s.label}</span>
                 <div style={{
-                  width: 40, height: 22, borderRadius: 11, cursor: 'pointer',
-                  background: s.on ? 'var(--tangy-amber)' : 'rgba(255,255,255,0.1)',
+                  width: 44, height: 24, cursor: 'pointer', border: '1px solid var(--tangy-amber)',
+                  background: s.on ? 'var(--tangy-amber)' : '#080808',
                   position: 'relative', transition: 'background 0.2s',
                 }}>
-                  <div style={{ position: 'absolute', top: 3, left: s.on ? 20 : 3, width: 16, height: 16, borderRadius: '50%', background: s.on ? '#080808' : 'rgba(255,255,255,0.4)', transition: 'left 0.2s' }} />
+                  <div style={{ position: 'absolute', top: 3, left: s.on ? 23 : 3, width: 16, height: 16, background: s.on ? '#080808' : 'rgba(255,255,255,0.4)', transition: 'left 0.2s' }} />
                 </div>
               </div>
             ))}
-            <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--tangy-border)' }}>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-rust)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Danger Zone</p>
-              <button className="t-btn-ghost" style={{ borderColor: 'rgba(196,92,42,0.3)', color: 'var(--tangy-rust)', fontSize: '0.6rem' }}>Delete Account</button>
+            <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--tangy-amber)' }}>
+              <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-rust)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Danger Zone</p>
+              <button className="t-btn-ghost" style={{ borderColor: 'var(--tangy-rust)', color: 'var(--tangy-rust)', fontSize: '0.6rem' }}>Delete Account</button>
             </div>
           </div>
         )}
@@ -1647,7 +1539,7 @@ const ApplyPage = ({ setPage }) => (
 const Footer = ({ setPage }) => {
   const { user } = useAuth();
   return (
-  <footer style={{ borderTop: '1px solid var(--tangy-border)', padding: '3rem 2rem', position: 'relative', zIndex: 1 }}>
+  <footer style={{ borderTop: '1px solid var(--tangy-amber)', padding: '3rem 2rem', position: 'relative', zIndex: 1, background: '#111111' }}>
     <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
       <div>
         <img
@@ -1658,13 +1550,13 @@ const Footer = ({ setPage }) => {
         <p style={{ fontSize: '0.75rem', color: 'var(--tangy-muted)', lineHeight: 1.6 }}>Underground electronic music at Bansilal Stepwell, Hyderabad.</p>
       </div>
       <div>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Portal</p>
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-amber)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Portal</p>
         {[['Artists', 'artists'], !user ? ['Apply', 'apply'] : null, !user ? ['Login', 'login'] : null].filter(Boolean).map(([l, r]) => (
           <button key={r} className="nav-link" onClick={() => setPage(r)} style={{ display: 'block', marginBottom: '0.5rem', textAlign: 'left' }}>{l}</button>
         ))}
       </div>
       <div>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', marginTop: '1rem' }}>
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: 'var(--tangy-muted)', letterSpacing: '0.1em', marginTop: '1rem' }}>
           © 2025 Tangy Sessions · Music Beneath History
         </p>
       </div>
