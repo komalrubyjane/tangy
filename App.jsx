@@ -306,7 +306,7 @@ function Hero() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="home" style={{ position: "relative", height: "100vh", display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-end", overflow: "hidden", background: "#080808", paddingBottom: "8vh" }}>
+    <section ref={sectionRef} id="home" style={{ position: "relative", minHeight: "100svh", height: "auto", display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-end", overflow: "hidden", background: "#080808", paddingBottom: "8vh" }}>
 
       {/* Collage photo grid background */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gridTemplateRows: "repeat(3, 1fr)", gap: 2, opacity: 0.12 }}>
@@ -2436,10 +2436,21 @@ function LandingPage({ showArtistOverlay = false }) {
           html, body { max-width: 100vw; overflow-x: hidden; }
           section { scroll-margin-top: 64px !important; }
 
-          /* 2. HERO */
-          .hero-radio { display: none !important; }
-          .hero-gramophone { opacity: 0.35 !important; width: 65px !important; bottom: 4% !important; left: 2vw !important; }
-          #home { overflow: hidden !important; }
+          /* 2. HERO — show radio smaller, repositioned so it fills the top void */
+          .hero-radio {
+            width: clamp(110px, 30vw, 160px) !important;
+            top: 6% !important;
+            right: 3vw !important;
+            opacity: 0.8 !important;
+          }
+          .hero-gramophone { opacity: 0.3 !important; width: 60px !important; bottom: 3% !important; left: 2vw !important; }
+          /* Tighten hero on mobile — 100vh leaves too much empty space above the text */
+          #home {
+            overflow: hidden !important;
+            height: auto !important;
+            min-height: 100svh !important;
+            padding-bottom: 56px !important;
+          }
 
           /* 3. WHY TANGY — banner */
           #why-tangy .banner-inner { flex-direction: column !important; gap: 6px !important; }
