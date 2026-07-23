@@ -1,8 +1,28 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+  typeof navigator !== "undefined" ? navigator.userAgent : ""
+);
+
+function useAutoHover(amount = 0.35) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount, margin: "0px 0px -10% 0px" });
+  const [isMouseHovered, setIsMouseHovered] = useState(false);
+  
+  const isHovered = isMobile ? isInView : isMouseHovered;
+
+  const hoverProps = isMobile ? {} : {
+    onMouseEnter: () => setIsMouseHovered(true),
+    onMouseLeave: () => setIsMouseHovered(false),
+  };
+
+  return { ref, isHovered, hoverProps };
+}
 
 export default function Volunteer() {
+  const btnHover = useAutoHover(0.5);
   const navigate = useNavigate();
 
   const handleNavigate = () => {
@@ -109,8 +129,15 @@ export default function Volunteer() {
             {/* Poster CTA Button */}
             <div style={{ marginTop: 8 }}>
               <motion.button
+                ref={btnHover.ref}
+                {...btnHover.hoverProps}
                 onClick={handleNavigate}
-                whileHover={{ scale: 1.05, backgroundColor: "#C8FF2B", color: "#080808", boxShadow: "0 0 30px rgba(200, 255, 43, 0.4)" }}
+                animate={{ 
+                  scale: btnHover.isHovered ? 1.05 : 1, 
+                  backgroundColor: btnHover.isHovered ? "#C8FF2B" : "transparent", 
+                  color: btnHover.isHovered ? "#080808" : "#C8FF2B", 
+                  boxShadow: btnHover.isHovered ? "0 0 30px rgba(200, 255, 43, 0.4)" : "none" 
+                }}
                 whileTap={{ scale: 0.95 }}
                 style={{
                   padding: "20px 48px",

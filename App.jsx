@@ -7,7 +7,7 @@
 //   AdminDashboard.jsx     — NEW (replace with the AdminDashboard.jsx output)
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import UnicornBackground from "./src/components/UnicornBackground";
 import Volunteer from "./src/components/Volunteer";
@@ -52,6 +52,22 @@ const isLowEndDevice = (() => {
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
   typeof navigator !== "undefined" ? navigator.userAgent : ""
 );
+
+// Custom hook to trigger hover state automatically on scroll for mobile devices
+function useAutoHover(amount = 0.35) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount, margin: "0px 0px -10% 0px" });
+  const [isMouseHovered, setIsMouseHovered] = useState(false);
+  
+  const isHovered = isMobile ? isInView : isMouseHovered;
+
+  const hoverProps = isMobile ? {} : {
+    onMouseEnter: () => setIsMouseHovered(true),
+    onMouseLeave: () => setIsMouseHovered(false),
+  };
+
+  return { ref, isHovered, hoverProps };
+}
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const EVENTS = [
@@ -102,7 +118,7 @@ function SectionBackgroundText() {
 }
 
 function MagneticButton({ children, onClick, style, className }) {
-  const ref = useRef(null);
+  const { ref, isHovered, hoverProps } = useAutoHover(0.5);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
@@ -116,6 +132,11 @@ function MagneticButton({ children, onClick, style, className }) {
 
   const handleMouseLeave = () => {
     setPosition({ x: 0, y: 0 });
+    if (hoverProps.onMouseLeave) hoverProps.onMouseLeave();
+  };
+
+  const handleMouseEnter = () => {
+    if (hoverProps.onMouseEnter) hoverProps.onMouseEnter();
   };
 
   return (
@@ -123,9 +144,9 @@ function MagneticButton({ children, onClick, style, className }) {
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
       onClick={onClick}
-      animate={{ x: position.x, y: position.y }}
-      whileHover={{ scale: 1.05 }}
+      animate={{ x: position.x, y: position.y, scale: isHovered ? 1.05 : 1 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
       style={{
@@ -272,6 +293,9 @@ function Navbar() {
 
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
+  const gramophoneHover = useAutoHover(0.4);
+  const radioHover = useAutoHover(0.4);
+  
   const sectionRef = useRef(null);
   const flareRef = useRef(null);
   const targetOffset = useRef({ x: 0, y: 0 });
@@ -340,11 +364,16 @@ function Hero() {
 
       {/* GRAMOPHONE DECAL — Hero bottom left corner */}
       <motion.div
+        ref={gramophoneHover.ref}
+        {...gramophoneHover.hoverProps}
         className="hero-gramophone"
         initial={{ opacity: 0, rotate: -12, scale: 0.7 }}
-        animate={{ opacity: 1, rotate: -8, scale: 1 }}
+        animate={{ 
+          opacity: 1, 
+          rotate: gramophoneHover.isHovered ? -2 : -8, 
+          scale: gramophoneHover.isHovered ? 1.08 : 1 
+        }}
         transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
-        whileHover={{ scale: 1.08, rotate: -2 }}
         style={{
           position: "absolute",
           bottom: "10%",
@@ -421,15 +450,22 @@ function Hero() {
 
       {/* VINTAGE RADIO GRAPHIC - HERO ACCENT */}
       <motion.div
+        ref={radioHover.ref}
+        {...radioHover.hoverProps}
         className="hero-radio"
         initial={{ opacity: 0, scale: 0.8, rotate: -6 }}
-        animate={{ opacity: 1, scale: 1, rotate: -4, y: [0, -12, 0] }}
+        animate={{ 
+          opacity: 1, 
+          scale: radioHover.isHovered ? 1.08 : 1, 
+          rotate: radioHover.isHovered ? 0 : -4, 
+          y: [0, -12, 0],
+          filter: radioHover.isHovered ? "drop-shadow(0 0 25px rgba(200, 255, 43, 0.4))" : "drop-shadow(0 20px 30px rgba(0,0,0,0.85))"
+        }}
         transition={{
           opacity: { duration: 1, delay: 0.4 },
           scale: { duration: 1, delay: 0.4 },
           y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
         }}
-        whileHover={{ scale: 1.08, rotate: 0, filter: "drop-shadow(0 0 25px rgba(200, 255, 43, 0.4))" }}
         style={{
           position: "absolute",
           top: "18%",
@@ -712,7 +748,37 @@ function HeroStats() {
 }
 
 // ─── WHY TANGY ─────────────────────────────────────────────────────────────────
+function ValueBlock({ val, idx }) {
+  const { ref, isHovered, hoverProps } = useAutoHover(0.4);
+  return (
+    <motion.div
+      ref={ref}
+      {...hoverProps}
+      className="editorial-val-block"
+      initial={{ opacity: 0, x: idx % 2 === 0 ? -40 : 40 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7 }}
+      style={{ display: "flex", alignItems: "center", gap: "5vw", padding: "48px 0", borderBottom: "1px dashed rgba(255,255,255,0.08)", position: "relative", cursor: "default" }}
+    >
+      <div className="val-bg-num" style={{ position: "absolute", right: idx % 2 === 0 ? "2vw" : "auto", left: idx % 2 !== 0 ? "2vw" : "auto", fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(6rem, 14vw, 12rem)", color: "rgba(200,255,43,0.04)", lineHeight: 1, pointerEvents: "none", userSelect: "none" }}>
+        {val.num}
+      </div>
+      <div style={{ flex: 1, zIndex: 1 }}>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "#C8FF2B", letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: 12 }}>{val.num} // VALUE</div>
+        <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: "0 0 16px", letterSpacing: "0.05em" }}>{val.title}</h3>
+        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.95rem", lineHeight: 1.75, maxWidth: 500, margin: 0 }}>{val.text}</p>
+      </div>
+      <motion.div className="val-image" animate={{ scale: isHovered ? 1.03 : 1 }} style={{ width: "clamp(120px, 18vw, 240px)", height: "clamp(100px, 14vw, 180px)", overflow: "hidden", flexShrink: 0, order: idx % 2 === 0 ? 1 : -1, filter: "grayscale(0.4)" }}>
+        <img src={val.img} alt={val.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+      </motion.div>
+    </motion.div>
+  );
+}
+
 function WhyTangy() {
+  const radioHover = useAutoHover(0.4);
+  const vinylHover = useAutoHover(0.4);
   return (
     <section id="why-tangy" style={{ background: "#080808", padding: "0", position: "relative", overflow: "hidden" }}>
 
@@ -733,10 +799,12 @@ function WhyTangy() {
       <div className="manifesto-block" style={{ padding: "80px 5vw 40px", borderBottom: "1px solid rgba(255,255,255,0.05)", position: "relative" }}>
         {/* Floating Radio Decal in WhyTangy */}
         <motion.div
+          ref={radioHover.ref}
+          {...radioHover.hoverProps}
           initial={{ opacity: 0, rotate: 12, scale: 0.8 }}
           whileInView={{ opacity: 1, rotate: 8, scale: 1 }}
           viewport={{ once: true }}
-          whileHover={{ rotate: 0, scale: 1.05 }}
+          animate={{ rotate: radioHover.isHovered ? 0 : 8, scale: radioHover.isHovered ? 1.05 : 1 }}
           style={{
             position: "absolute",
             top: 20,
@@ -800,11 +868,13 @@ function WhyTangy() {
         
         {/* SPINNING VINYL DECAL ACCENT */}
         <motion.div
+          ref={vinylHover.ref}
+          {...vinylHover.hoverProps}
           className="vinyl-decal"
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          whileHover={{ scale: 1.1 }}
+          animate={{ scale: vinylHover.isHovered ? 1.1 : 1 }}
           style={{
             position: "absolute",
             top: -40,
@@ -829,30 +899,7 @@ function WhyTangy() {
           { num: "02", title: "STILLNESS", text: "A reminder to slow down, stay present, and reconnect with yourself.", img: "/gallery/tangy1.jpg" },
           { num: "03", title: "COMMUNITY", text: "A collective of artists, creators, volunteers, and attendees brought together through meaningful experiences.", img: "/gallery/tngy7.jpg" },
         ].map((val, idx) => (
-          <motion.div
-            key={val.title}
-            className="editorial-val-block"
-            initial={{ opacity: 0, x: idx % 2 === 0 ? -40 : 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7 }}
-            style={{ display: "flex", alignItems: "center", gap: "5vw", padding: "48px 0", borderBottom: "1px dashed rgba(255,255,255,0.08)", position: "relative", cursor: "default" }}
-          >
-            {/* Oversized background number */}
-            <div className="val-bg-num" style={{ position: "absolute", right: idx % 2 === 0 ? "2vw" : "auto", left: idx % 2 !== 0 ? "2vw" : "auto", fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(6rem, 14vw, 12rem)", color: "rgba(200,255,43,0.04)", lineHeight: 1, pointerEvents: "none", userSelect: "none" }}>
-              {val.num}
-            </div>
-            {/* Content */}
-            <div style={{ flex: 1, zIndex: 1 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "#C8FF2B", letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: 12 }}>{val.num} // VALUE</div>
-              <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", margin: "0 0 16px", letterSpacing: "0.05em" }}>{val.title}</h3>
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.95rem", lineHeight: 1.75, maxWidth: 500, margin: 0 }}>{val.text}</p>
-            </div>
-            {/* Photo — alternates side */}
-            <motion.div className="val-image" whileHover={{ scale: 1.03 }} style={{ width: "clamp(120px, 18vw, 240px)", height: "clamp(100px, 14vw, 180px)", overflow: "hidden", flexShrink: 0, order: idx % 2 === 0 ? 1 : -1, filter: "grayscale(0.4)" }}>
-              <img src={val.img} alt={val.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
-            </motion.div>
-          </motion.div>
+          <ValueBlock key={val.title} val={val} idx={idx} />
         ))}
       </div>
 
@@ -947,22 +994,22 @@ function Events() {
 }
 
 function EventCard({ ev, delay, index }) {
-  const [hovered, setHovered] = useState(false);
+  const { ref, isHovered, hoverProps } = useAutoHover(0.4);
   const navigate = useNavigate();
   const serialNum = `TS-${String(ev.id).padStart(3, '0')}`;
   return (
     <motion.div
+      ref={ref}
+      {...hoverProps}
       className="ticket-card"
       initial={{ opacity: 0, y: 40, rotate: index % 2 === 0 ? -0.5 : 0.5 }}
       whileInView={{ opacity: 1, y: 0, rotate: index % 2 === 0 ? -0.3 : 0.3 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
         display: "flex",
-        background: hovered ? "#131313" : "#0e0e0e",
-        border: hovered ? "1px solid rgba(200,255,43,0.5)" : "1px solid rgba(255,255,255,0.06)",
+        background: isHovered ? "#131313" : "#0e0e0e",
+        border: isHovered ? "1px solid rgba(200,255,43,0.5)" : "1px solid rgba(255,255,255,0.06)",
         cursor: "pointer",
         position: "relative",
         overflow: "hidden",
@@ -971,18 +1018,18 @@ function EventCard({ ev, delay, index }) {
       }}
     >
       {/* Shine effect on hover */}
-      {hovered && (
+      {isHovered && (
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, transparent 30%, rgba(200,255,43,0.05) 50%, transparent 70%)", animation: "shineSwipe 0.6s ease forwards", pointerEvents: "none", zIndex: 10 }} />
       )}
 
       {/* LEFT STUB */}
-      <div className="ticket-stub-left" style={{ background: hovered ? "#C8FF2B" : "#111111", minWidth: 110, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 12px", borderRight: `1px dashed ${hovered ? '#080808' : 'rgba(255,255,255,0.12)'}`, gap: 8, transition: "background 0.3s, border-color 0.3s", position: "relative" }}>
+      <div className="ticket-stub-left" style={{ background: isHovered ? "#C8FF2B" : "#111111", minWidth: 110, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 12px", borderRight: `1px dashed ${isHovered ? '#080808' : 'rgba(255,255,255,0.12)'}`, gap: 8, transition: "background 0.3s, border-color 0.3s", position: "relative" }}>
         {/* Cutout circles */}
         <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", width: 20, height: 20, borderRadius: "50%", background: "#080808" }} />
         <div style={{ position: "absolute", bottom: -10, left: "50%", transform: "translateX(-50%)", width: 20, height: 20, borderRadius: "50%", background: "#080808" }} />
-        <div className="admit-one" style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", letterSpacing: "0.3em", color: hovered ? "#080808" : "#C8FF2B", textTransform: "uppercase", writingMode: "vertical-rl", transform: "rotate(180deg)", transition: "color 0.3s" }}>ADMIT ONE</div>
-        <div className="ticket-num" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: hovered ? "#080808" : "#fff", lineHeight: 1, transition: "color 0.3s" }}>0{ev.id}</div>
-        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.45rem", color: hovered ? "rgba(8,8,8,0.5)" : "rgba(255,255,255,0.3)", letterSpacing: "0.2em", transition: "color 0.3s" }}>{serialNum}</div>
+        <div className="admit-one" style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", letterSpacing: "0.3em", color: isHovered ? "#080808" : "#C8FF2B", textTransform: "uppercase", writingMode: "vertical-rl", transform: "rotate(180deg)", transition: "color 0.3s" }}>ADMIT ONE</div>
+        <div className="ticket-num" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: isHovered ? "#080808" : "#fff", lineHeight: 1, transition: "color 0.3s" }}>0{ev.id}</div>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.45rem", color: isHovered ? "rgba(8,8,8,0.5)" : "rgba(255,255,255,0.3)", letterSpacing: "0.2em", transition: "color 0.3s" }}>{serialNum}</div>
       </div>
 
       {/* MAIN BODY */}
@@ -1016,7 +1063,7 @@ function EventCard({ ev, delay, index }) {
           className="ticket-book-btn"
           onClick={() => navigate(`/events/${ev.slug}`)}
           whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-          style={{ padding: "8px 14px", background: hovered ? "#C8FF2B" : "transparent", color: hovered ? "#080808" : "#C8FF2B", border: "1px solid #C8FF2B", borderRadius: 0, cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.8rem", transition: "all 0.25s" }}
+          style={{ padding: "8px 14px", background: isHovered ? "#C8FF2B" : "transparent", color: isHovered ? "#080808" : "#C8FF2B", border: "1px solid #C8FF2B", borderRadius: 0, cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.8rem", transition: "all 0.25s" }}
         >
           BOOK →
         </motion.button>
@@ -1660,6 +1707,7 @@ function ArtistCard({ a, delay, onOpen }) {
 
 // ─── GALLERY ──────────────────────────────────────────────────────────────────
 function Gallery() {
+  const violinHover = useAutoHover(0.4);
   const [lightbox, setLightbox] = useState(null);
   const handleKeyDown = useCallback(e => { if (e.key === "Escape") setLightbox(null); }, []);
   useEffect(() => {
@@ -1697,21 +1745,31 @@ function Gallery() {
   };
 
   // Single photo tile for mobile carousel
-  const PhotoTile = ({ item, style }) => item ? (
-    <div
-      onClick={() => setLightbox(item)}
-      style={{ position: "relative", overflow: "hidden", cursor: "pointer", background: "#080808", ...style }}
-    >
-      <img
-        src={item.img} alt={item.label} loading="lazy"
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(20%) brightness(0.78)" }}
-      />
+  const PhotoTile = ({ item, style }) => {
+    const { ref, isHovered, hoverProps } = useAutoHover(0.5);
+    return item ? (
+      <div
+        ref={ref}
+        {...hoverProps}
+        onClick={() => setLightbox(item)}
+        style={{ position: "relative", overflow: "hidden", cursor: "pointer", background: "#080808", ...style }}
+      >
+        <img
+          src={item.img} alt={item.label} loading="lazy"
+          style={{ 
+            width: "100%", height: "100%", objectFit: "cover", display: "block", 
+            transition: "filter 0.4s, transform 0.5s",
+            filter: isHovered ? "grayscale(0) brightness(1)" : "grayscale(20%) brightness(0.78)",
+            transform: isHovered ? "scale(1.05)" : "scale(1)"
+          }}
+        />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "28px 12px 10px", background: "linear-gradient(to top, rgba(0,0,0,0.88), transparent)", fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", color: "#C8FF2B", letterSpacing: "0.22em", textTransform: "uppercase" }}>
         {item.label}
       </div>
       <div style={{ position: "absolute", top: 0, left: 0, width: 12, height: 12, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
     </div>
-  ) : <div style={{ background: "#0d0d0d", ...style }} />;
+    ) : <div style={{ background: "#0d0d0d", ...style }} />;
+  };
 
   return (
     <section id="gallery" style={{ background: "#0a0a0a", padding: "120px 0 80px", position: "relative", overflow: "hidden" }}>
@@ -1720,13 +1778,14 @@ function Gallery() {
       <div style={{ padding: "0 5vw", marginBottom: 60, position: "relative" }}>
         {/* Floating Violin Decal */}
         <motion.div
+          ref={violinHover.ref}
+          {...violinHover.hoverProps}
           className="gallery-violin"
           initial={{ opacity: 0, x: 40, rotate: 15 }}
           whileInView={{ opacity: 1, x: 0, rotate: 10 }}
           viewport={{ once: true }}
-          animate={{ y: [0, -10, 0] }}
+          animate={{ y: [0, -10, 0], scale: violinHover.isHovered ? 1.08 : 1, rotate: violinHover.isHovered ? 0 : 10 }}
           transition={{ y: { duration: 5, repeat: Infinity, ease: "easeInOut" } }}
-          whileHover={{ scale: 1.08, rotate: 0 }}
           style={{
             position: "absolute",
             top: -30,
@@ -1900,8 +1959,57 @@ function Gallery() {
 
 
 // ─── ABOUT ────────────────────────────────────────────────────────────────────
+function FounderCardBlock({ f, i }) {
+  const { ref, isHovered, hoverProps } = useAutoHover(0.5);
+  return (
+    <motion.div
+      ref={ref}
+      {...hoverProps}
+      className="founder-card"
+      initial={{ opacity: 0, x: 30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: i * 0.15 }}
+      style={{
+        background: "#181818",
+        border: isHovered ? "1px solid #C8FF2B" : "1px solid rgba(255,255,255,0.08)",
+        padding: 24,
+        display: "flex",
+        gap: 20,
+        alignItems: "center",
+        boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+        transition: "all 0.3s ease",
+        transform: isHovered ? "rotate(-1deg) scale(1.02)" : "none",
+      }}
+    >
+      <img 
+        src={f.image} 
+        alt={f.role} 
+        style={{
+          width: 90,
+          height: 120,
+          objectFit: "cover",
+          filter: isHovered ? "none" : "grayscale(1)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          transition: "all 0.3s ease"
+        }}
+      />
+      <div>
+        <span style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#C8FF2B", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "bold" }}>
+          {f.role}
+        </span>
+        <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.6rem", color: "#fff", margin: "4px 0 8px" }}>
+          {f.name.split('\n')[0]}
+        </h3>
+        <p style={{ fontSize: "0.8rem", color: "#A4A4A4", lineHeight: 1.5, margin: 0 }}>
+          {f.bio}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
 function About() {
-  const [active, setActive] = useState(0);
 
   const founders = [
     {
@@ -1974,50 +2082,7 @@ function About() {
           {/* Asymmetric Right side - Portrait Layout */}
           <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
             {founders.map((f, i) => (
-              <motion.div
-                key={f.role}
-                className="founder-card"
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15 }}
-                onMouseEnter={() => setActive(i)}
-                style={{
-                  background: "#181818",
-                  border: active === i ? "1px solid #C8FF2B" : "1px solid rgba(255,255,255,0.08)",
-                  padding: 24,
-                  display: "flex",
-                  gap: 20,
-                  alignItems: "center",
-                  boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
-                  transition: "all 0.3s ease",
-                  transform: active === i ? "rotate(-1deg) scale(1.02)" : "none",
-                }}
-              >
-                <img 
-                  src={f.image} 
-                  alt={f.role} 
-                  style={{
-                    width: 90,
-                    height: 120,
-                    objectFit: "cover",
-                    filter: active === i ? "none" : "grayscale(1)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    transition: "all 0.3s ease"
-                  }}
-                />
-                <div>
-                  <span style={{ fontSize: "0.62rem", letterSpacing: "0.2em", color: "#C8FF2B", textTransform: "uppercase", fontFamily: "monospace", fontWeight: "bold" }}>
-                    {f.role}
-                  </span>
-                  <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.6rem", color: "#fff", margin: "4px 0 8px" }}>
-                    {f.name.split('\n')[0]}
-                  </h3>
-                  <p style={{ fontSize: "0.8rem", color: "#A4A4A4", lineHeight: 1.5, margin: 0 }}>
-                    {f.bio}
-                  </p>
-                </div>
-              </motion.div>
+              <FounderCardBlock key={f.role} f={f} i={i} />
             ))}
           </div>
 
@@ -2090,7 +2155,24 @@ function About() {
 
 
 // ─── CONTACT ──────────────────────────────────────────────────────────────────
+function ContactSocialBtn({ s, toast }) {
+  const { ref, isHovered, hoverProps } = useAutoHover(0.5);
+  return (
+    <motion.button 
+      ref={ref}
+      {...hoverProps}
+      onClick={() => toast({ message: `Opening ${s}...`, type: "info" })}
+      animate={{ scale: isHovered ? 1.05 : 1, borderColor: isHovered ? "#C8FF2B" : "rgba(255,255,255,0.1)", color: isHovered ? "#C8FF2B" : "rgba(255,255,255,0.5)" }}
+      whileTap={{ scale: 0.95 }}
+      style={{ padding: "9px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em", transition: "all 0.2s" }}
+    >
+      {s}
+    </motion.button>
+  );
+}
+
 function Contact({ toast }) {
+    const vinylHover = useAutoHover(0.4);
     const [form, setForm] = useState({ name: "", email: "", message: "", subscribe: false });
     const [errors, setErrors] = useState({});
     const [sent, setSent] = useState(false);
@@ -2132,10 +2214,12 @@ function Contact({ toast }) {
 
         {/* VINYL DECAL — spinning in top right of Contact */}
         <motion.div
+          ref={vinylHover.ref}
+          {...vinylHover.hoverProps}
           initial={{ opacity: 0, scale: 0.7 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          whileHover={{ scale: 1.1 }}
+          animate={{ scale: vinylHover.isHovered ? 1.1 : 1 }}
           style={{
             position: "absolute",
             top: "8%",
@@ -2177,11 +2261,7 @@ function Contact({ toast }) {
               ))}
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}>
                 {["Instagram", "Spotify", "SoundCloud"].map(s => (
-                  <motion.button key={s} onClick={() => toast({ message: `Opening ${s}...`, type: "info" })}
-                    whileHover={{ scale: 1.05, borderColor: "#C8FF2B", color: "#C8FF2B" }} whileTap={{ scale: 0.95 }}
-                    style={{ padding: "9px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", letterSpacing: "0.08em", transition: "all 0.2s" }}>
-                    {s}
-                  </motion.button>
+                  <ContactSocialBtn key={s} s={s} toast={toast} />
                 ))}
               </div>
               <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(200, 255, 43,0.2)", height: 200 }}>
@@ -2334,13 +2414,27 @@ function Contact({ toast }) {
   );
 }
 
+function FooterLink({ item }) {
+  const { ref, isHovered, hoverProps } = useAutoHover(0.5);
+  return (
+    <div 
+      ref={ref}
+      {...hoverProps}
+      style={{ fontFamily: "'Space Mono', monospace", color: isHovered ? "#C8FF2B" : "rgba(255,255,255,0.25)", fontSize: "0.7rem", marginBottom: 10, cursor: "pointer", transition: "color 0.2s", letterSpacing: "0.1em" }}
+    >{item}</div>
+  );
+}
+
 // ─── FOOTER ───────────────────────────────────────────────────────────────────
 function Footer() {
+  const radioHover = useAutoHover(0.4);
   return (
     <footer style={{ background: "#080808", borderTop: "1px solid rgba(200,255,43,0.1)", position: "relative", zIndex: 1, overflow: "hidden" }}>
       {/* Radio Decal in Footer */}
       <motion.div
-        whileHover={{ scale: 1.1, rotate: 0 }}
+        ref={radioHover.ref}
+        {...radioHover.hoverProps}
+        animate={{ scale: radioHover.isHovered ? 1.1 : 1, rotate: radioHover.isHovered ? 0 : -6 }}
         style={{
           position: "absolute",
           top: 30,
@@ -2384,10 +2478,7 @@ function Footer() {
           <div key={title}>
             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", color: "#C8FF2B", letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: 16 }}>{title}</div>
             {items.map(item => (
-              <div key={item} style={{ fontFamily: "'Space Mono', monospace", color: "rgba(255,255,255,0.25)", fontSize: "0.7rem", marginBottom: 10, cursor: "pointer", transition: "color 0.2s", letterSpacing: "0.1em" }}
-                onMouseEnter={e => e.target.style.color = "#C8FF2B"}
-                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.25)"}
-              >{item}</div>
+              <FooterLink key={item} item={item} />
             ))}
           </div>
         ))}
