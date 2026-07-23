@@ -152,6 +152,16 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   const links = ["Home", "Why Tangy", "Events", "Gallery", "Community", "Contact"];
 
   const scrollTo = (id) => {
@@ -228,8 +238,20 @@ function Navbar() {
 
       <AnimatePresence>
         {menuOpen && (
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-            style={{ position: "fixed", top: 64, left: 0, right: 0, background: "rgba(8,8,8,0.99)", backdropFilter: "blur(20px)", padding: "20px 5vw 28px", display: "flex", flexDirection: "column", gap: 0, borderBottom: "1px solid rgba(200,255,43,0.1)" }}>
+          <motion.div
+            className="mobile-menu"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            style={{
+              position: "fixed", top: 64, left: 0, right: 0,
+              background: "rgba(8,8,8,0.99)",
+              backdropFilter: "blur(20px)",
+              padding: "20px 5vw 28px",
+              display: "flex", flexDirection: "column", gap: 0,
+              borderBottom: "1px solid rgba(200,255,43,0.1)",
+              zIndex: 999,
+            }}>
             {links.map(l => (
               <button key={l} onClick={() => scrollTo(l)}
                 style={{ background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.7)", cursor: "pointer", fontSize: "0.75rem", textAlign: "left", letterSpacing: "0.3em", textTransform: "uppercase", fontFamily: "'Space Mono', monospace", padding: "16px 0" }}>
@@ -318,6 +340,7 @@ function Hero() {
 
       {/* GRAMOPHONE DECAL — Hero bottom left corner */}
       <motion.div
+        className="hero-gramophone"
         initial={{ opacity: 0, rotate: -12, scale: 0.7 }}
         animate={{ opacity: 1, rotate: -8, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
@@ -398,6 +421,7 @@ function Hero() {
 
       {/* VINTAGE RADIO GRAPHIC - HERO ACCENT */}
       <motion.div
+        className="hero-radio"
         initial={{ opacity: 0, scale: 0.8, rotate: -6 }}
         animate={{ opacity: 1, scale: 1, rotate: -4, y: [0, -12, 0] }}
         transition={{
@@ -695,7 +719,7 @@ function WhyTangy() {
       {/* DIAGONAL BANNER HEADER */}
       <div style={{ background: "#C8FF2B", padding: "40px 5vw", position: "relative", overflow: "hidden", marginBottom: 0 }}>
         <div style={{ position: "absolute", inset: 0, background: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.04) 10px, rgba(0,0,0,0.04) 20px)" }} />
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+        <div className="banner-inner" style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.5rem, 10vw, 9rem)", lineHeight: 0.9, color: "#080808", margin: 0, letterSpacing: "0.02em" }}>
             WHY TANGY?
           </h2>
@@ -706,7 +730,7 @@ function WhyTangy() {
       </div>
 
       {/* MANIFESTO BLOCK */}
-      <div style={{ padding: "80px 5vw 40px", borderBottom: "1px solid rgba(255,255,255,0.05)", position: "relative" }}>
+      <div className="manifesto-block" style={{ padding: "80px 5vw 40px", borderBottom: "1px solid rgba(255,255,255,0.05)", position: "relative" }}>
         {/* Floating Radio Decal in WhyTangy */}
         <motion.div
           initial={{ opacity: 0, rotate: 12, scale: 0.8 }}
@@ -740,8 +764,8 @@ function WhyTangy() {
           </div>
         </motion.div>
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "auto 1fr", gap: "5vw", alignItems: "start" }}>
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "#C8FF2B", letterSpacing: "0.35em", textTransform: "uppercase", writingMode: "vertical-rl", transform: "rotate(180deg)", paddingBlock: 8 }}>
+        <div className="manifesto-grid" style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "auto 1fr", gap: "5vw", alignItems: "start" }}>
+          <div className="vertical-label" style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "#C8FF2B", letterSpacing: "0.35em", textTransform: "uppercase", writingMode: "vertical-rl", transform: "rotate(180deg)", paddingBlock: 8 }}>
             01 / PHILOSOPHY
           </div>
           <motion.blockquote
@@ -757,8 +781,8 @@ function WhyTangy() {
       </div>
 
       {/* BODY TEXT STRIP */}
-      <div style={{ padding: "40px 5vw 80px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5vw" }}>
+      <div className="body-text-strip" style={{ padding: "40px 5vw 80px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        <div className="body-two-col" style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5vw" }}>
           {[
             "In a world filled with endless scrolling, constant notifications, and digital noise, we wanted to create something different. Not another event. Not another lineup. Not another night out.",
             "Tangy is an invitation to pause. To listen more deeply. To connect more honestly. To experience music, art, and community in a way that feels real."
@@ -776,6 +800,7 @@ function WhyTangy() {
         
         {/* SPINNING VINYL DECAL ACCENT */}
         <motion.div
+          className="vinyl-decal"
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -814,7 +839,7 @@ function WhyTangy() {
             style={{ display: "flex", alignItems: "center", gap: "5vw", padding: "48px 0", borderBottom: "1px dashed rgba(255,255,255,0.08)", position: "relative", cursor: "default" }}
           >
             {/* Oversized background number */}
-            <div style={{ position: "absolute", right: idx % 2 === 0 ? "2vw" : "auto", left: idx % 2 !== 0 ? "2vw" : "auto", fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(6rem, 14vw, 12rem)", color: "rgba(200,255,43,0.04)", lineHeight: 1, pointerEvents: "none", userSelect: "none" }}>
+            <div className="val-bg-num" style={{ position: "absolute", right: idx % 2 === 0 ? "2vw" : "auto", left: idx % 2 !== 0 ? "2vw" : "auto", fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(6rem, 14vw, 12rem)", color: "rgba(200,255,43,0.04)", lineHeight: 1, pointerEvents: "none", userSelect: "none" }}>
               {val.num}
             </div>
             {/* Content */}
@@ -824,7 +849,7 @@ function WhyTangy() {
               <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.95rem", lineHeight: 1.75, maxWidth: 500, margin: 0 }}>{val.text}</p>
             </div>
             {/* Photo — alternates side */}
-            <motion.div whileHover={{ scale: 1.03 }} style={{ width: "clamp(120px, 18vw, 240px)", height: "clamp(100px, 14vw, 180px)", overflow: "hidden", flexShrink: 0, order: idx % 2 === 0 ? 1 : -1, filter: "grayscale(0.4)" }}>
+            <motion.div className="val-image" whileHover={{ scale: 1.03 }} style={{ width: "clamp(120px, 18vw, 240px)", height: "clamp(100px, 14vw, 180px)", overflow: "hidden", flexShrink: 0, order: idx % 2 === 0 ? 1 : -1, filter: "grayscale(0.4)" }}>
               <img src={val.img} alt={val.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
             </motion.div>
           </motion.div>
@@ -832,17 +857,17 @@ function WhyTangy() {
       </div>
 
       {/* STATISTICS STRIP */}
-      <div style={{ background: "#111111", borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)", padding: "48px 5vw", marginTop: 40 }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
+      <div style={{ background: "#111111", borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)", padding: "48px 5vw", marginTop: 40 }} className="stats-strip">
+        <div className="stats-4col" style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
           {[
             { endStr: "10000+", label: "ATTENDEES", duration: 2.5 },
             { endStr: "50+",    label: "ARTISTS",   duration: 2.0 },
             { endStr: "25+",    label: "SESSIONS",  duration: 1.8 },
             { endStr: null,     label: "COMMUNITY" }
           ].map((stat, idx) => (
-            <motion.div key={stat.label} style={{ borderLeft: idx > 0 ? "1px solid rgba(255,255,255,0.06)" : "none", paddingLeft: idx > 0 ? 32 : 0 }}
+            <motion.div key={stat.label} className="stat-item" style={{ borderLeft: idx > 0 ? "1px solid rgba(255,255,255,0.06)" : "none", paddingLeft: idx > 0 ? 32 : 0 }}
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.12, duration: 0.6 }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#C8FF2B", lineHeight: 1 }}>
+              <div className="stat-num" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#C8FF2B", lineHeight: 1 }}>
                 {stat.endStr === null ? <GrowingTypewriter delay={idx * 150} /> : <CountUpNumber endStr={stat.endStr} delay={idx * 150} duration={stat.duration} />}
               </div>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginTop: 8 }}>{stat.label}</div>
@@ -870,6 +895,7 @@ function Events() {
       <div style={{ padding: "0 5vw", marginBottom: 60, position: "relative" }}>
         {/* Radio Decal in Events */}
         <motion.div
+          className="events-radio"
           initial={{ opacity: 0, rotate: -15, scale: 0.8 }}
           whileInView={{ opacity: 1, rotate: -10, scale: 1 }}
           viewport={{ once: true }}
@@ -913,7 +939,7 @@ function Events() {
       </div>
 
       {/* Ticket Stack */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 5vw" }}>
+      <div className="ticket-stack" style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 5vw" }}>
         {EVENTS.map((ev, i) => <EventCard key={ev.id} ev={ev} delay={i * 0.15} index={i} />)}
       </div>
     </section>
@@ -950,17 +976,17 @@ function EventCard({ ev, delay, index }) {
       )}
 
       {/* LEFT STUB */}
-      <div style={{ background: hovered ? "#C8FF2B" : "#111111", minWidth: 110, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 12px", borderRight: `1px dashed ${hovered ? '#080808' : 'rgba(255,255,255,0.12)'}`, gap: 8, transition: "background 0.3s, border-color 0.3s", position: "relative" }}>
+      <div className="ticket-stub-left" style={{ background: hovered ? "#C8FF2B" : "#111111", minWidth: 110, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 12px", borderRight: `1px dashed ${hovered ? '#080808' : 'rgba(255,255,255,0.12)'}`, gap: 8, transition: "background 0.3s, border-color 0.3s", position: "relative" }}>
         {/* Cutout circles */}
         <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", width: 20, height: 20, borderRadius: "50%", background: "#080808" }} />
         <div style={{ position: "absolute", bottom: -10, left: "50%", transform: "translateX(-50%)", width: 20, height: 20, borderRadius: "50%", background: "#080808" }} />
-        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", letterSpacing: "0.3em", color: hovered ? "#080808" : "#C8FF2B", textTransform: "uppercase", writingMode: "vertical-rl", transform: "rotate(180deg)", transition: "color 0.3s" }}>ADMIT ONE</div>
-        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: hovered ? "#080808" : "#fff", lineHeight: 1, transition: "color 0.3s" }}>0{ev.id}</div>
+        <div className="admit-one" style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", letterSpacing: "0.3em", color: hovered ? "#080808" : "#C8FF2B", textTransform: "uppercase", writingMode: "vertical-rl", transform: "rotate(180deg)", transition: "color 0.3s" }}>ADMIT ONE</div>
+        <div className="ticket-num" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", color: hovered ? "#080808" : "#fff", lineHeight: 1, transition: "color 0.3s" }}>0{ev.id}</div>
         <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.45rem", color: hovered ? "rgba(8,8,8,0.5)" : "rgba(255,255,255,0.3)", letterSpacing: "0.2em", transition: "color 0.3s" }}>{serialNum}</div>
       </div>
 
       {/* MAIN BODY */}
-      <div style={{ flex: 1, padding: "24px 28px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8 }}>
+      <div className="ticket-body" style={{ flex: 1, padding: "24px 28px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8 }}>
         <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "#C8FF2B", letterSpacing: "0.3em", textTransform: "uppercase" }}>{ev.date} · {ev.time}</div>
           {ev.tags.map(tag => (
@@ -987,6 +1013,7 @@ function EventCard({ ev, delay, index }) {
         </div>
         {/* CTA */}
         <motion.button
+          className="ticket-book-btn"
           onClick={() => navigate(`/events/${ev.slug}`)}
           whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
           style={{ padding: "8px 14px", background: hovered ? "#C8FF2B" : "transparent", color: hovered ? "#080808" : "#C8FF2B", border: "1px solid #C8FF2B", borderRadius: 0, cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.8rem", transition: "all 0.25s" }}
@@ -1651,6 +1678,7 @@ function Gallery() {
       <div style={{ padding: "0 5vw", marginBottom: 60, position: "relative" }}>
         {/* Floating Violin Decal */}
         <motion.div
+          className="gallery-violin"
           initial={{ opacity: 0, x: 40, rotate: 15 }}
           whileInView={{ opacity: 1, x: 0, rotate: 10 }}
           viewport={{ once: true }}
@@ -1685,7 +1713,7 @@ function Gallery() {
       </div>
 
       {/* MASONRY GRID */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3, padding: "0 5vw" }}>
+      <div className="masonry-outer" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3, padding: "0 5vw" }}>
         {cols.map((col, colIdx) => (
           <div key={colIdx} className="masonry-col">
             {col.map((item, rowIdx) => {
@@ -1825,7 +1853,7 @@ function About() {
             </p>
 
             {/* Asymmetrical Stats Row */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24, background: "#111111", padding: 32, border: "1px solid rgba(255,255,255,0.06)", marginTop: 20 }}>
+            <div className="about-stats" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24, background: "#111111", padding: 32, border: "1px solid rgba(255,255,255,0.06)", marginTop: 20 }}>
               {stats.map(([n, l], idx) => (
                 <div key={l} style={{ borderBottom: "1px dashed rgba(255,255,255,0.1)", paddingBottom: 12 }}>
                   <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.8rem", color: "#C8FF2B", lineHeight: 1 }}>{n}</div>
@@ -1840,6 +1868,7 @@ function About() {
             {founders.map((f, i) => (
               <motion.div
                 key={f.role}
+                className="founder-card"
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -2020,7 +2049,7 @@ function Contact({ toast }) {
 
         <div style={{ position: "relative", zIndex: 1 }}>
           <SectionHeader label="Connect" title="Get In Touch" />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 48, marginTop: 60, maxWidth: 900, margin: "60px auto 0" }}>
+          <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 48, marginTop: 60, maxWidth: 900, margin: "60px auto 0" }}>
   
             {/* Left */}
             <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
@@ -2053,7 +2082,7 @@ function Contact({ toast }) {
             </motion.div>
   
             {/* Right */}
-            <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+            <motion.div className="contact-form" initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
               style={{
                 background: "linear-gradient(135deg, rgba(24,24,24,0.7) 0%, rgba(24,24,24,0.45) 100%)",
                 backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
@@ -2236,7 +2265,7 @@ function Footer() {
       </div>
 
       {/* BOTTOM INFO ROW */}
-      <div style={{ padding: "0 5vw 48px", display: "grid", gridTemplateColumns: "1fr auto auto", gap: "5vw", alignItems: "start", flexWrap: "wrap" }}>
+      <div className="footer-cols" style={{ padding: "0 5vw 48px", display: "grid", gridTemplateColumns: "1fr auto auto", gap: "5vw", alignItems: "start", flexWrap: "wrap" }}>
         {/* Left: Logo + tagline */}
         <div>
           <img src="/logo.svg" alt="Tangy Sessions Logo" style={{ height: 44, marginBottom: 12 }} />
@@ -2382,6 +2411,166 @@ function LandingPage({ showArtistOverlay = false }) {
         #unicorn-bg { transform: translateZ(0); }
 
         .masonry-col { display: flex; flex-direction: column; gap: 16px; }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TABLET  ≤ 868px
+        ═══════════════════════════════════════════════════════════════ */
+        @media (max-width: 868px) {
+          .nav-links { display: none !important; }
+          .hamburger { display: flex !important; }
+          #about-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .contact-grid { grid-template-columns: 1fr !important; }
+          .footer-brand { font-size: clamp(3.5rem, 15vw, 6rem) !important; }
+          [src*="radio.png"], [src*="vinyl.png"], [src*="gramophone.png"], [src*="violin.png"] {
+            max-width: 100px !important; opacity: 0.7 !important;
+          }
+          #gallery .masonry-outer { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           MOBILE  ≤ 600px  — PRIMARY FIXES
+        ═══════════════════════════════════════════════════════════════ */
+        @media (max-width: 600px) {
+
+          /* 1. GLOBAL */
+          html, body { max-width: 100vw; overflow-x: hidden; }
+          section { scroll-margin-top: 64px !important; }
+
+          /* 2. HERO */
+          .hero-radio { display: none !important; }
+          .hero-gramophone { opacity: 0.35 !important; width: 65px !important; bottom: 4% !important; left: 2vw !important; }
+          #home { overflow: hidden !important; }
+
+          /* 3. WHY TANGY — banner */
+          #why-tangy .banner-inner { flex-direction: column !important; gap: 6px !important; }
+          #why-tangy .banner-inner > div { max-width: 100% !important; text-align: left !important; }
+
+          /* 4. WHY TANGY — manifesto */
+          #why-tangy .manifesto-grid { grid-template-columns: 1fr !important; }
+          #why-tangy .vertical-label { display: none !important; }
+
+          /* 5. WHY TANGY — body two-col */
+          #why-tangy .body-two-col { grid-template-columns: 1fr !important; gap: 20px !important; }
+
+          /* 6. VALUES — stack vertically, image on top */
+          .editorial-val-block {
+            flex-direction: column !important;
+            gap: 16px !important;
+            padding: 28px 0 !important;
+            align-items: flex-start !important;
+          }
+          .editorial-val-block .val-image {
+            width: 100% !important; height: 140px !important; order: -1 !important;
+          }
+          .editorial-val-block .val-bg-num { display: none !important; }
+          .vinyl-decal { display: none !important; }
+          .editorial-val-block h3 { font-size: clamp(2rem, 9vw, 3rem) !important; }
+
+          /* 7. STATS STRIP — 2×2 grid */
+          .stats-4col {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0 !important;
+          }
+          .stats-4col > div {
+            border-left: none !important;
+            padding: 20px 16px !important;
+            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+          }
+          .stats-4col > div:nth-child(2),
+          .stats-4col > div:nth-child(4) {
+            border-left: 1px solid rgba(255,255,255,0.06) !important;
+          }
+          .stats-4col .stat-num { font-size: clamp(1.8rem, 8vw, 2.8rem) !important; }
+
+          /* 8. GALLERY — 2-column collage (hide 3rd col, redistribute) */
+          #gallery .masonry-outer {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 3px !important;
+            padding: 0 3vw !important;
+          }
+          #gallery .masonry-outer > div:nth-child(3) { display: none !important; }
+          .polaroid-photo {
+            transform: none !important;
+            padding: 8px 8px 28px !important;
+          }
+          .polaroid-photo:hover { transform: none !important; box-shadow: none !important; }
+          .gallery-violin { display: none !important; }
+          #gallery .section-header { margin-bottom: 28px !important; }
+
+          /* 9. EVENT CARDS — compact horizontal strip layout */
+          .ticket-card {
+            flex-direction: column !important;
+            transform: none !important;
+            min-height: unset !important;
+          }
+          .ticket-card:hover { transform: none !important; box-shadow: none !important; }
+          .ticket-stub-left {
+            flex-direction: row !important;
+            min-width: unset !important;
+            width: 100% !important;
+            padding: 10px 16px !important;
+            border-right: none !important;
+            border-bottom: 1px dashed rgba(255,255,255,0.12) !important;
+            justify-content: flex-start !important;
+            gap: 14px !important;
+          }
+          .ticket-stub-left .admit-one { writing-mode: horizontal-tb !important; transform: none !important; }
+          .ticket-stub-left .ticket-num { font-size: 1.4rem !important; }
+          .ticket-body { padding: 14px 16px !important; gap: 6px !important; }
+          .ticket-body h3 { font-size: clamp(1.4rem, 6vw, 2rem) !important; }
+          .ticket-body p { display: none !important; }
+          .ticket-stub-right {
+            border-left: none !important;
+            border-top: 1px dashed rgba(255,255,255,0.08) !important;
+            flex-direction: row !important;
+            width: 100% !important;
+            padding: 10px 16px !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            min-width: unset !important;
+          }
+          .ticket-book-btn { padding: 10px 22px !important; font-size: 0.9rem !important; }
+          .events-radio { display: none !important; }
+          #events { padding-top: 64px !important; padding-bottom: 48px !important; }
+          #events .ticket-stack { padding: 0 4vw !important; gap: 8px !important; }
+
+          /* 10. ABOUT */
+          #about { padding: 60px 5vw !important; }
+          #about h2 { font-size: clamp(2.5rem, 10vw, 5rem) !important; }
+          #about .about-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; padding: 20px !important; }
+          .founder-card { flex-direction: column !important; gap: 20px !important; }
+          .founder-card img { width: 100% !important; max-height: 220px !important; object-fit: cover !important; }
+
+          /* 11. CONTACT */
+          .contact-grid { gap: 28px !important; }
+          .contact-form input, .contact-form textarea, .contact-form select {
+            font-size: 16px !important;
+          }
+          .contact-form button[type="submit"] { width: 100% !important; }
+
+          /* 12. FOOTER */
+          .footer-brand { font-size: clamp(2.8rem, 13vw, 4.5rem) !important; }
+          .footer-cols { flex-direction: column !important; gap: 24px !important; }
+
+          /* 13. DECORATIVE DECALS */
+          [src*="radio.png"] { max-width: 70px !important; opacity: 0.45 !important; }
+          [src*="violin.png"] { display: none !important; }
+          [src*="vinyl.png"] { display: none !important; }
+          [src*="gramophone.png"] { max-width: 60px !important; opacity: 0.35 !important; }
+
+          /* 14. GALLERY — section padding */
+          #gallery { padding-top: 60px !important; padding-bottom: 48px !important; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TINY PHONES  ≤ 380px
+        ═══════════════════════════════════════════════════════════════ */
+        @media (max-width: 380px) {
+          .stats-4col .stat-num { font-size: clamp(1.5rem, 7vw, 2.2rem) !important; }
+          #about h2 { font-size: clamp(2rem, 9vw, 3.5rem) !important; }
+          .ticket-body h3 { font-size: clamp(1.2rem, 5.5vw, 1.8rem) !important; }
+          #gallery .masonry-outer { padding: 0 2vw !important; }
+        }
       `}</style>
 
       <Navbar />
