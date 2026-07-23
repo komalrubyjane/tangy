@@ -305,220 +305,236 @@ function Navbar() {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   const gramophoneHover = useAutoHover(0.4);
-  const radioHover = useAutoHover(0.4);
-  
-  const sectionRef = useRef(null);
-  const flareRef = useRef(null);
-  const targetOffset = useRef({ x: 0, y: 0 });
-  const currentOffset = useRef({ x: 0, y: 0 });
-  const rafId = useRef(null);
+  const radioHover      = useAutoHover(0.4);
 
-  // Mouse parallax — disabled entirely on mobile/low-end for performance
+  const sectionRef     = useRef(null);
+  const flareRef       = useRef(null);
+  const targetOffset   = useRef({ x: 0, y: 0 });
+  const currentOffset  = useRef({ x: 0, y: 0 });
+  const rafId          = useRef(null);
+
+  // Mouse parallax — desktop only
   useEffect(() => {
     if (isMobile || isLowEndDevice) return;
     const onMouseMove = (e) => {
       const { innerWidth: W, innerHeight: H } = window;
-      targetOffset.current = {
-        x: (e.clientX / W - 0.5) * 2,
-        y: (e.clientY / H - 0.5) * 2,
-      };
+      targetOffset.current = { x: (e.clientX / W - 0.5) * 2, y: (e.clientY / H - 0.5) * 2 };
     };
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
     let lastTime = 0;
     const tick = (time) => {
-      if (time - lastTime < (isLowEndDevice ? 33 : 16)) { rafId.current = requestAnimationFrame(tick); return; }
+      if (time - lastTime < 16) { rafId.current = requestAnimationFrame(tick); return; }
       lastTime = time;
       currentOffset.current.x += (targetOffset.current.x - currentOffset.current.x) * 0.06;
       currentOffset.current.y += (targetOffset.current.y - currentOffset.current.y) * 0.06;
-      const STRENGTH = 14;
-      const tx = currentOffset.current.x * STRENGTH;
-      const ty = currentOffset.current.y * STRENGTH;
+      const tx = currentOffset.current.x * 14;
+      const ty = currentOffset.current.y * 14;
       if (flareRef.current) flareRef.current.style.transform = `translate(calc(-50% + ${tx * 4}px), calc(-50% + ${ty * 4}px))`;
       rafId.current = requestAnimationFrame(tick);
     };
     rafId.current = requestAnimationFrame(tick);
-    return () => { window.removeEventListener("mousemove", onMouseMove); cancelAnimationFrame(rafId.current); };
+    return () => { window.removeEventListener('mousemove', onMouseMove); cancelAnimationFrame(rafId.current); };
   }, []);
 
   return (
-    <section ref={sectionRef} id="home" style={{ position: "relative", minHeight: "100svh", height: "auto", display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-end", overflow: "hidden", background: "#080808", paddingBottom: "8vh" }}>
-
-      {/* Collage photo grid background */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gridTemplateRows: "repeat(3, 1fr)", gap: 2, opacity: 0.12 }}>
-        {["https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80","https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=400&q=80","https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80","https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80","https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=400&q=80","https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=80","https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=80","https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=400&q=80","https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80","https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80","https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?w=400&q=80","https://images.unsplash.com/photo-1504509546545-e000b4a62425?w=400&q=80","https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&q=80","https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=80","https://images.unsplash.com/photo-1571266028243-e4d6af6ce84e?w=400&q=80"].map((src, i) => (
-          <div key={i} style={{ overflow: "hidden" }}><img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(0.7) contrast(1.2)" }} loading="eager" /></div>
+    <section
+      ref={sectionRef}
+      id="home"
+      style={{
+        position: 'relative',
+        minHeight: '100svh',
+        background: '#080808',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* ── Photo collage background ── */}
+      <div style={{ position:'absolute', inset:0, zIndex:0, display:'grid', gridTemplateColumns:'repeat(5,1fr)', gridTemplateRows:'repeat(3,1fr)', gap:2, opacity:0.12 }}>
+        {['https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80','https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=400&q=80','https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80','https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80','https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=400&q=80','https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=80','https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=80','https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=400&q=80','https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80','https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80','https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?w=400&q=80','https://images.unsplash.com/photo-1504509546545-e000b4a62425?w=400&q=80','https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&q=80','https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=80','https://images.unsplash.com/photo-1571266028243-e4d6af6ce84e?w=400&q=80'].map((src,i) => (
+          <div key={i} style={{ overflow:'hidden' }}><img src={src} alt="" style={{ width:'100%', height:'100%', objectFit:'cover', display:'block', filter:'grayscale(0.7) contrast(1.2)' }} loading="eager" /></div>
         ))}
       </div>
-
-      {/* Base overlay */}
-      <div style={{ position: "absolute", inset: 0, background: "rgba(8,8,8,0.88)", zIndex: 1 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(8,8,8,0.6) 0%, transparent 60%, rgba(8,8,8,0.95) 100%)", zIndex: 2 }} />
+      <div style={{ position:'absolute', inset:0, background:'rgba(8,8,8,0.88)', zIndex:1 }} />
+      <div style={{ position:'absolute', inset:0, background:'linear-gradient(135deg, rgba(8,8,8,0.55) 0%, transparent 55%, rgba(8,8,8,0.95) 100%)', zIndex:2 }} />
 
       {/* Cursor flare */}
       {!isMobile && (
-        <div ref={flareRef} style={{ position: "absolute", zIndex: 3, pointerEvents: "none", width: "35vw", height: "35vw", borderRadius: "50%", background: "radial-gradient(circle, rgba(200,255,43,0.07) 0%, transparent 70%)", transform: "translate(-50%, -50%)", top: "50%", left: "50%", willChange: "transform" }} />
+        <div ref={flareRef} style={{ position:'absolute', zIndex:3, pointerEvents:'none', width:'35vw', height:'35vw', borderRadius:'50%', background:'radial-gradient(circle, rgba(200,255,43,0.07) 0%, transparent 70%)', transform:'translate(-50%,-50%)', top:'50%', left:'50%', willChange:'transform' }} />
       )}
 
-      {/* TOP MARQUEE STRIP */}
-      <div style={{ position: "absolute", top: 64, left: 0, right: 0, overflow: "hidden", borderTop: "1px solid rgba(200,255,43,0.15)", borderBottom: "1px solid rgba(200,255,43,0.08)", background: "rgba(200,255,43,0.04)", zIndex: 5, paddingBlock: 6 }}>
-        <div className="marquee-track" style={{ gap: 0 }}>
-          {Array(4).fill("UNDERGROUND MUSIC  ·  ANCIENT SPACES  ·  TANGY SESSIONS  ·  HYDERABAD  ·  EST. 2025  ·  ").map((t, i) => (
-            <span key={i} style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.3em", color: "#C8FF2B", textTransform: "uppercase", paddingRight: "4rem", whiteSpace: "nowrap", opacity: 0.8 }}>{t}</span>
+      {/* Top marquee strip */}
+      <div style={{ position:'absolute', top:64, left:0, right:0, overflow:'hidden', borderTop:'1px solid rgba(200,255,43,0.15)', borderBottom:'1px solid rgba(200,255,43,0.08)', background:'rgba(200,255,43,0.04)', zIndex:5, paddingBlock:6 }}>
+        <div className="marquee-track" style={{ gap:0 }}>
+          {Array(4).fill('UNDERGROUND MUSIC  ·  ANCIENT SPACES  ·  TANGY SESSIONS  ·  HYDERABAD  ·  EST. 2025  ·  ').map((t,i) => (
+            <span key={i} style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.65rem', letterSpacing:'0.3em', color:'#C8FF2B', textTransform:'uppercase', paddingRight:'4rem', whiteSpace:'nowrap', opacity:0.8 }}>{t}</span>
           ))}
         </div>
       </div>
 
-      {/* LEFT VERTICAL LABEL */}
-      <div style={{ position: "absolute", left: 0, top: "50%", transform: "translateX(-50%) translateY(-50%) rotate(-90deg)", zIndex: 5, fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.4em", color: "rgba(200,255,43,0.4)", textTransform: "uppercase", whiteSpace: "nowrap", pointerEvents: "none" }}>
+      {/* Left vertical label */}
+      <div style={{ position:'absolute', left:0, top:'50%', transform:'translateX(-50%) translateY(-50%) rotate(-90deg)', zIndex:5, fontFamily:"'Space Mono', monospace", fontSize:'0.6rem', letterSpacing:'0.4em', color:'rgba(200,255,43,0.4)', textTransform:'uppercase', whiteSpace:'nowrap', pointerEvents:'none' }}>
         SRL-001 // HYD-2025
       </div>
 
-      {/* GRAMOPHONE DECAL — Hero bottom left corner */}
+      {/* Gramophone — bottom-left decal */}
       <motion.div
         ref={gramophoneHover.ref}
         {...gramophoneHover.hoverProps}
         className="hero-gramophone"
-        initial={{ opacity: 0, rotate: -12, scale: 0.7 }}
-        animate={{ 
-          opacity: 1, 
-          rotate: gramophoneHover.isHovered ? -2 : -8, 
-          scale: gramophoneHover.isHovered ? 1.08 : 1 
-        }}
-        transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
-        style={{
-          position: "absolute",
-          bottom: "10%",
-          left: "3vw",
-          width: "clamp(90px, 12vw, 170px)",
-          filter: "drop-shadow(0 15px 25px rgba(0,0,0,0.9))",
-          zIndex: 6,
-          cursor: "pointer",
-          opacity: 0.9,
-        }}
+        initial={{ opacity:0, rotate:-12, scale:0.7 }}
+        animate={{ opacity:1, rotate: gramophoneHover.isHovered ? -2 : -8, scale: gramophoneHover.isHovered ? 1.08 : 1 }}
+        transition={{ duration:1.2, delay:0.6, ease:'easeOut' }}
+        style={{ position:'absolute', bottom:'6%', left:'2vw', width:'clamp(70px, 9vw, 150px)', filter:'drop-shadow(0 15px 25px rgba(0,0,0,0.9))', zIndex:6, cursor:'pointer' }}
       >
-        <img src="/gramophone.png" alt="Vintage Gramophone" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img src="/gramophone.png" alt="Vintage Gramophone" style={{ width:'100%', height:'auto', display:'block' }} />
       </motion.div>
 
-      {/* MAIN HEADLINE — massive asymmetric, left-aligned */}
-      <div style={{ position: "relative", zIndex: 6, paddingLeft: "5vw", paddingRight: "5vw" }}>
-        <motion.div
-          initial={{ opacity: 0, x: -60 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "clamp(0.6rem, 1.2vw, 0.78rem)", letterSpacing: "0.5em", color: "#C8FF2B", textTransform: "uppercase", marginBottom: 12 }}>
-            — LIVE MUSIC UNDERGROUND
-          </div>
-          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.4rem, 16vw, 16rem)", lineHeight: 0.88, letterSpacing: "0.02em", color: "#fff", margin: 0, textShadow: "0 0 120px rgba(200,255,43,0.08)" }}>
-            TANGY
-          </h1>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "3vw", flexWrap: "wrap" }}>
-            <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.4rem, 16vw, 16rem)", lineHeight: 0.88, letterSpacing: "0.02em", margin: 0, WebkitTextStroke: "2px #C8FF2B", WebkitTextFillColor: "transparent" }}>
-              SESSIONS
-            </h1>
-            {/* Mini ticket element beside headline */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingBottom: 8, opacity: 0.7 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", letterSpacing: "0.25em", color: "#C8FF2B", textTransform: "uppercase" }}>ADMIT ONE</div>
-              <div style={{ display: "flex", gap: 2, height: 24 }}>
-                {[3,1,2,4,1,3,2,1,4,2,1,3,2,4,1].map((w,i) => <div key={i} style={{ width: w*2, height: "100%", background: "#C8FF2B", opacity: 0.6 }} />)}
-              </div>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", color: "rgba(255,255,255,0.3)", letterSpacing: "0.15em" }}>TS-HYD-2025</div>
+      {/* ── Two-column hero content ───────────────────────────────────────── */}
+      <div className="hero-inner">
+
+        {/* LEFT — Text content */}
+        <div className="hero-left" style={{ position:'relative', zIndex:6 }}>
+          <motion.div initial={{ opacity:0, x:-60 }} animate={{ opacity:1, x:0 }} transition={{ duration:1.0, ease:[0.16,1,0.3,1] }}>
+            <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'clamp(0.55rem, 1.1vw, 0.75rem)', letterSpacing:'0.5em', color:'#C8FF2B', textTransform:'uppercase', marginBottom:10 }}>
+              — LIVE MUSIC UNDERGROUND
             </div>
-          </div>
-        </motion.div>
+            <h1 style={{ fontFamily:"'Bebas Neue', sans-serif", fontSize:'clamp(3.2rem, 13vw, 14rem)', lineHeight:0.88, letterSpacing:'0.02em', color:'#fff', margin:0, textShadow:'0 0 120px rgba(200,255,43,0.08)' }}>
+              TANGY
+            </h1>
+            <div style={{ display:'flex', alignItems:'flex-end', gap:'2vw', flexWrap:'wrap' }}>
+              <h1 style={{ fontFamily:"'Bebas Neue', sans-serif", fontSize:'clamp(3.2rem, 13vw, 14rem)', lineHeight:0.88, letterSpacing:'0.02em', margin:0, WebkitTextStroke:'2px #C8FF2B', WebkitTextFillColor:'transparent' }}>
+                SESSIONS
+              </h1>
+              <div style={{ display:'flex', flexDirection:'column', gap:5, paddingBottom:6, opacity:0.65 }}>
+                <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.52rem', letterSpacing:'0.25em', color:'#C8FF2B', textTransform:'uppercase' }}>ADMIT ONE</div>
+                <div style={{ display:'flex', gap:2, height:20 }}>
+                  {[3,1,2,4,1,3,2,1,4,2,1,3,2,4,1].map((w,i) => <div key={i} style={{ width:w*2, height:'100%', background:'#C8FF2B', opacity:0.55 }} />)}
+                </div>
+                <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.45rem', color:'rgba(255,255,255,0.3)', letterSpacing:'0.15em' }}>TS-HYD-2025</div>
+              </div>
+            </div>
+          </motion.div>
 
-        {/* Subline + CTA row */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          style={{ display: "flex", alignItems: "center", gap: "5vw", marginTop: 32, flexWrap: "wrap" }}
-        >
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(0.9rem, 2vw, 1.35rem)", color: "rgba(255,255,255,0.55)", margin: 0, letterSpacing: "0.08em", maxWidth: 360 }}>
-            Where sound meets stillness.<br />Ancient spaces. Underground culture.
-          </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <MagneticButton
-              onClick={() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" })}
-              style={{ padding: "16px 36px", background: "#C8FF2B", color: "#080808", border: "none", borderRadius: 0, cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.15em", textTransform: "uppercase", fontSize: "1.1rem", fontWeight: 700 }}
-            >
-              GET TICKETS
-            </MagneticButton>
-            <MagneticButton
-              onClick={() => document.getElementById("volunteer")?.scrollIntoView({ behavior: "smooth" })}
-              style={{ padding: "16px 36px", background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 0, cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.15em", textTransform: "uppercase", fontSize: "1.1rem" }}
-            >
-              JOIN COMMUNITY
-            </MagneticButton>
-          </div>
-        </motion.div>
+          {/* Subline + CTAs */}
+          <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.35, duration:0.9, ease:[0.16,1,0.3,1] }} style={{ display:'flex', alignItems:'center', gap:'4vw', marginTop:24, flexWrap:'wrap' }}>
+            <p style={{ fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'clamp(0.88rem, 1.8vw, 1.3rem)', color:'rgba(255,255,255,0.5)', margin:0, letterSpacing:'0.08em', maxWidth:340 }}>
+              Where sound meets stillness.<br />Ancient spaces. Underground culture.
+            </p>
+            <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+              <MagneticButton onClick={() => document.getElementById('events')?.scrollIntoView({ behavior:'smooth' })} style={{ padding:'14px 30px', background:'#C8FF2B', color:'#080808', border:'none', borderRadius:0, cursor:'pointer', fontFamily:"'Bebas Neue', sans-serif", letterSpacing:'0.15em', textTransform:'uppercase', fontSize:'1rem', fontWeight:700 }}>
+                GET TICKETS
+              </MagneticButton>
+              <MagneticButton onClick={() => document.getElementById('volunteer')?.scrollIntoView({ behavior:'smooth' })} style={{ padding:'14px 30px', background:'transparent', color:'#fff', border:'1px solid rgba(255,255,255,0.2)', borderRadius:0, cursor:'pointer', fontFamily:"'Bebas Neue', sans-serif", letterSpacing:'0.15em', textTransform:'uppercase', fontSize:'1rem' }}>
+                JOIN COMMUNITY
+              </MagneticButton>
+            </div>
+          </motion.div>
 
-        {/* Hero Stats strip */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}>
-          <HeroStats />
-        </motion.div>
-      </div>
-
-      <TVPlayer />
-
-      {/* VINTAGE RADIO GRAPHIC - HERO ACCENT */}
-      <motion.div
-        ref={radioHover.ref}
-        {...radioHover.hoverProps}
-        className="hero-radio"
-        initial={{ opacity: 0, scale: 0.8, rotate: -6 }}
-        animate={{ 
-          opacity: 1, 
-          scale: radioHover.isHovered ? 1.08 : 1, 
-          rotate: radioHover.isHovered ? 0 : -4, 
-          y: radioHover.isInView ? [0, -12, 0] : 0,
-          filter: radioHover.isHovered ? "drop-shadow(0 0 25px rgba(200, 255, 43, 0.4))" : "drop-shadow(0 20px 30px rgba(0,0,0,0.85))"
-        }}
-        transition={{
-          opacity: { duration: 1, delay: 0.4 },
-          scale: { duration: 1, delay: 0.4 },
-          y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-        }}
-        style={{
-          position: "absolute",
-          top: "18%",
-          right: "6vw",
-          zIndex: 7,
-          cursor: "pointer",
-          width: "clamp(180px, 26vw, 360px)",
-          filter: "drop-shadow(0 20px 30px rgba(0,0,0,0.85))",
-        }}
-      >
-        <img
-          src="/radio.png"
-          alt="Vintage Boombox"
-          style={{ width: "100%", height: "auto", display: "block" }}
-        />
-        <div style={{
-          position: "absolute",
-          bottom: -10,
-          right: -10,
-          background: "#FF2E52",
-          color: "#fff",
-          fontFamily: "'Space Mono', monospace",
-          fontSize: "0.5rem",
-          padding: "2px 8px",
-          letterSpacing: "0.2em",
-          transform: "rotate(6deg)",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.6)"
-        }}>
-          ANALOG SOUND
+          {/* Stats strip */}
+          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.6, duration:0.8 }}>
+            <HeroStats />
+          </motion.div>
         </div>
-      </motion.div>
 
-      {/* BOTTOM DECORATIVE STRIP */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 6, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 5vw" }}>
-        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.2em" }}>BANSILAL STEPWELL · HYDERABAD</div>
-        <motion.div animate={{ y: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 2 }} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }} onClick={() => document.getElementById("events")?.scrollIntoView({ behavior: "smooth" })}>
-          <div style={{ width: 1, height: 32, background: "linear-gradient(to bottom, transparent, #C8FF2B)" }} />
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", color: "#C8FF2B", letterSpacing: "0.3em", textTransform: "uppercase" }}>SCROLL</div>
+        {/* RIGHT — TV column */}
+        <div className="hero-right">
+          {/* Radio — floats above TV, desktop only */}
+          <motion.div
+            ref={radioHover.ref}
+            {...radioHover.hoverProps}
+            className="hero-radio-decal"
+            initial={{ opacity:0, scale:0.8, rotate:-6 }}
+            animate={{
+              opacity:1,
+              scale: radioHover.isHovered ? 1.07 : 1,
+              rotate: radioHover.isHovered ? 0 : -4,
+              y: radioHover.isInView ? [0, -10, 0] : 0,
+              filter: radioHover.isHovered ? 'drop-shadow(0 0 22px rgba(200,255,43,0.4))' : 'drop-shadow(0 16px 24px rgba(0,0,0,0.85))',
+            }}
+            transition={{ opacity:{ duration:1, delay:0.3 }, scale:{ duration:0.5 }, y:{ duration:6, repeat:Infinity, ease:'easeInOut' } }}
+          >
+            <img src="/radio.png" alt="Vintage Boombox" style={{ width:'100%', height:'auto', display:'block' }} />
+            <div style={{ position:'absolute', bottom:-8, right:-6, background:'#FF2E52', color:'#fff', fontFamily:"'Space Mono', monospace", fontSize:'0.45rem', padding:'2px 6px', letterSpacing:'0.18em', transform:'rotate(5deg)', boxShadow:'0 3px 10px rgba(0,0,0,0.6)' }}>
+              ANALOG SOUND
+            </div>
+          </motion.div>
+
+          {/* The TV itself */}
+          <TVPlayer />
+        </div>
+      </div>
+
+      {/* Bottom strip */}
+      <div style={{ position:'absolute', bottom:0, left:0, right:0, zIndex:6, borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 5vw' }}>
+        <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.55rem', color:'rgba(255,255,255,0.22)', letterSpacing:'0.2em' }}>BANSILAL STEPWELL · HYDERABAD</div>
+        <motion.div animate={{ y:[0,5,0] }} transition={{ repeat:Infinity, duration:2 }} style={{ cursor:'pointer', display:'flex', alignItems:'center', gap:5 }} onClick={() => document.getElementById('events')?.scrollIntoView({ behavior:'smooth' })}>
+          <div style={{ width:1, height:28, background:'linear-gradient(to bottom, transparent, #C8FF2B)' }} />
+          <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.5rem', color:'#C8FF2B', letterSpacing:'0.3em', textTransform:'uppercase' }}>SCROLL</div>
         </motion.div>
       </div>
+
+      {/* ── Hero layout CSS ── */}
+      <style>{`
+        .hero-inner {
+          position: relative;
+          z-index: 6;
+          flex: 1;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          align-items: center;
+          gap: 32px;
+          padding: 120px 5vw 80px;
+          min-height: 100svh;
+          box-sizing: border-box;
+        }
+        .hero-left  { display: flex; flex-direction: column; justify-content: center; }
+        .hero-right {
+          display: flex; flex-direction: column;
+          align-items: center; gap: 0;
+          position: relative;
+        }
+        .hero-radio-decal {
+          position: relative;
+          width: clamp(90px, 11vw, 140px);
+          align-self: flex-end;
+          margin-right: 10%;
+          margin-bottom: -12px;
+          z-index: 8;
+          cursor: pointer;
+        }
+        .tangy-tv-wrapper {
+          width: 100%;
+          max-width: 560px;
+        }
+
+        /* Tablet */
+        @media (max-width: 1100px) {
+          .hero-inner { grid-template-columns: 1fr 1fr; gap: 20px; padding: 110px 3vw 70px; }
+          .tangy-tv-wrapper { max-width: 440px; }
+        }
+
+        /* Mobile: single column, TV below content */
+        @media (max-width: 768px) {
+          .hero-inner {
+            grid-template-columns: 1fr;
+            padding: 100px 5vw 72px;
+            align-items: flex-start;
+            gap: 28px;
+          }
+          .hero-right {
+            width: 100%;
+            align-items: center;
+          }
+          .hero-radio-decal {
+            display: none; /* hidden on mobile */
+          }
+          .tangy-tv-wrapper {
+            width: 100%;
+            max-width: 380px;
+          }
+        }
+      `}</style>
     </section>
   );
 }

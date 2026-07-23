@@ -1,122 +1,146 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { FIRST_VIDEO, MIDDLE_VIDEO, PLAYLIST, shufflePlaylist } from './playlist.js';
 
-// ── TV States ──────────────────────────────────────────────────────────────────
 export const TV_STATE = {
-  BOOTING: 'BOOTING',    // Playing first.mp4
-  PLAYING: 'PLAYING',    // Playing a shuffled playlist video
-  SWITCHING: 'SWITCHING', // Playing middle.mp4 before channel change
-  OFF: 'OFF',            // Powered off
+  BOOTING:   'BOOTING',    // playing first.mp4
+  PLAYING:   'PLAYING',    // playing shuffled playlist video
+  SWITCHING: 'SWITCHING',  // playing middle.mp4 before channel change
+  OFF:       'OFF',        // powered off, black screen
 };
 
 export function useTVPlayer() {
   const videoRef = useRef(null);
 
-  // ── Playlist state ──────────────────────────────────────────────────────────
-  const [shuffled, setShuffled] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [pendingIndex, setPendingIndex] = useState(null);
+  // ── Playlist ──────────────────────────────────────────────────────────────
+  const [shuffled,      setShuffled]      = useState([]);
+  const [currentIndex,  setCurrentIndex]  = useState(0);
+  const [pendingIndex,  setPendingIndex]  = useState(null);
 
-  // ── TV state machine ────────────────────────────────────────────────────────
-  const [tvState, setTvState] = useState(TV_STATE.OFF);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [volume, setVolume] = useState(0.8);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [knobAngle, setKnobAngle] = useState(0);
-  const [isPowered, setIsPowered] = useState(true);
+  // ── Machine state ─────────────────────────────────────────────────────────
+  const [tvState,    setTvState]    = useState(TV_STATE.OFF);
+  const [isPowered,  setIsPowered]  = useState(false);
+  const [isPlaying,  setIsPlaying]  = useState(false);
+  const [isMuted,    setIsMuted]    = useState(true);
+  const [volume,     setVolume]     = useState(0.8);
+  const [currentTime,setCurrentTime]= useState(0);
+  const [duration,   setDuration]   = useState(0);
+  const [knobAngle,  setKnobAngle]  = useState(0);
 
-  // ── Initialise on mount ─────────────────────────────────────────────────────
+  // ── Initialise once on mount ───────────────────────────────────────────────
   useEffect(() => {
     const fresh = shufflePlaylist(PLAYLIST);
     setShuffled(fresh);
     setCurrentIndex(0);
+    setIsPowered(true);
 
     const alreadyBooted = sessionStorage.getItem('tvBooted') === 'true';
-    if (alreadyBooted) {
-      setTvState(TV_STATE.PLAYING);
-    } else {
-      setTvState(TV_STATE.BOOTING);
-    }
-    setIsPowered(true);
+    setTvState(alreadyBooted ? TV_STATE.PLAYING : TV_STATE.BOOTING);
   }, []);
 
-  // ── Derived current video source ────────────────────────────────────────────
+  // ── Source derivation ──────────────────────────────────────────────────────
   const currentVideo = (() => {
-    if (tvState === TV_STATE.BOOTING)    return FIRST_VIDEO;
-    if (tvState === TV_STATE.SWITCHING)  return MIDDLE_VIDEO;
-    if (tvState === TV_STATE.PLAYING)    return shuffled[currentIndex] || null;
+    if (tvState === TV_STATE.BOOTING)   return FIRST_VIDEO;
+    if (tvState === TV_STATE.SWITCHING) return MIDDLE_VIDEO;
+    if (tvState === TV_STATE.PLAYING)   return shuffled[currentIndex] || null;
     return null;
   })();
 
-  const currentSrc = currentVideo?.url || '';
-  const channelNumber = currentIndex + 1;
-  const totalVideos = shuffled.length;
+  const currentSrc      = currentVideo?.url || '';
+  const channelNumber   = currentIndex + 1;
+  const totalVideos     = shuffled.length;
 
-  // ── React to video source changes ───────────────────────────────────────────
+  // ── Load and play whenever the source changes ──────────────────────────────
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !currentSrc || tvState === TV_STATE.OFF) return;
+    if (!video || !isPowered) return;
+    if (tvState === TV_STATE.OFF) { video.pause(); return; }
+    if (!currentSrc) return;
 
-    video.src = currentSrc;
-    video.muted = isMuted;
-    video.volume = volume;
+    video.src         = currentSrc;
+    video.muted       = isMuted;
+    video.volume      = volume;
+    video.preload     = 'metadata';
+    video.playsInline = true;
     video.load();
     video.play().catch(() => {});
     setIsPlaying(true);
-  }, [currentSrc, tvState]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSrc, tvState, isPowered]);
 
-  // ── Sync volume / mute changes to DOM ───────────────────────────────────────
+  // ── Sync volume / mute to DOM element ─────────────────────────────────────
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    video.muted = isMuted;
+    video.muted  = isMuted;
     video.volume = volume;
   }, [isMuted, volume]);
 
-  // ── Video event listeners ───────────────────────────────────────────────────
+  // ── Video DOM event listeners ──────────────────────────────────────────────
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const onTimeUpdate = () => setCurrentTime(video.currentTime);
-    const onDurationChange = () => setDuration(video.duration || 0);
-    const onPlay = () => setIsPlaying(true);
-    const onPause = () => setIsPlaying(false);
+    const onTimeUpdate     = () => setCurrentTime(video.currentTime);
+    const onDurationChange = () => setDuration(isFinite(video.duration) ? video.duration : 0);
+    const onPlay           = () => setIsPlaying(true);
+    const onPause          = () => setIsPlaying(false);
 
     const onEnded = () => {
       if (tvState === TV_STATE.BOOTING) {
         sessionStorage.setItem('tvBooted', 'true');
         setCurrentIndex(0);
         setTvState(TV_STATE.PLAYING);
-      } else if (tvState === TV_STATE.SWITCHING) {
-        const nextIdx = pendingIndex !== null ? pendingIndex : 0;
-        setCurrentIndex(nextIdx);
+        return;
+      }
+      if (tvState === TV_STATE.SWITCHING) {
+        const next = pendingIndex !== null ? pendingIndex : 0;
         setPendingIndex(null);
+        setCurrentIndex(next);
         setTvState(TV_STATE.PLAYING);
-      } else if (tvState === TV_STATE.PLAYING) {
-        // Auto-advance to next in shuffled list
+        return;
+      }
+      if (tvState === TV_STATE.PLAYING) {
+        // Auto-advance — wraps around
         setCurrentIndex(prev => (prev + 1) % (shuffled.length || 1));
       }
     };
 
-    video.addEventListener('timeupdate', onTimeUpdate);
+    video.addEventListener('timeupdate',     onTimeUpdate);
     video.addEventListener('durationchange', onDurationChange);
-    video.addEventListener('play', onPlay);
-    video.addEventListener('pause', onPause);
-    video.addEventListener('ended', onEnded);
+    video.addEventListener('play',           onPlay);
+    video.addEventListener('pause',          onPause);
+    video.addEventListener('ended',          onEnded);
 
     return () => {
-      video.removeEventListener('timeupdate', onTimeUpdate);
+      video.removeEventListener('timeupdate',     onTimeUpdate);
       video.removeEventListener('durationchange', onDurationChange);
-      video.removeEventListener('play', onPlay);
-      video.removeEventListener('pause', onPause);
-      video.removeEventListener('ended', onEnded);
+      video.removeEventListener('play',           onPlay);
+      video.removeEventListener('pause',          onPause);
+      video.removeEventListener('ended',          onEnded);
     };
   }, [tvState, pendingIndex, shuffled]);
 
-  // ── Controls ────────────────────────────────────────────────────────────────
+  // ── Helper: interrupt whatever is playing and queue a channel switch ───────
+  const triggerSwitch = useCallback((nextIdx) => {
+    const safeIdx = ((nextIdx % shuffled.length) + shuffled.length) % (shuffled.length || 1);
+    setPendingIndex(safeIdx);
+    setKnobAngle(prev => prev + 36);
+
+    // Immediately stop current video and load middle.mp4
+    const video = videoRef.current;
+    if (video && MIDDLE_VIDEO?.url) {
+      video.pause();
+      video.src = MIDDLE_VIDEO.url;
+      video.load();
+      video.play().catch(() => {});
+    }
+    // Update state AFTER imperatively starting the video so the useEffect
+    // doesn't double-load it (currentSrc won't change until SWITCHING state updates)
+    setTvState(TV_STATE.SWITCHING);
+    setIsPlaying(true);
+  }, [shuffled.length]);
+
+  // ── Public controls ────────────────────────────────────────────────────────
   const play = useCallback(() => {
     videoRef.current?.play();
   }, []);
@@ -135,80 +159,61 @@ export function useTVPlayer() {
   }, []);
 
   const toggleMute = useCallback(() => {
-    setIsMuted(prev => {
-      if (videoRef.current) videoRef.current.muted = !prev;
-      return !prev;
-    });
+    setIsMuted(prev => !prev);
   }, []);
 
-  const goToChannel = useCallback((nextIdx) => {
-    if (tvState !== TV_STATE.PLAYING) return;
-    const safeIdx = ((nextIdx % shuffled.length) + shuffled.length) % shuffled.length;
-    setPendingIndex(safeIdx);
-    setKnobAngle(prev => prev + 36); // rotate knob 36° per channel step
-    setTvState(TV_STATE.SWITCHING);
-  }, [tvState, shuffled.length]);
-
+  // ── Next / Previous — interruptible from ANY state ─────────────────────────
   const nextChannel = useCallback(() => {
-    goToChannel(currentIndex + 1);
-  }, [currentIndex, goToChannel]);
+    if (!isPowered) return;
+    // If booting, interrupt and switch from index 0
+    if (tvState === TV_STATE.BOOTING || tvState === TV_STATE.PLAYING) {
+      const next = tvState === TV_STATE.BOOTING ? 0 : (currentIndex + 1) % (shuffled.length || 1);
+      triggerSwitch(next);
+      return;
+    }
+    // If already switching, ignore (middle.mp4 must finish)
+  }, [isPowered, tvState, currentIndex, shuffled.length, triggerSwitch]);
 
   const prevChannel = useCallback(() => {
-    goToChannel(currentIndex - 1);
-  }, [currentIndex, goToChannel]);
-
-  const powerOff = useCallback(() => {
-    const video = videoRef.current;
-    if (video) { video.pause(); video.src = ''; }
-    setIsPlaying(false);
-    setIsPowered(false);
-    setTvState(TV_STATE.OFF);
-    sessionStorage.removeItem('tvBooted');
-  }, []);
-
-  const powerOn = useCallback(() => {
-    const fresh = shufflePlaylist(PLAYLIST);
-    setShuffled(fresh);
-    setCurrentIndex(0);
-    setIsPowered(true);
-    setTvState(TV_STATE.BOOTING);
-  }, []);
+    if (!isPowered) return;
+    if (tvState === TV_STATE.BOOTING || tvState === TV_STATE.PLAYING) {
+      const prev = tvState === TV_STATE.BOOTING
+        ? shuffled.length - 1
+        : (currentIndex - 1 + shuffled.length) % (shuffled.length || 1);
+      triggerSwitch(prev);
+      return;
+    }
+  }, [isPowered, tvState, currentIndex, shuffled.length, triggerSwitch]);
 
   const togglePower = useCallback(() => {
-    if (isPowered) powerOff(); else powerOn();
-  }, [isPowered, powerOff, powerOn]);
+    if (isPowered) {
+      videoRef.current?.pause();
+      setIsPlaying(false);
+      setIsPowered(false);
+      setTvState(TV_STATE.OFF);
+      sessionStorage.removeItem('tvBooted');
+    } else {
+      const fresh = shufflePlaylist(PLAYLIST);
+      setShuffled(fresh);
+      setCurrentIndex(0);
+      setPendingIndex(null);
+      setIsPowered(true);
+      setTvState(TV_STATE.BOOTING);
+    }
+  }, [isPowered]);
 
   const requestFullscreen = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.requestFullscreen) video.requestFullscreen();
-    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    const v = videoRef.current;
+    if (!v) return;
+    (v.requestFullscreen || v.webkitRequestFullscreen)?.call(v);
   }, []);
 
   return {
     videoRef,
-    tvState,
-    isPowered,
-    currentVideo,
-    currentIndex,
-    channelNumber,
-    totalVideos,
-    isPlaying,
-    isMuted,
-    volume,
-    currentTime,
-    duration,
-    knobAngle,
-    shuffled,
-    // controls
-    play,
-    pause,
-    seek,
-    changeVolume,
-    toggleMute,
-    nextChannel,
-    prevChannel,
-    togglePower,
-    requestFullscreen,
+    tvState, isPowered,
+    currentVideo, currentIndex, channelNumber, totalVideos,
+    isPlaying, isMuted, volume, currentTime, duration, knobAngle,
+    play, pause, seek, changeVolume, toggleMute,
+    nextChannel, prevChannel, togglePower, requestFullscreen,
   };
 }
