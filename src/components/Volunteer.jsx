@@ -31,7 +31,7 @@ export default function Volunteer() {
   };
 
   return (
-    <section id="volunteer" style={{ background: "#080808", padding: "120px 5vw", position: "relative", overflow: "hidden" }}>
+    <section id="volunteer" style={{ background: "#080808", padding: "120px 5vw", position: "relative", overflow: "hidden", contain: "paint layout" }}>
       {/* Background Graphic Lines / Torn paper effect simulated via grid */}
       <div style={{ position: "absolute", inset: 0, opacity: 0.03, pointerEvents: "none", zIndex: 0, background: "repeating-linear-gradient(45deg, #fff, #fff 10px, transparent 10px, transparent 20px)" }} />
       
@@ -40,7 +40,7 @@ export default function Volunteer() {
         <motion.div 
           animate={{ x: ["0%", "-50%"] }}
           transition={{ ease: "linear", duration: 15, repeat: Infinity }}
-          style={{ display: "inline-block", fontSize: "clamp(4rem, 10vw, 8rem)", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.2em", color: "#C8FF2B" }}
+          style={{ display: "inline-block", fontSize: "clamp(4rem, 10vw, 8rem)", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.2em", color: "#C8FF2B", willChange: "transform", transform: "translateZ(0)" }}
         >
           CO-CREATE THE RITUAL • JOIN THE COLLECTIVE • CO-CREATE THE RITUAL • JOIN THE COLLECTIVE • 
         </motion.div>
@@ -66,7 +66,7 @@ export default function Volunteer() {
               background: "#111111",
               transform: "rotate(-2deg)",
             }}>
-              <img src="/gallery/tangy6.jpg" alt="Join Collective" style={{ width: "100%", height: "auto", display: "block", filter: "grayscale(1) contrast(1.2)" }} />
+              <img src="/gallery/tangy6.jpg" alt="Join Collective" loading="lazy" decoding="async" style={{ width: "100%", height: "auto", display: "block", filter: "grayscale(1) contrast(1.2)" }} />
               
               {/* Overlapping Graffiti/Ticket Graphic stamp */}
               <div style={{

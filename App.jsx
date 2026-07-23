@@ -66,7 +66,7 @@ function useAutoHover(amount = 0.35) {
     onMouseLeave: () => setIsMouseHovered(false),
   };
 
-  return { ref, isHovered, hoverProps };
+  return { ref, isHovered, hoverProps, isInView };
 }
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -168,7 +168,16 @@ function Navbar() {
   const location = useLocation();
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 50);
+    let ticking = false;
+    const handler = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
@@ -458,7 +467,7 @@ function Hero() {
           opacity: 1, 
           scale: radioHover.isHovered ? 1.08 : 1, 
           rotate: radioHover.isHovered ? 0 : -4, 
-          y: [0, -12, 0],
+          y: radioHover.isInView ? [0, -12, 0] : 0,
           filter: radioHover.isHovered ? "drop-shadow(0 0 25px rgba(200, 255, 43, 0.4))" : "drop-shadow(0 20px 30px rgba(0,0,0,0.85))"
         }}
         transition={{
@@ -770,7 +779,7 @@ function ValueBlock({ val, idx }) {
         <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.95rem", lineHeight: 1.75, maxWidth: 500, margin: 0 }}>{val.text}</p>
       </div>
       <motion.div className="val-image" animate={{ scale: isHovered ? 1.03 : 1 }} style={{ width: "clamp(120px, 18vw, 240px)", height: "clamp(100px, 14vw, 180px)", overflow: "hidden", flexShrink: 0, order: idx % 2 === 0 ? 1 : -1, filter: "grayscale(0.4)" }}>
-        <img src={val.img} alt={val.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+        <img src={val.img} alt={val.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" decoding="async" />
       </motion.div>
     </motion.div>
   );
@@ -888,7 +897,7 @@ function WhyTangy() {
           <motion.img
             src="/vinyl.png"
             alt="Vinyl Record"
-            animate={{ rotate: 360 }}
+            animate={{ rotate: vinylHover.isInView ? 360 : 0 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
             style={{ width: "100%", height: "auto", display: "block" }}
           />
@@ -1755,7 +1764,7 @@ function Gallery() {
         style={{ position: "relative", overflow: "hidden", cursor: "pointer", background: "#080808", ...style }}
       >
         <img
-          src={item.img} alt={item.label} loading="lazy"
+          src={item.img} alt={item.label} loading="lazy" decoding="async"
           style={{ 
             width: "100%", height: "100%", objectFit: "cover", display: "block", 
             transition: "filter 0.4s, transform 0.5s",
@@ -1784,7 +1793,7 @@ function Gallery() {
           initial={{ opacity: 0, x: 40, rotate: 15 }}
           whileInView={{ opacity: 1, x: 0, rotate: 10 }}
           viewport={{ once: true }}
-          animate={{ y: [0, -10, 0], scale: violinHover.isHovered ? 1.08 : 1, rotate: violinHover.isHovered ? 0 : 10 }}
+          animate={{ y: violinHover.isInView ? [0, -10, 0] : 0, scale: violinHover.isHovered ? 1.08 : 1, rotate: violinHover.isHovered ? 0 : 10 }}
           transition={{ y: { duration: 5, repeat: Infinity, ease: "easeInOut" } }}
           style={{
             position: "absolute",
@@ -1918,7 +1927,7 @@ function Gallery() {
                       <img
                         src={item.img}
                         alt={item.label}
-                        loading="lazy"
+                        loading="lazy" decoding="async"
                         style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(0.6) contrast(1.1)", transition: "filter 0.4s, transform 0.5s" }}
                         onMouseEnter={e => { e.target.style.filter = "grayscale(0) contrast(1.05)"; e.target.style.transform = "scale(1.05)"; }}
                         onMouseLeave={e => { e.target.style.filter = "grayscale(0.6) contrast(1.1)"; e.target.style.transform = "scale(1)"; }}
@@ -2010,6 +2019,7 @@ function FounderCardBlock({ f, i }) {
 }
 
 function About() {
+  const gramophoneHover = useAutoHover(0.4);
 
   const founders = [
     {
@@ -2107,12 +2117,13 @@ function About() {
 
           {/* GRAMOPHONE DECAL */}
           <motion.div
+            ref={gramophoneHover.ref}
+            {...gramophoneHover.hoverProps}
             initial={{ opacity: 0, x: -30, rotate: 10 }}
             whileInView={{ opacity: 1, x: 0, rotate: 6 }}
             viewport={{ once: true }}
-            animate={{ y: [0, -8, 0] }}
+            animate={{ y: gramophoneHover.isInView ? [0, -8, 0] : 0, scale: gramophoneHover.isHovered ? 1.06 : 1, rotate: gramophoneHover.isHovered ? 0 : 6 }}
             transition={{ y: { duration: 6, repeat: Infinity, ease: "easeInOut" } }}
-            whileHover={{ scale: 1.06, rotate: 0 }}
             style={{
               position: "absolute",
               left: "2vw",
@@ -2233,7 +2244,7 @@ function Contact({ toast }) {
           <motion.img
             src="/vinyl.png"
             alt="Vinyl Record"
-            animate={{ rotate: 360 }}
+            animate={{ rotate: vinylHover.isInView ? 360 : 0 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             style={{ width: "100%", height: "auto", display: "block" }}
           />
@@ -2265,7 +2276,7 @@ function Contact({ toast }) {
                 ))}
               </div>
               <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(200, 255, 43,0.2)", height: 200 }}>
-                <iframe title="Bansilal Stepwell" src="https://maps.google.com/maps?q=Bansilal+Baoli+Stepwell+Hyderabad+Telangana&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) saturate(0.8) contrast(0.9)" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+                <iframe title="Bansilal Stepwell" src="https://maps.google.com/maps?q=Bansilal+Baoli+Stepwell+Hyderabad+Telangana&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) saturate(0.8) contrast(0.9)" }} allowFullScreen loading="lazy" decoding="async" referrerPolicy="no-referrer-when-downgrade" />
               </div>
             </motion.div>
   
@@ -2533,7 +2544,7 @@ function LandingPage({ showArtistOverlay = false }) {
         html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-size-adjust: 100%; }
         body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; width: 100%; background: #080808; }
         
-        section { scroll-margin-top: 80px; overflow-x: hidden; position: relative; }
+        section { scroll-margin-top: 80px; overflow-x: hidden; position: relative; contain: paint layout; }
 
         .unicorn-error-box,
         [class*="unicorn-error"],
