@@ -31,8 +31,28 @@ function Btn({ label, title, onClick, disabled, active }) {
   );
 }
 
-// ─── Rotating Knob ────────────────────────────────────────────────────────────
-function Knob({ label, angle, onLeft, onRight, onChange, value, min = 0, max = 1 }) {
+// ─── Rotating Knob (drag-controlled for VOL, click-step for CH) ──────────────
+function Knob({ label, angle, onLeft, onRight, onDrag }) {
+  const knobRef = React.useRef(null);
+  const dragStart = React.useRef(null); // { y, angle }
+
+  const handlePointerDown = (e) => {
+    if (!onDrag) return; // CH knob: use click only
+    e.preventDefault();
+    knobRef.current.setPointerCapture(e.pointerId);
+    dragStart.current = { y: e.clientY, angle };
+  };
+
+  const handlePointerMove = (e) => {
+    if (!dragStart.current || !onDrag) return;
+    const dy = dragStart.current.y - e.clientY; // up = positive
+    // 200px of drag covers full 270° range → maps to 0–1 volume
+    const delta = dy / 200;
+    onDrag(delta);
+  };
+
+  const handlePointerUp = () => { dragStart.current = null; };
+
   return (
     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
       <div style={{
@@ -40,37 +60,35 @@ function Knob({ label, angle, onLeft, onRight, onChange, value, min = 0, max = 1
         letterSpacing:'0.18em', color:'rgba(200,255,43,0.4)', textTransform:'uppercase',
       }}>{label}</div>
       <div
-        onClick={e => {
+        ref={knobRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClick={!onDrag ? (e => {
           const rect = e.currentTarget.getBoundingClientRect();
           (e.clientX > rect.left + rect.width / 2 ? onRight : onLeft)?.();
-        }}
+        }) : undefined}
         style={{
-          width:40, height:40, borderRadius:'50%', cursor:'pointer',
-          background:'radial-gradient(circle at 35% 35%, #444 0%, #1a1a1a 65%, #111 100%)',
-          border:'2px solid rgba(200,255,43,0.18)',
-          boxShadow:'0 3px 10px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.08)',
+          width:44, height:44, borderRadius:'50%',
+          cursor: onDrag ? 'ns-resize' : 'pointer',
+          background:'radial-gradient(circle at 35% 35%, #4a4a4a 0%, #1e1e1e 55%, #111 100%)',
+          border:'2px solid rgba(200,255,43,0.22)',
+          boxShadow:'0 4px 14px rgba(0,0,0,0.75), inset 0 1px 3px rgba(255,255,255,0.1)',
           position:'relative',
           transform:`rotate(${angle}deg)`,
-          transition:'transform 0.3s ease',
+          transition: onDrag ? 'none' : 'transform 0.3s ease',
+          touchAction:'none',
+          userSelect:'none',
         }}
       >
+        {/* Indicator dot */}
         <div style={{
-          position:'absolute', top:3, left:'50%', transform:'translateX(-50%)',
-          width:2, height:9, background:'#C8FF2B', borderRadius:1,
+          position:'absolute', top:4, left:'50%', transform:'translateX(-50%)',
+          width:3, height:10, background:'#C8FF2B', borderRadius:2,
+          boxShadow:'0 0 5px #C8FF2B',
         }} />
       </div>
-      {onChange && (
-        <input
-          type="range" min={min} max={max} step={0.01}
-          value={value ?? 0}
-          onChange={e => onChange(parseFloat(e.target.value))}
-          style={{
-            width:52, height:3, accentColor:'#C8FF2B', cursor:'pointer',
-            outline:'none', border:'none', appearance:'none',
-            background:`linear-gradient(to right, #C8FF2B ${((value - min) / (max - min)) * 100}%, rgba(255,255,255,0.08) 0%)`,
-          }}
-        />
-      )}
     </div>
   );
 }
@@ -81,15 +99,25 @@ function formatTime(s) {
   return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 }
 
-// ─── TVKnobs (exported separately for potential standalone use) ───────────────
+// ─── TVKnobs ─────────────────────────────────────────────────────────────────
 export function TVKnobs({ volume, knobAngle, changeVolume, nextChannel, prevChannel }) {
+  // Track accumulated drag delta so angle matches actual volume
+  const volRef = React.useRef(volume);
+  volRef.current = volume;
+
+  const handleVolDrag = (delta) => {
+    const next = Math.min(1, Math.max(0, volRef.current + delta));
+    changeVolume(next);
+    volRef.current = next;
+  };
+
+  // VOL angle: maps 0→1 to -135°→+135° (270° total sweep)
+  const volAngle = -135 + volume * 270;
+
   return (
-    <div style={{ display:'flex', alignItems:'flex-end', gap:16, flexShrink:0 }}>
-      <Knob label="VOL" angle={-135 + volume * 270} value={volume}
-        onChange={changeVolume} onLeft={() => changeVolume(Math.max(0, volume - 0.1))}
-        onRight={() => changeVolume(Math.min(1, volume + 0.1))} />
-      <Knob label="CH" angle={knobAngle}
-        onLeft={prevChannel} onRight={nextChannel} />
+    <div style={{ display:'flex', alignItems:'flex-end', gap:20, flexShrink:0 }}>
+      <Knob label="VOL" angle={volAngle} onDrag={handleVolDrag} />
+      <Knob label="CH"  angle={knobAngle} onLeft={prevChannel} onRight={nextChannel} />
     </div>
   );
 }
@@ -208,20 +236,6 @@ export default function TVControls({
         <PowerBtn isPowered={isPowered} togglePower={togglePower} />
       </div>
 
-      {/* Row 4 — Volume slider */}
-      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-        <span style={{ fontSize:'0.4rem', letterSpacing:'0.15em', color:'rgba(255,255,255,0.25)', minWidth:20 }}>VOL</span>
-        <input
-          type="range" min={0} max={1} step={0.01}
-          value={isMuted ? 0 : volume}
-          onChange={e => changeVolume(parseFloat(e.target.value))}
-          disabled={!isPowered}
-          style={{ flex:1, accentColor:'#C8FF2B', cursor: isPowered ? 'pointer' : 'not-allowed', height:3 }}
-        />
-        <span style={{ fontSize:'0.4rem', color:'rgba(255,255,255,0.25)', minWidth:24, textAlign:'right' }}>
-          {Math.round((isMuted ? 0 : volume) * 100)}%
-        </span>
-      </div>
     </div>
   );
 }

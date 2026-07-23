@@ -86,10 +86,10 @@ export function useTVPlayer() {
     const onPause          = () => setIsPlaying(false);
 
     const onEnded = () => {
+      // BOOTING: first.mp4 loops continuously until user changes channel
       if (tvState === TV_STATE.BOOTING) {
-        sessionStorage.setItem('tvBooted', 'true');
-        setCurrentIndex(0);
-        setTvState(TV_STATE.PLAYING);
+        const v = videoRef.current;
+        if (v && FIRST_VIDEO?.url) { v.currentTime = 0; v.play().catch(() => {}); }
         return;
       }
       if (tvState === TV_STATE.SWITCHING) {
@@ -125,6 +125,11 @@ export function useTVPlayer() {
     const safeIdx = ((nextIdx % shuffled.length) + shuffled.length) % (shuffled.length || 1);
     setPendingIndex(safeIdx);
     setKnobAngle(prev => prev + 36);
+
+    // If interrupting the boot sequence, mark it as done
+    if (tvState === TV_STATE.BOOTING) {
+      sessionStorage.setItem('tvBooted', 'true');
+    }
 
     // Immediately stop current video and load middle.mp4
     const video = videoRef.current;
