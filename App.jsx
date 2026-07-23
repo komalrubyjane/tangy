@@ -300,22 +300,102 @@ function Navbar() {
 }
 
 
-// ─── RETRO TV ────────────────────────────────────────────────────────────────
+// ─── RETRO TV STATE MACHINE ──────────────────────────────────────────────────
+const rawVideos = import.meta.glob('/public/background-video/*.mp4', { query: '?url', import: 'default', eager: true });
+const allVideos = Object.values(rawVideos);
+const playlistFiles = allVideos.filter(url => !url.endsWith('first.mp4') && !url.endsWith('middle.mp4'));
+const fallbackVideo = '/background_video/0723.mp4';
+
+// Use uploaded files or fallback to the sample video
+const playlist = playlistFiles.length > 0 ? playlistFiles : [fallbackVideo];
+const firstVideoUrl = allVideos.find(url => url.endsWith('first.mp4')) || fallbackVideo;
+const middleVideoUrl = allVideos.find(url => url.endsWith('middle.mp4')) || fallbackVideo;
+
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 function RetroTV() {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { margin: "200px 0px 200px 0px" });
   const [isHovered, setIsHovered] = useState(false);
+  const [power, setPower] = useState(true);
+
+  // States: 'BOOTING', 'PLAYING', 'SWITCHING'
+  const [tvState, setTvState] = useState('BOOTING');
+  const [shuffledPlaylist, setShuffledPlaylist] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [targetIndex, setTargetIndex] = useState(null);
 
   useEffect(() => {
-    if (videoRef.current) {
+    const shuffled = shuffleArray(playlist);
+    setShuffledPlaylist(shuffled);
+    setCurrentIndex(0);
+
+    const booted = sessionStorage.getItem("tvBooted");
+    if (booted === "true") {
+      setTvState('PLAYING');
+    } else {
+      setTvState('BOOTING');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (videoRef.current && power) {
       if (isInView) {
         videoRef.current.play().catch(e => console.log("Play failed", e));
       } else {
         videoRef.current.pause();
       }
     }
-  }, [isInView]);
+  }, [isInView, power, tvState, currentIndex]);
+
+  const handleVideoEnd = () => {
+    if (tvState === 'BOOTING') {
+      sessionStorage.setItem("tvBooted", "true");
+      setTvState('PLAYING');
+    } else if (tvState === 'SWITCHING') {
+      setCurrentIndex(targetIndex !== null ? targetIndex : 0);
+      setTargetIndex(null);
+      setTvState('PLAYING');
+    } else if (tvState === 'PLAYING') {
+      setCurrentIndex((prev) => (prev + 1) % shuffledPlaylist.length);
+    }
+  };
+
+  const changeChannel = (direction) => {
+    if (tvState !== 'PLAYING') return;
+    let nextIdx = currentIndex + direction;
+    if (nextIdx < 0) nextIdx = shuffledPlaylist.length - 1;
+    if (nextIdx >= shuffledPlaylist.length) nextIdx = 0;
+    
+    setTargetIndex(nextIdx);
+    setTvState('SWITCHING');
+  };
+
+  const togglePower = () => {
+    if (power) {
+      sessionStorage.removeItem("tvBooted");
+      setPower(false);
+    } else {
+      setTvState('BOOTING');
+      setPower(true);
+      const shuffled = shuffleArray(playlist);
+      setShuffledPlaylist(shuffled);
+      setCurrentIndex(0);
+    }
+  };
+
+  let currentSrc = '';
+  if (tvState === 'BOOTING') currentSrc = firstVideoUrl;
+  else if (tvState === 'SWITCHING') currentSrc = middleVideoUrl;
+  else currentSrc = shuffledPlaylist[currentIndex] || '';
 
   return (
     <div 
@@ -324,31 +404,63 @@ function RetroTV() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="tv-label-top">
-        <div className="blinking-red-dot" /> LIVE ARCHIVE
+      <div className="tv-label-top" style={{ justifyContent: 'space-between', width: '100%', padding: '0 10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="blinking-red-dot" style={{ opacity: power ? 1 : 0.2 }} /> 
+          {tvState === 'BOOTING' ? 'BOOTING...' : 'LIVE ARCHIVE'}
+        </div>
       </div>
       <motion.div
         className="tv-chassis"
-        animate={{ y: [0, -10, 0], rotate: [-1, 1, -1], scale: isHovered ? 1.03 : 1 }}
+        animate={{ y: [0, -10, 0], rotate: [-1, 1, -1], scale: (isHovered && power) ? 1.03 : 1 }}
         transition={{ y: { duration: 6, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" }, scale: { duration: 0.3 } }}
       >
-        <div className={`tv-screen-container ${isHovered ? 'hovered' : ''}`}>
-          <video
-            ref={videoRef}
-            src="/background_video/0723.mp4"
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster="/gallery/tangy1.jpg"
-            className="tv-video"
-          />
-          <div className="tv-glass-overlay"></div>
-          {isHovered && <div className="tv-scanlines"></div>}
+        <div className={`tv-screen-container ${(isHovered && power) ? 'hovered' : ''}`}>
+          {power ? (
+            <>
+              <video
+                key={currentSrc}
+                ref={videoRef}
+                src={currentSrc}
+                muted
+                autoPlay
+                playsInline
+                preload="auto"
+                poster="/gallery/tangy1.jpg"
+                className="tv-video"
+                onEnded={handleVideoEnd}
+              />
+              <div className="tv-glass-overlay"></div>
+              {isHovered && <div className="tv-scanlines"></div>}
+              
+              {tvState === 'BOOTING' && (
+                <div className="tv-osd">
+                  SEARCHING FOR SIGNAL...<br/>
+                  TANGY SESSIONS TV
+                </div>
+              )}
+              {tvState === 'SWITCHING' && (
+                <div className="tv-osd">
+                  SWITCHING CHANNEL...<br/>
+                  CH {String((targetIndex !== null ? targetIndex : currentIndex) + 1).padStart(2, '0')}
+                </div>
+              )}
+            </>
+          ) : (
+            <div style={{ width: '100%', height: '100%', background: '#050505', boxShadow: 'inset 0 0 30px #000' }} />
+          )}
+        </div>
+        
+        <div className="tv-controls">
+          <button className={`tv-power-btn ${power ? 'on' : 'off'}`} onClick={togglePower}></button>
+          <div className="tv-channel-knobs">
+            <button onClick={() => changeChannel(-1)}>◀</button>
+            <button onClick={() => changeChannel(1)}>▶</button>
+          </div>
         </div>
       </motion.div>
       <div className="tv-label-bottom">
-        ▶ PLAYING NOW
+        {power ? (tvState === 'PLAYING' ? '▶ PLAYING NOW' : '⏸ TUNING') : 'OFF'}
       </div>
     </div>
   );
@@ -2645,6 +2757,31 @@ function LandingPage({ showArtistOverlay = false }) {
         .tv-label-bottom {
           font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em;
           color: rgba(255,255,255,0.4);
+        }
+        .tv-controls {
+          display: flex; justify-content: space-between; align-items: center;
+          margin-top: 12px; padding: 0 10px;
+        }
+        .tv-power-btn {
+          width: 14px; height: 14px; border-radius: 50%; border: none; cursor: pointer;
+          background: #444; box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.2);
+          transition: all 0.2s;
+        }
+        .tv-power-btn.on { background: #ff2e52; box-shadow: 0 0 10px #ff2e52, inset 0 1px 2px rgba(255,255,255,0.5); }
+        .tv-power-btn:active { transform: scale(0.9); }
+        .tv-channel-knobs { display: flex; gap: 8px; }
+        .tv-channel-knobs button {
+          background: #222; color: #888; border: 1px solid #333; border-radius: 4px;
+          padding: 4px 8px; font-size: 0.7rem; cursor: pointer; transition: all 0.2s;
+        }
+        .tv-channel-knobs button:hover { background: #333; color: #C8FF2B; border-color: #C8FF2B; }
+        .tv-channel-knobs button:active { transform: scale(0.9); }
+        .tv-osd {
+          position: absolute; top: 10%; left: 8%; color: #C8FF2B;
+          font-family: 'Space Mono', monospace; font-size: clamp(0.7rem, 2vw, 1.2rem);
+          text-shadow: 0 0 8px #C8FF2B; letter-spacing: 0.1em; line-height: 1.4;
+          z-index: 3; pointer-events: none; opacity: 0.85;
+          animation: tvFlicker 3s infinite;
         }
 
         @media (max-width: 1024px) {
