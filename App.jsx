@@ -2749,7 +2749,7 @@ function LandingPage({ showArtistOverlay = false }) {
           #about h2 { font-size: clamp(2.5rem, 10vw, 5rem) !important; }
           #about .about-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; padding: 20px !important; }
           .founder-card { flex-direction: column !important; gap: 20px !important; }
-          .founder-card img { width: 100% !important; max-height: 220px !important; object-fit: cover !important; }
+          .founder-card img { width: 100% !important; height: 260px !important; max-height: none !important; object-fit: cover !important; object-position: center top !important; }
 
           /* 11. CONTACT */
           .contact-grid { gap: 28px !important; }
