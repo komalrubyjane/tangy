@@ -7,7 +7,7 @@
 //   AdminDashboard.jsx     — NEW (replace with the AdminDashboard.jsx output)
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import UnicornBackground from "./src/components/UnicornBackground";
 import Volunteer from "./src/components/Volunteer";
@@ -274,26 +274,13 @@ function Navbar() {
 function Hero() {
   const sectionRef = useRef(null);
   const flareRef = useRef(null);
-  
-  const parallaxLayer1 = useRef(null);
-  const parallaxLayer2 = useRef(null);
-  const parallaxLayer3 = useRef(null);
-
   const targetOffset = useRef({ x: 0, y: 0 });
   const currentOffset = useRef({ x: 0, y: 0 });
   const rafId = useRef(null);
 
-  // Safe checks for globals
-  const checkIsMobile = typeof isMobile !== 'undefined' ? isMobile : (typeof window !== 'undefined' && window.innerWidth < 768);
-  const checkIsLowEndDevice = typeof isLowEndDevice !== 'undefined' ? isLowEndDevice : false;
-
-  // Scroll parallax for the right side container
-  const { scrollYProgress } = useScroll();
-  const rightSideY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
-
-  // Mouse parallax
+  // Mouse parallax — disabled entirely on mobile/low-end for performance
   useEffect(() => {
-    if (checkIsMobile || checkIsLowEndDevice) return;
+    if (isMobile || isLowEndDevice) return;
     const onMouseMove = (e) => {
       const { innerWidth: W, innerHeight: H } = window;
       targetOffset.current = {
@@ -302,73 +289,24 @@ function Hero() {
       };
     };
     window.addEventListener("mousemove", onMouseMove, { passive: true });
-    
     let lastTime = 0;
     const tick = (time) => {
-      if (time - lastTime < (checkIsLowEndDevice ? 33 : 16)) { 
-        rafId.current = requestAnimationFrame(tick); 
-        return; 
-      }
+      if (time - lastTime < (isLowEndDevice ? 33 : 16)) { rafId.current = requestAnimationFrame(tick); return; }
       lastTime = time;
-      
       currentOffset.current.x += (targetOffset.current.x - currentOffset.current.x) * 0.06;
       currentOffset.current.y += (targetOffset.current.y - currentOffset.current.y) * 0.06;
-      
       const STRENGTH = 14;
       const tx = currentOffset.current.x * STRENGTH;
       const ty = currentOffset.current.y * STRENGTH;
-      
-      if (flareRef.current) {
-        flareRef.current.style.transform = `translate(calc(-50% + ${tx * 4}px), calc(-50% + ${ty * 4}px))`;
-      }
-      
-      // Right side parallax layers
-      if (parallaxLayer1.current) parallaxLayer1.current.style.transform = `translate(${tx * 3}px, ${ty * 3}px)`;
-      if (parallaxLayer2.current) parallaxLayer2.current.style.transform = `translate(${tx * 1.5}px, ${ty * 1.5}px)`;
-      if (parallaxLayer3.current) parallaxLayer3.current.style.transform = `translate(${tx * 0.8}px, ${ty * 0.8}px)`;
-      
+      if (flareRef.current) flareRef.current.style.transform = `translate(calc(-50% + ${tx * 4}px), calc(-50% + ${ty * 4}px))`;
       rafId.current = requestAnimationFrame(tick);
     };
     rafId.current = requestAnimationFrame(tick);
-    
-    return () => { 
-      window.removeEventListener("mousemove", onMouseMove); 
-      cancelAnimationFrame(rafId.current); 
-    };
-  }, [checkIsMobile, checkIsLowEndDevice]);
+    return () => { window.removeEventListener("mousemove", onMouseMove); cancelAnimationFrame(rafId.current); };
+  }, []);
 
   return (
     <section ref={sectionRef} id="home" style={{ position: "relative", minHeight: "100svh", height: "auto", display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-end", overflow: "hidden", background: "#080808", paddingBottom: "8vh" }}>
-      <style>
-        {`
-          @keyframes spin {
-            100% { transform: rotate(360deg); }
-          }
-          @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-          }
-          @keyframes float-slow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(-2deg); }
-          }
-          @keyframes eq-bounce {
-            0%, 100% { height: 20%; }
-            50% { height: 100%; }
-          }
-          .eq-bar {
-            width: 4px;
-            background: #C8FF2B;
-            border-radius: 2px;
-            animation: eq-bounce 0.8s infinite ease-in-out;
-          }
-          .eq-bar:nth-child(1) { animation-duration: 0.7s; }
-          .eq-bar:nth-child(2) { animation-duration: 1.1s; animation-delay: 0.2s; }
-          .eq-bar:nth-child(3) { animation-duration: 0.9s; animation-delay: 0.4s; }
-          .eq-bar:nth-child(4) { animation-duration: 0.8s; animation-delay: 0.1s; }
-          .eq-bar:nth-child(5) { animation-duration: 1.2s; animation-delay: 0.3s; }
-        `}
-      </style>
 
       {/* Collage photo grid background */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gridTemplateRows: "repeat(3, 1fr)", gap: 2, opacity: 0.12 }}>
@@ -382,121 +320,8 @@ function Hero() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(8,8,8,0.6) 0%, transparent 60%, rgba(8,8,8,0.95) 100%)", zIndex: 2 }} />
 
       {/* Cursor flare */}
-      {!checkIsMobile && (
+      {!isMobile && (
         <div ref={flareRef} style={{ position: "absolute", zIndex: 3, pointerEvents: "none", width: "35vw", height: "35vw", borderRadius: "50%", background: "radial-gradient(circle, rgba(200,255,43,0.07) 0%, transparent 70%)", transform: "translate(-50%, -50%)", top: "50%", left: "50%", willChange: "transform" }} />
-      )}
-
-      {/* RIGHT SIDE COMPOSITION */}
-      {!checkIsMobile ? (
-        <motion.div
-          style={{
-            position: "absolute", right: "5vw", top: "10%", width: "45vw", height: "80%", zIndex: 4, pointerEvents: "none",
-            y: rightSideY,
-          }}
-        >
-          {/* Background Layer 3 */}
-          <div ref={parallaxLayer3} style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", willChange: "transform" }}>
-            <div style={{ position: "absolute", width: "40vw", height: "40vw", background: "radial-gradient(circle, rgba(200,255,43,0.15) 0%, transparent 70%)", borderRadius: "50%", filter: "blur(40px)" }} />
-            <div style={{ position: "absolute", inset: 0, opacity: 0.1, backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')", mixBlendMode: "overlay" }} />
-          </div>
-
-          {/* Midground Layer 2 */}
-          <div ref={parallaxLayer2} style={{ position: "absolute", inset: 0, willChange: "transform" }}>
-            <div style={{ position: "absolute", top: "10%", right: "20%", width: "12vw", animation: "float-slow 6s infinite ease-in-out", opacity: 0.7 }}>
-              <img src="/gramophone.png" alt="Gramophone" style={{ width: "100%" }} />
-            </div>
-            
-            <div style={{ position: "absolute", bottom: "30%", left: "10%", width: "12vw", height: "7.5vw", background: "#111", borderRadius: "8px", border: "2px solid #333", display: "flex", flexDirection: "column", padding: "0.5vw", transform: "rotate(-10deg)", boxShadow: "0 10px 30px rgba(0,0,0,0.8)", animation: "float-slow 5s infinite ease-in-out reverse" }}>
-              <div style={{ flex: 1, background: "#C8FF2B", borderRadius: "4px", padding: "0.5vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                 <div style={{ fontSize: "0.5vw", fontFamily: "'Space Mono', monospace", color: "#111", fontWeight: "bold" }}>TANGY MIX VOL.1</div>
-                 <div style={{ display: "flex", justifyContent: "center", gap: "2vw", background: "#111", padding: "0.5vw", borderRadius: "4px" }}>
-                    <div style={{ width: "1.5vw", height: "1.5vw", borderRadius: "50%", background: "#333", border: "2px solid #ccc" }} />
-                    <div style={{ width: "1.5vw", height: "1.5vw", borderRadius: "50%", background: "#333", border: "2px solid #ccc" }} />
-                 </div>
-              </div>
-            </div>
-
-            <div style={{ position: "absolute", top: "40%", right: "30%", fontSize: "2vw", color: "#C8FF2B", animation: "float 4s infinite ease-in-out", opacity: 0.6 }}>♫</div>
-            <div style={{ position: "absolute", bottom: "40%", left: "30%", fontSize: "1.5vw", color: "#fff", animation: "float 5s infinite ease-in-out reverse", opacity: 0.4 }}>♪</div>
-          </div>
-
-          {/* Foreground Layer 1 */}
-          <div ref={parallaxLayer1} style={{ position: "absolute", inset: 0, willChange: "transform" }}>
-            <div style={{ position: "absolute", top: "35%", right: "18%", width: "22vw", height: "22vw", borderRadius: "50%", background: "#050505", border: "1px solid #222", boxShadow: "0 15px 40px rgba(0,0,0,0.9)", display: "flex", alignItems: "center", justifyContent: "center", animation: "spin 4s linear infinite" }}>
-               <div style={{ width: "90%", height: "90%", borderRadius: "50%", border: "1px solid #1a1a1a" }} />
-               <div style={{ position: "absolute", width: "80%", height: "80%", borderRadius: "50%", border: "1px solid #1a1a1a" }} />
-               <div style={{ position: "absolute", width: "70%", height: "70%", borderRadius: "50%", border: "1px solid #1a1a1a" }} />
-               <div style={{ position: "absolute", width: "30%", height: "30%", borderRadius: "50%", background: "#C8FF2B", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                 <div style={{ width: "1vw", height: "1vw", background: "#000", borderRadius: "50%" }} />
-               </div>
-            </div>
-
-            <div style={{ position: "absolute", top: "45%", right: "25%", width: "24vw", animation: "float 6s infinite ease-in-out", filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.9))" }}>
-              <img src="/radio.png" alt="Radio" style={{ width: "100%" }} />
-              
-              <div style={{ position: "absolute", top: "-5%", left: "-5%", background: "#FF2E52", color: "#fff", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2vw", padding: "0.2vw 0.8vw", transform: "rotate(-12deg)", boxShadow: "0 4px 12px rgba(0,0,0,0.4)" }}>
-                LIVE TONIGHT
-              </div>
-
-              <div style={{ position: "absolute", bottom: "5%", right: "-5%", background: "#C8FF2B", color: "#000", fontFamily: "'Space Mono', monospace", fontSize: "0.7vw", padding: "0.3vw 0.6vw", transform: "rotate(5deg)", fontWeight: "bold" }}>
-                ANALOG SOUND
-              </div>
-            </div>
-
-            <div style={{ position: "absolute", bottom: "20%", right: "40%", height: "2vw", display: "flex", alignItems: "flex-end", gap: "0.4vw" }}>
-              <div className="eq-bar" />
-              <div className="eq-bar" />
-              <div className="eq-bar" />
-              <div className="eq-bar" />
-              <div className="eq-bar" />
-            </div>
-
-            <div style={{ position: "absolute", top: "65%", right: "5%", background: "rgba(10,10,10,0.8)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", padding: "1vw", width: "16vw", display: "flex", flexDirection: "column", gap: "0.5vw", boxShadow: "0 10px 30px rgba(0,0,0,0.6)" }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6vw", color: "#C8FF2B", textTransform: "uppercase" }}>NOW PLAYING</div>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.4vw", color: "#fff", letterSpacing: "0.05em", lineHeight: 1.1 }}>Deep House / Ambient</div>
-              <div style={{ color: "#888", fontSize: "0.8vw" }}>━━━━━━●━━━━━━</div>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.5vw", color: "rgba(255,255,255,0.4)", display: "flex", justifyContent: "space-between" }}>
-                <span>Bansilalpet Stepwell</span>
-                <span>Live</span>
-              </div>
-            </div>
-            
-            <div style={{ position: "absolute", top: "15%", right: "10%", opacity: 0.5, transform: "rotate(90deg)" }}>
-              <svg width="4vw" height="2vw" viewBox="0 0 100 40" fill="white">
-                <rect x="0" y="0" width="4" height="40" />
-                <rect x="8" y="0" width="2" height="40" />
-                <rect x="14" y="0" width="8" height="40" />
-                <rect x="26" y="0" width="4" height="40" />
-                <rect x="34" y="0" width="2" height="40" />
-                <rect x="40" y="0" width="6" height="40" />
-                <rect x="50" y="0" width="4" height="40" />
-                <rect x="58" y="0" width="10" height="40" />
-                <rect x="72" y="0" width="4" height="40" />
-                <rect x="80" y="0" width="2" height="40" />
-                <rect x="86" y="0" width="6" height="40" />
-                <rect x="96" y="0" width="4" height="40" />
-              </svg>
-            </div>
-          </div>
-        </motion.div>
-      ) : (
-        <div style={{ position: "absolute", top: "15%", right: "0", width: "100%", height: "40%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 4, pointerEvents: "none", opacity: 0.8 }}>
-          <div style={{ position: "relative", width: "50vw", height: "50vw", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ position: "absolute", width: "45vw", height: "45vw", borderRadius: "50%", background: "#050505", border: "1px solid #222", boxShadow: "0 10px 30px rgba(0,0,0,0.8)", animation: "spin 4s linear infinite" }}>
-               <div style={{ width: "100%", height: "100%", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                 <div style={{ width: "30%", height: "30%", background: "#C8FF2B", borderRadius: "50%", border: "2px solid #000" }} />
-               </div>
-            </div>
-            <img src="/radio.png" alt="Radio" style={{ width: "60vw", position: "absolute", filter: "drop-shadow(0 15px 25px rgba(0,0,0,0.9))", animation: "float 6s infinite ease-in-out" }} />
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", height: "30px", marginTop: "20px" }}>
-              <div className="eq-bar" />
-              <div className="eq-bar" />
-              <div className="eq-bar" />
-              <div className="eq-bar" />
-              <div className="eq-bar" />
-          </div>
-        </div>
       )}
 
       {/* TOP MARQUEE STRIP */}
@@ -512,6 +337,27 @@ function Hero() {
       <div style={{ position: "absolute", left: 0, top: "50%", transform: "translateX(-50%) translateY(-50%) rotate(-90deg)", zIndex: 5, fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.4em", color: "rgba(200,255,43,0.4)", textTransform: "uppercase", whiteSpace: "nowrap", pointerEvents: "none" }}>
         SRL-001 // HYD-2025
       </div>
+
+      {/* GRAMOPHONE DECAL — Hero bottom left corner */}
+      <motion.div
+        className="hero-gramophone"
+        initial={{ opacity: 0, rotate: -12, scale: 0.7 }}
+        animate={{ opacity: 1, rotate: -8, scale: 1 }}
+        transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
+        whileHover={{ scale: 1.08, rotate: -2 }}
+        style={{
+          position: "absolute",
+          bottom: "10%",
+          left: "3vw",
+          width: "clamp(90px, 12vw, 170px)",
+          filter: "drop-shadow(0 15px 25px rgba(0,0,0,0.9))",
+          zIndex: 6,
+          cursor: "pointer",
+          opacity: 0.9,
+        }}
+      >
+        <img src="/gramophone.png" alt="Vintage Gramophone" style={{ width: "100%", height: "auto", display: "block" }} />
+      </motion.div>
 
       {/* MAIN HEADLINE — massive asymmetric, left-aligned */}
       <div style={{ position: "relative", zIndex: 6, paddingLeft: "5vw", paddingRight: "5vw" }}>
@@ -530,6 +376,7 @@ function Hero() {
             <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.4rem, 16vw, 16rem)", lineHeight: 0.88, letterSpacing: "0.02em", margin: 0, WebkitTextStroke: "2px #C8FF2B", WebkitTextFillColor: "transparent" }}>
               SESSIONS
             </h1>
+            {/* Mini ticket element beside headline */}
             <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingBottom: 8, opacity: 0.7 }}>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", letterSpacing: "0.25em", color: "#C8FF2B", textTransform: "uppercase" }}>ADMIT ONE</div>
               <div style={{ display: "flex", gap: 2, height: 24 }}>
@@ -571,6 +418,49 @@ function Hero() {
           <HeroStats />
         </motion.div>
       </div>
+
+      {/* VINTAGE RADIO GRAPHIC - HERO ACCENT */}
+      <motion.div
+        className="hero-radio"
+        initial={{ opacity: 0, scale: 0.8, rotate: -6 }}
+        animate={{ opacity: 1, scale: 1, rotate: -4, y: [0, -12, 0] }}
+        transition={{
+          opacity: { duration: 1, delay: 0.4 },
+          scale: { duration: 1, delay: 0.4 },
+          y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+        }}
+        whileHover={{ scale: 1.08, rotate: 0, filter: "drop-shadow(0 0 25px rgba(200, 255, 43, 0.4))" }}
+        style={{
+          position: "absolute",
+          top: "18%",
+          right: "6vw",
+          zIndex: 7,
+          cursor: "pointer",
+          width: "clamp(180px, 26vw, 360px)",
+          filter: "drop-shadow(0 20px 30px rgba(0,0,0,0.85))",
+        }}
+      >
+        <img
+          src="/radio.png"
+          alt="Vintage Boombox"
+          style={{ width: "100%", height: "auto", display: "block" }}
+        />
+        <div style={{
+          position: "absolute",
+          bottom: -10,
+          right: -10,
+          background: "#FF2E52",
+          color: "#fff",
+          fontFamily: "'Space Mono', monospace",
+          fontSize: "0.5rem",
+          padding: "2px 8px",
+          letterSpacing: "0.2em",
+          transform: "rotate(6deg)",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.6)"
+        }}>
+          ANALOG SOUND
+        </div>
+      </motion.div>
 
       {/* BOTTOM DECORATIVE STRIP */}
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 6, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 5vw" }}>
@@ -1777,9 +1667,51 @@ function Gallery() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  // Distribute items across 3 columns
+  // Desktop Masonry: Distribute items across 3 columns
   const cols = [[], [], []];
   GALLERY.forEach((item, i) => cols[i % 3].push({ ...item, globalIdx: i }));
+
+  // Mobile Carousel State
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const scrollRef = useRef(null);
+
+  const PER_SLIDE = 3;
+  const mobileSlides = [];
+  for (let i = 0; i < GALLERY.length; i += PER_SLIDE) {
+    mobileSlides.push(GALLERY.slice(i, i + PER_SLIDE));
+  }
+  const total = mobileSlides.length;
+
+  const goTo = (idx) => {
+    const n = Math.max(0, Math.min(total - 1, idx));
+    setCurrentSlide(n);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ left: n * scrollRef.current.offsetWidth, behavior: "smooth" });
+    }
+  };
+
+  const onScroll = () => {
+    if (!scrollRef.current) return;
+    const n = Math.round(scrollRef.current.scrollLeft / scrollRef.current.offsetWidth);
+    setCurrentSlide(n);
+  };
+
+  // Single photo tile for mobile carousel
+  const PhotoTile = ({ item, style }) => item ? (
+    <div
+      onClick={() => setLightbox(item)}
+      style={{ position: "relative", overflow: "hidden", cursor: "pointer", background: "#080808", ...style }}
+    >
+      <img
+        src={item.img} alt={item.label} loading="lazy"
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(20%) brightness(0.78)" }}
+      />
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "28px 12px 10px", background: "linear-gradient(to top, rgba(0,0,0,0.88), transparent)", fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", color: "#C8FF2B", letterSpacing: "0.22em", textTransform: "uppercase" }}>
+        {item.label}
+      </div>
+      <div style={{ position: "absolute", top: 0, left: 0, width: 12, height: 12, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
+    </div>
+  ) : <div style={{ background: "#0d0d0d", ...style }} />;
 
   return (
     <section id="gallery" style={{ background: "#0a0a0a", padding: "120px 0 80px", position: "relative", overflow: "hidden" }}>
@@ -1823,61 +1755,127 @@ function Gallery() {
       </div>
 
       {/* MASONRY GRID */}
-      <div className="masonry-outer" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3, padding: "0 5vw" }}>
-        {cols.map((col, colIdx) => (
-          <div key={colIdx} className="masonry-col">
-            {col.map((item, rowIdx) => {
-              const rotations = [-2, 1, -1, 2, -3, 1.5];
-              const rot = rotations[(colIdx * 3 + rowIdx) % rotations.length];
-              const isTall = (colIdx + rowIdx) % 3 === 0;
+      {isMobile ? (
+        <div style={{ position: "relative", overflow: "hidden" }}>
+          <style>{`
+            .gal-track::-webkit-scrollbar { display: none; }
+            .gal-track { scrollbar-width: none; -ms-overflow-style: none; width: 100%; }
+          `}</style>
+          
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 5vw", marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", color: "rgba(255,255,255,0.2)", letterSpacing: "0.15em" }}>← SWIPE →</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.62rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.2em" }}>
+              {String(currentSlide + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            </div>
+          </div>
+
+          <div
+            ref={scrollRef}
+            onScroll={onScroll}
+            className="gal-track"
+            style={{
+              display: "flex",
+              width: "100%",
+              overflowX: "auto",
+              overflowY: "hidden",
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            {mobileSlides.map((slide, si) => {
+              const bigLeft = si % 2 === 0;
+              const [a, b, c] = slide;
               return (
-                <motion.div
-                  key={item.id}
-                  className="polaroid-photo"
-                  onClick={() => setLightbox(item)}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.6, delay: (colIdx * 0.1 + rowIdx * 0.05) }}
+                <div
+                  key={si}
                   style={{
-                    background: "#151515",
-                    padding: "12px 12px 36px",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                    cursor: "pointer",
-                    transform: `rotate(${rot}deg)`,
-                    position: "relative",
-                    overflow: "visible",
+                    minWidth: "100%",
+                    flexShrink: 0,
+                    scrollSnapAlign: "start",
+                    padding: "0 5vw",
+                    boxSizing: "border-box",
+                    display: "grid",
+                    gridTemplateColumns: bigLeft ? "58% 42%" : "42% 58%",
+                    gridTemplateRows: "1fr 1fr",
+                    gap: 3,
+                    height: "clamp(240px, max(42vw, 38vh), 480px)",
                   }}
                 >
-                  {/* Tape effect */}
-                  {rowIdx % 2 === 0 && (
-                    <div style={{ position: "absolute", top: -10, left: "50%", transform: `translateX(-50%) rotate(${rot * -1.5}deg)`, width: 60, height: 18, background: "rgba(200,255,43,0.2)", border: "1px dashed rgba(200,255,43,0.4)", zIndex: 2 }} />
+                  {bigLeft ? (
+                    <>
+                      <PhotoTile item={a} style={{ gridColumn: "1", gridRow: "1 / 3" }} />
+                      <PhotoTile item={b} style={{ gridColumn: "2", gridRow: "1" }} />
+                      <PhotoTile item={c} style={{ gridColumn: "2", gridRow: "2" }} />
+                    </>
+                  ) : (
+                    <>
+                      <PhotoTile item={b} style={{ gridColumn: "1", gridRow: "1" }} />
+                      <PhotoTile item={c} style={{ gridColumn: "1", gridRow: "2" }} />
+                      <PhotoTile item={a} style={{ gridColumn: "2", gridRow: "1 / 3" }} />
+                    </>
                   )}
-                  {/* Red TANGY stamp on alternating items */}
-                  {(colIdx + rowIdx) % 4 === 0 && (
-                    <div style={{ position: "absolute", top: 8, right: 8, fontFamily: "'Bebas Neue', sans-serif", fontSize: "0.7rem", color: "#FF2E52", border: "1.5px solid #FF2E52", padding: "2px 6px", letterSpacing: "0.2em", transform: "rotate(12deg)", opacity: 0.7, zIndex: 3 }}>TANGY</div>
-                  )}
-                  {/* Photo */}
-                  <div style={{ overflow: "hidden", height: isTall ? "240px" : "160px", background: "#080808", position: "relative" }}>
-                    <img
-                      src={item.img}
-                      alt={item.label}
-                      loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(0.6) contrast(1.1)", transition: "filter 0.4s, transform 0.5s" }}
-                      onMouseEnter={e => { e.target.style.filter = "grayscale(0) contrast(1.05)"; e.target.style.transform = "scale(1.05)"; }}
-                      onMouseLeave={e => { e.target.style.filter = "grayscale(0.6) contrast(1.1)"; e.target.style.transform = "scale(1)"; }}
-                    />
-                  </div>
-                  {/* Label */}
-                  <div style={{ marginTop: 12, fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.15em" }}>
-                    {item.label}
-                  </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="masonry-outer" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3, padding: "0 5vw" }}>
+          {cols.map((col, colIdx) => (
+            <div key={colIdx} className="masonry-col">
+              {col.map((item, rowIdx) => {
+                const rotations = [-2, 1, -1, 2, -3, 1.5];
+                const rot = rotations[(colIdx * 3 + rowIdx) % rotations.length];
+                const isTall = (colIdx + rowIdx) % 3 === 0;
+                return (
+                  <motion.div
+                    key={item.id}
+                    className="polaroid-photo"
+                    onClick={() => setLightbox(item)}
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ duration: 0.6, delay: (colIdx * 0.1 + rowIdx * 0.05) }}
+                    style={{
+                      background: "#151515",
+                      padding: "12px 12px 36px",
+                      border: "1px solid rgba(255,255,255,0.06)",
+                      cursor: "pointer",
+                      transform: `rotate(${rot}deg)`,
+                      position: "relative",
+                      overflow: "visible",
+                    }}
+                  >
+                    {/* Tape effect */}
+                    {rowIdx % 2 === 0 && (
+                      <div style={{ position: "absolute", top: -10, left: "50%", transform: `translateX(-50%) rotate(${rot * -1.5}deg)`, width: 60, height: 18, background: "rgba(200,255,43,0.2)", border: "1px dashed rgba(200,255,43,0.4)", zIndex: 2 }} />
+                    )}
+                    {/* Red TANGY stamp on alternating items */}
+                    {(colIdx + rowIdx) % 4 === 0 && (
+                      <div style={{ position: "absolute", top: 8, right: 8, fontFamily: "'Bebas Neue', sans-serif", fontSize: "0.7rem", color: "#FF2E52", border: "1.5px solid #FF2E52", padding: "2px 6px", letterSpacing: "0.2em", transform: "rotate(12deg)", opacity: 0.7, zIndex: 3 }}>TANGY</div>
+                    )}
+                    {/* Photo */}
+                    <div style={{ overflow: "hidden", height: isTall ? "240px" : "160px", background: "#080808", position: "relative" }}>
+                      <img
+                        src={item.img}
+                        alt={item.label}
+                        loading="lazy"
+                        style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(0.6) contrast(1.1)", transition: "filter 0.4s, transform 0.5s" }}
+                        onMouseEnter={e => { e.target.style.filter = "grayscale(0) contrast(1.05)"; e.target.style.transform = "scale(1.05)"; }}
+                        onMouseLeave={e => { e.target.style.filter = "grayscale(0.6) contrast(1.1)"; e.target.style.transform = "scale(1)"; }}
+                      />
+                    </div>
+                    {/* Label */}
+                    <div style={{ marginTop: 12, fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.15em" }}>
+                      {item.label}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
 
       <AnimatePresence>
         {lightbox && (
