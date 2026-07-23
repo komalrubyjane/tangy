@@ -300,6 +300,60 @@ function Navbar() {
 }
 
 
+// ─── RETRO TV ────────────────────────────────────────────────────────────────
+function RetroTV() {
+  const videoRef = useRef(null);
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { margin: "200px 0px 200px 0px" });
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isInView) {
+        videoRef.current.play().catch(e => console.log("Play failed", e));
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isInView]);
+
+  return (
+    <div 
+      ref={containerRef}
+      className="retro-tv-wrapper"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="tv-label-top">
+        <div className="blinking-red-dot" /> LIVE ARCHIVE
+      </div>
+      <motion.div
+        className="tv-chassis"
+        animate={{ y: [0, -10, 0], rotate: [-1, 1, -1], scale: isHovered ? 1.03 : 1 }}
+        transition={{ y: { duration: 6, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" }, scale: { duration: 0.3 } }}
+      >
+        <div className={`tv-screen-container ${isHovered ? 'hovered' : ''}`}>
+          <video
+            ref={videoRef}
+            src="/background_video/0723.mp4"
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/gallery/tangy1.jpg"
+            className="tv-video"
+          />
+          <div className="tv-glass-overlay"></div>
+          {isHovered && <div className="tv-scanlines"></div>}
+        </div>
+      </motion.div>
+      <div className="tv-label-bottom">
+        ▶ PLAYING NOW
+      </div>
+    </div>
+  );
+}
+
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   const gramophoneHover = useAutoHover(0.4);
@@ -456,6 +510,8 @@ function Hero() {
           <HeroStats />
         </motion.div>
       </div>
+
+      <RetroTV />
 
       {/* VINTAGE RADIO GRAPHIC - HERO ACCENT */}
       <motion.div
@@ -2538,6 +2594,71 @@ function LandingPage({ showArtistOverlay = false }) {
         @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px rgba(200,255,43,0.2); } 50% { box-shadow: 0 0 40px rgba(200,255,43,0.5); } }
         @keyframes blinkCursor { 50% { opacity: 0; } }
         @keyframes scanline { 0% { transform: translate3d(0, -100%, 0); } 100% { transform: translate3d(0, 100vh, 0); } }
+
+        /* Retro TV styles */
+        @keyframes tvFlicker { 0%, 10%, 100% { opacity: 1; } 5% { opacity: 0.85; } }
+        @keyframes tvScanlines { 0% { background-position: 0 0; } 100% { background-position: 0 10px; } }
+        @keyframes blinkDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        
+        .retro-tv-wrapper {
+          position: absolute; right: 5vw; top: 45%; transform: translateY(-50%);
+          z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 12px;
+          pointer-events: auto;
+        }
+        .tv-label-top {
+          font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em;
+          color: #C8FF2B; text-transform: uppercase; display: flex; align-items: center; gap: 8px; opacity: 0.8;
+        }
+        .blinking-red-dot {
+          width: 6px; height: 6px; background: #ff2e52; border-radius: 50%;
+          animation: blinkDot 1s infinite; box-shadow: 0 0 6px #ff2e52;
+        }
+        .tv-chassis {
+          width: clamp(280px, 30vw, 500px); aspect-ratio: 4/3; background: #111;
+          border-radius: 20px; padding: 12px; border: 2px solid rgba(255,255,255,0.05);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 40px rgba(200,255,43,0.15);
+          transition: box-shadow 0.3s ease;
+        }
+        .tv-chassis:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.9), 0 0 60px rgba(200,255,43,0.3); }
+        .tv-screen-container {
+          width: 100%; height: 100%; border-radius: 12px; overflow: hidden;
+          position: relative; background: #000; box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+        }
+        .tv-video {
+          width: 100%; height: 100%; object-fit: cover;
+          filter: brightness(1.05) contrast(1.08); transition: filter 0.3s;
+        }
+        .tv-screen-container.hovered .tv-video {
+          animation: tvFlicker 3s infinite; filter: brightness(1.1) contrast(1.15);
+        }
+        .tv-glass-overlay {
+          position: absolute; inset: 0; border-radius: 12px;
+          background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.02) 100%);
+          pointer-events: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .tv-scanlines {
+          position: absolute; inset: 0;
+          background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
+          background-size: 100% 2px; animation: tvScanlines 1s linear infinite;
+          pointer-events: none; opacity: 0.6; z-index: 2;
+        }
+        .tv-label-bottom {
+          font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em;
+          color: rgba(255,255,255,0.4);
+        }
+
+        @media (max-width: 1024px) {
+          .retro-tv-wrapper { right: 2vw; }
+        }
+        @media (max-width: 768px) {
+          .retro-tv-wrapper {
+            position: relative; right: auto; top: auto; transform: none;
+            margin: 32px auto 0; width: clamp(240px, 80vw, 320px);
+          }
+          .tv-chassis {
+            width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.6), 0 0 20px rgba(200,255,43,0.1);
+          }
+        }
         @keyframes textFlicker { 0%,100% { opacity:1; } 92% { opacity:1; } 93% { opacity:0.4; } 94% { opacity:1; } 96% { opacity:0.7; } 97% { opacity:1; } }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
