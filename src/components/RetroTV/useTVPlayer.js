@@ -32,9 +32,7 @@ export function useTVPlayer() {
     setShuffled(fresh);
     setCurrentIndex(0);
     setIsPowered(true);
-
-    const alreadyBooted = sessionStorage.getItem('tvBooted') === 'true';
-    setTvState(alreadyBooted ? TV_STATE.PLAYING : TV_STATE.BOOTING);
+    setTvState(TV_STATE.BOOTING); // always boot from first.mp4 on every load
   }, []);
 
   // ── Source derivation ──────────────────────────────────────────────────────
@@ -126,11 +124,6 @@ export function useTVPlayer() {
     setPendingIndex(safeIdx);
     setKnobAngle(prev => prev + 36);
 
-    // If interrupting the boot sequence, mark it as done
-    if (tvState === TV_STATE.BOOTING) {
-      sessionStorage.setItem('tvBooted', 'true');
-    }
-
     // Immediately stop current video and load middle.mp4
     const video = videoRef.current;
     if (video && MIDDLE_VIDEO?.url) {
@@ -196,7 +189,6 @@ export function useTVPlayer() {
       setIsPlaying(false);
       setIsPowered(false);
       setTvState(TV_STATE.OFF);
-      sessionStorage.removeItem('tvBooted');
     } else {
       const fresh = shufflePlaylist(PLAYLIST);
       setShuffled(fresh);
