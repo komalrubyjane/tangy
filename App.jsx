@@ -20,6 +20,9 @@ import ArtistDetails from "./src/components/ArtistDetails";
 import EventDetails from "./src/pages/EventDetails";
 import VolunteerDetails from "./src/pages/VolunteerDetails";
 import TVPlayer from "./src/components/RetroTV/TVPlayer.jsx";
+import UserProfile from "./src/pages/UserProfile";
+import AuthModal from "./src/components/AuthModal";
+import { useAuth } from "./src/contexts/AuthContext";
 
 // ─── ERROR BOUNDARY ───────────────────────────────────────────────────────────
 class ErrorBoundary extends React.Component {
@@ -168,6 +171,8 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const modal = useModal();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     let ticking = false;
@@ -252,13 +257,37 @@ function Navbar() {
             {l}
           </button>
         ))}
-        {/* BUY TICKETS CTA */}
-        <button onClick={() => scrollTo("Events")}
-          style={{ background: "#C8FF2B", border: "none", color: "#080808", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "0.95rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "8px 20px", borderRadius: 0, transition: "opacity 0.2s" }}
-          onMouseEnter={e => e.target.style.opacity = "0.85"}
-          onMouseLeave={e => e.target.style.opacity = "1"}>
-          BUY TICKETS
-        </button>
+        {/* Auth CTA */}
+        {user ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button onClick={() => { navigate('/profile'); setMenuOpen(false); }} style={{
+              width: 36, height: 36, borderRadius: 0,
+              background: 'var(--tangy-amber, #C8FF2B)',
+              border: '1px solid #ffffff', cursor: 'pointer',
+              fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: '0.85rem',
+              color: '#080808', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              {user.name?.[0] || 'U'}
+            </button>
+            <button onClick={() => { logout(); setMenuOpen(false); }}
+              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.25em", fontFamily: "'Space Mono', monospace", textTransform: "uppercase" }}>
+              EXIT
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button onClick={() => modal.openAuth()}
+              style={{ background: "none", border: "1px solid rgba(255,255,255,0.4)", color: "#fff", cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "8px 16px", borderRadius: 0 }}>
+              LOGIN
+            </button>
+            <button onClick={() => scrollTo("Events")}
+              style={{ background: "#C8FF2B", border: "none", color: "#080808", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "0.95rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "8px 20px", borderRadius: 0, transition: "opacity 0.2s" }}
+              onMouseEnter={e => e.target.style.opacity = "0.85"}
+              onMouseLeave={e => e.target.style.opacity = "1"}>
+              BUY TICKETS
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Hamburger */}
@@ -290,10 +319,29 @@ function Navbar() {
                 {l}
               </button>
             ))}
-            <button onClick={() => scrollTo("Events")}
-              style={{ background: "#C8FF2B", border: "none", color: "#080808", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "14px", marginTop: 16, borderRadius: 0 }}>
-              BUY TICKETS
-            </button>
+            {user ? (
+              <div style={{ display: 'flex', gap: 16, marginTop: 16, borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 16 }}>
+                <button onClick={() => { navigate('/profile'); setMenuOpen(false); }}
+                  style={{ background: "#C8FF2B", border: "none", color: "#080808", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "14px", borderRadius: 0, flex: 1 }}>
+                  PROFILE
+                </button>
+                <button onClick={() => { logout(); setMenuOpen(false); }}
+                  style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.3)", color: "#fff", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "14px", borderRadius: 0, flex: 1 }}>
+                  LOGOUT
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: 16, marginTop: 16, borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 16 }}>
+                <button onClick={() => { modal.openAuth(); setMenuOpen(false); }}
+                  style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.3)", color: "#fff", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "14px", borderRadius: 0, flex: 1 }}>
+                  LOGIN
+                </button>
+                <button onClick={() => scrollTo("Events")}
+                  style={{ background: "#C8FF2B", border: "none", color: "#080808", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "14px", borderRadius: 0, flex: 1 }}>
+                  TICKETS
+                </button>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -965,6 +1013,9 @@ function WhyTangy() {
 
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 function Events() {
+  const modal = useModal();
+  const { user } = useAuth();
+  
   return (
     <section id="events" style={{ background: "#080808", padding: "120px 0 80px", position: "relative", overflow: "hidden" }}>
       {/* Section Header */}
@@ -1016,6 +1067,30 @@ function Events() {
 
       {/* Ticket Stack */}
       <div className="ticket-stack" style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 5vw" }}>
+        
+        {/* INNER CIRCLE BANNER */}
+        {!user && (
+          <div style={{
+            background: "#111", border: "1px dashed rgba(200,255,43,0.3)", padding: "24px 32px",
+            marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center",
+            flexWrap: "wrap", gap: 20
+          }}>
+            <div>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", color: "#C8FF2B", letterSpacing: "0.05em", lineHeight: 1 }}>JOIN THE INNER CIRCLE</div>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginTop: 8, maxWidth: 500, lineHeight: 1.5 }}>
+                Earn Tangy Points. Get early ticket access. Receive nearby event alerts. Unlock member-only drops.
+              </div>
+            </div>
+            <button onClick={() => modal.openAuth()} 
+              style={{
+                background: "transparent", border: "1px solid #C8FF2B", color: "#C8FF2B",
+                padding: "10px 20px", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2rem", letterSpacing: "0.1em"
+              }}>
+              JOIN TANGY
+            </button>
+          </div>
+        )}
+
         {EVENTS.map((ev, i) => <EventCard key={ev.id} ev={ev} delay={i * 0.15} index={i} />)}
       </div>
     </section>
@@ -2865,6 +2940,7 @@ export default function App() {
         <Route path="/artists/:id" element={<LandingPage showArtistOverlay={true} />} />
         <Route path="/events/:slug" element={<EventDetails />} />
         <Route path="/volunteer" element={<VolunteerDetails />} />
+        <Route path="/profile" element={<UserProfile />} />
       </Routes>
     );
   }

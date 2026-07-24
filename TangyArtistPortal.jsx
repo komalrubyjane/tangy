@@ -244,8 +244,13 @@ const AmbientBg = ({ variant = 'default' }) => {
 // ── Nav ────────────────────────────────────────────────────────
 const Nav = ({ page, setPage }) => {
   const [showUser, setShowUser] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const modal = useModal();
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [page]);
 
   const publicLinks = [
     { label: 'Artists', route: 'artists' },
@@ -287,12 +292,12 @@ const Nav = ({ page, setPage }) => {
         ))}
       </div>
 
-      {/* Auth actions */}
+      {/* Auth actions & Mobile Toggle */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {user ? (
           <>
             <NotificationBell setPage={setPage} />
-            <button onClick={() => setPage('profile')} style={{
+            <button className="hide-mobile" onClick={() => setPage('profile')} style={{
               width: 36, height: 36, borderRadius: 0,
               background: 'var(--tangy-amber)',
               border: '1px solid #ffffff', cursor: 'pointer',
@@ -301,17 +306,52 @@ const Nav = ({ page, setPage }) => {
             }}>
               {user.name[0]}
             </button>
-            <button className="nav-link" onClick={logout}>Exit</button>
+            <button className="nav-link hide-mobile" onClick={logout}>Exit</button>
           </>
         ) : (
-          <>
+          <div className="hide-mobile" style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <button className="nav-link" onClick={() => setPage('login')}>Login</button>
             <button className="t-btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.6rem', boxShadow: '2px 2px 0 #ffffff' }} onClick={() => setPage('signup')}>
               Join
             </button>
-          </>
+          </div>
         )}
+        
+        {/* Mobile Hamburger Button */}
+        <button className="hide-desktop" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{
+          background: "transparent", border: "none", color: "var(--tangy-amber)", cursor: "pointer", fontSize: "1.5rem",
+          display: "flex", alignItems: "center", justifyContent: "center"
+        }}>
+          {mobileMenuOpen ? "✕" : "☰"}
+        </button>
       </div>
+
+      {/* Mobile Menu Drawer */}
+      {mobileMenuOpen && (
+        <div className="hide-desktop" style={{
+          position: "fixed", top: "72px", left: 0, right: 0, bottom: 0,
+          background: "#111111", zIndex: 999,
+          display: "flex", flexDirection: "column", padding: "2rem", gap: "1.5rem",
+          borderTop: "1px solid var(--tangy-amber)",
+          overflowY: "auto"
+        }}>
+          {publicLinks.filter(l => !(user && l.route === 'apply')).map(l => (
+            <button key={l.route} className={`nav-link${page === l.route ? ' active' : ''}`} onClick={() => setPage(l.route)} style={{ fontSize: "1.2rem", textAlign: "left" }}>{l.label}</button>
+          ))}
+          {user && artistLinks.map(l => (
+            <button key={l.route} className={`nav-link${page === l.route ? ' active' : ''}`} onClick={() => setPage(l.route)} style={{ fontSize: "1.2rem", textAlign: "left" }}>{l.label}</button>
+          ))}
+          <div style={{ height: 1, background: "rgba(255,255,255,0.1)", margin: "1rem 0" }} />
+          {user ? (
+            <button className="nav-link" onClick={logout} style={{ fontSize: "1.2rem", textAlign: "left", color: "var(--tangy-rust)" }}>Logout</button>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <button className="nav-link" onClick={() => setPage('login')} style={{ fontSize: "1.2rem", textAlign: "left" }}>Login</button>
+              <button className="t-btn-primary" onClick={() => setPage('signup')}>Join Tangy</button>
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 };
@@ -535,7 +575,7 @@ const LoginPage = ({ setPage }) => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', position: 'relative', paddingTop: '72px' }}>
       <AmbientBg />
 
       {/* Left panel — branding */}
@@ -673,7 +713,7 @@ const SignupPage = ({ setPage }) => {
   const back = () => setStep(s => s - 1);
 
   if (done) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem', position: 'relative', paddingTop: '72px' }}>
       <AmbientBg />
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 480 }}>
         <div style={{ width: 80, height: 80, borderRadius: 0, border: '1px solid var(--tangy-amber)', background: '#111111', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', fontSize: '2rem' }}>✦</div>

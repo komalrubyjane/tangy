@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import AuthModal from "./AuthModal";
 
 const ModalContext = createContext();
 
@@ -7,8 +8,11 @@ export const useModal = () => useContext(ModalContext);
 
 export const ModalProvider = ({ children }) => {
   const [modals, setModals] = useState([]);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authSuccessCallback, setAuthSuccessCallback] = useState(null);
 
   // modal = { id, type: 'alert' | 'confirm' | 'toast', title, message, onConfirm, onCancel, ... }
+
   const openModal = (modal) => {
     const id = Date.now().toString();
     setModals((prev) => [...prev, { ...modal, id }]);
@@ -37,8 +41,13 @@ export const ModalProvider = ({ children }) => {
     openModal({ ...options, type: "toast" });
   };
 
+  const openAuth = (onSuccess = null) => {
+    setAuthSuccessCallback(() => onSuccess);
+    setIsAuthOpen(true);
+  };
+
   return (
-    <ModalContext.Provider value={{ confirm, alert, toast }}>
+    <ModalContext.Provider value={{ confirm, alert, toast, openAuth }}>
       {children}
       {/* Portals or fixed overlay for modals */}
       <AnimatePresence>
@@ -50,6 +59,12 @@ export const ModalProvider = ({ children }) => {
           )
         ))}
       </AnimatePresence>
+
+      <AuthModal 
+        isOpen={isAuthOpen} 
+        onClose={() => setIsAuthOpen(false)} 
+        onSuccess={authSuccessCallback} 
+      />
     </ModalContext.Provider>
   );
 };

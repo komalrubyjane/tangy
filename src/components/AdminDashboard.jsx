@@ -183,6 +183,7 @@ function AdminLogin({ onLogin }) {
 // ─── MAIN DASHBOARD ───────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const [authed, setAuthed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [tab, setTab] = useState("overview");
   const [bookingFilter, setBookingFilter] = useState("all");
   const [volunteerFilter, setVolunteerFilter] = useState("all");
@@ -198,6 +199,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     setSearch("");
+    setMobileMenuOpen(false);
   }, [tab]);
 
   const showNote = (msg, type = "success") => {
@@ -345,8 +347,13 @@ export default function AdminDashboard() {
       </AnimatePresence>
 
       <div className="dashboard-layout">
+        {/* Mobile Hamburger */}
+        <button className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <span style={{ fontSize: "1.5rem" }}>{mobileMenuOpen ? "✕" : "☰"}</span>
+        </button>
+
         {/* Sidebar */}
-        <aside className="sidebar">
+        <aside className={`sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
           <div style={{ padding: "0 24px 28px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
             <div style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "#C8FF2B", textTransform: "uppercase", marginBottom: 4 }}>Dashboard</div>
             <div className="bebas" style={{ fontSize: "2rem", color: "#fff", letterSpacing: "0.05em", lineHeight: 1 }}>TANGY</div>
@@ -576,6 +583,15 @@ export default function AdminDashboard() {
                         <div>
                           <div className="bebas" style={{ fontSize: "2rem", letterSpacing: "0.05em", marginBottom: 4, textTransform: "uppercase" }}>{ev.name}</div>
                           <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" }}>📅 {ev.date} · 📍 Bansilal Stepwell</div>
+                          
+                          {/* Nearby Alert Button */}
+                          <button onClick={() => showNote(`Nearby Alert Sent to 142 Users within 5km of Bansilal Stepwell!`, "success")}
+                            style={{
+                              marginTop: 12, background: "transparent", border: "1px solid #FF2E52", color: "#FF2E52",
+                              padding: "6px 12px", cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em"
+                            }}>
+                            SEND NEARBY ALERT (5KM)
+                          </button>
                         </div>
                         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                           <Badge status={ev.status} />
