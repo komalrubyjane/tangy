@@ -1827,6 +1827,15 @@ function Gallery() {
   // Mobile Carousel State
   const [currentSlide, setCurrentSlide] = useState(0);
   const scrollRef = useRef(null);
+  const [winWidth, setWinWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1024);
+
+  useEffect(() => {
+    const handleResize = () => setWinWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobileView = isMobile || winWidth <= 768;
 
   const PER_SLIDE = 3;
   const mobileSlides = [];
@@ -1845,8 +1854,11 @@ function Gallery() {
 
   const onScroll = () => {
     if (!scrollRef.current) return;
-    const n = Math.round(scrollRef.current.scrollLeft / scrollRef.current.offsetWidth);
-    setCurrentSlide(n);
+    const width = scrollRef.current.offsetWidth || 1;
+    const n = Math.round(scrollRef.current.scrollLeft / width);
+    if (n >= 0 && n < total) {
+      setCurrentSlide(n);
+    }
   };
 
   // Single photo tile for mobile carousel
@@ -1857,22 +1869,34 @@ function Gallery() {
         ref={ref}
         {...hoverProps}
         onClick={() => setLightbox(item)}
-        style={{ position: "relative", overflow: "hidden", cursor: "pointer", background: "#080808", ...style }}
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          cursor: "pointer",
+          background: "#080808",
+          WebkitClipPath: "inset(0)",
+          WebkitBackfaceVisibility: "hidden",
+          transform: "translateZ(0)",
+          WebkitTransform: "translateZ(0)",
+          ...style
+        }}
       >
         <img
           src={item.img} alt={item.label} loading="lazy" decoding="async"
           style={{ 
             width: "100%", height: "100%", objectFit: "cover", display: "block", 
             transition: "filter 0.4s, transform 0.5s",
-            filter: isHovered ? "grayscale(0) brightness(1)" : "grayscale(20%) brightness(0.78)",
-            transform: isHovered ? "scale(1.05)" : "scale(1)"
+            WebkitBackfaceVisibility: "hidden",
+            filter: isHovered ? "grayscale(0) brightness(1)" : "grayscale(25%) brightness(0.8)",
+            transform: isHovered ? "scale(1.04)" : "scale(1)",
+            WebkitTransform: isHovered ? "scale(1.04)" : "scale(1)"
           }}
         />
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "28px 12px 10px", background: "linear-gradient(to top, rgba(0,0,0,0.88), transparent)", fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", color: "#C8FF2B", letterSpacing: "0.22em", textTransform: "uppercase" }}>
-        {item.label}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "28px 12px 10px", background: "linear-gradient(to top, rgba(0,0,0,0.9), transparent)", fontFamily: "'Space Mono', monospace", fontSize: "0.5rem", color: "#C8FF2B", letterSpacing: "0.22em", textTransform: "uppercase", pointerEvents: "none" }}>
+          {item.label}
+        </div>
+        <div style={{ position: "absolute", top: 0, left: 0, width: 12, height: 12, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B", pointerEvents: "none" }} />
       </div>
-      <div style={{ position: "absolute", top: 0, left: 0, width: 12, height: 12, borderTop: "2px solid #C8FF2B", borderLeft: "2px solid #C8FF2B" }} />
-    </div>
     ) : <div style={{ background: "#0d0d0d", ...style }} />;
   };
 
@@ -1919,7 +1943,7 @@ function Gallery() {
       </div>
 
       {/* MASONRY GRID */}
-      {isMobile ? (
+      {isMobileView ? (
         <div style={{ position: "relative", overflow: "hidden" }}>
           <style>{`
             .gal-track::-webkit-scrollbar { display: none; }
@@ -1944,6 +1968,7 @@ function Gallery() {
               overflowY: "hidden",
               scrollSnapType: "x mandatory",
               WebkitOverflowScrolling: "touch",
+              scrollPadding: "0 5vw",
             }}
           >
             {mobileSlides.map((slide, si) => {
@@ -1954,15 +1979,16 @@ function Gallery() {
                   key={si}
                   style={{
                     minWidth: "100%",
+                    width: "100%",
                     flexShrink: 0,
-                    scrollSnapAlign: "start",
+                    scrollSnapAlign: "center",
                     padding: "0 5vw",
                     boxSizing: "border-box",
                     display: "grid",
-                    gridTemplateColumns: bigLeft ? "58% 42%" : "42% 58%",
+                    gridTemplateColumns: bigLeft ? "1.38fr 1fr" : "1fr 1.38fr",
                     gridTemplateRows: "1fr 1fr",
                     gap: 3,
-                    height: "clamp(240px, max(42vw, 38vh), 480px)",
+                    height: "clamp(260px, 56vw, 420px)",
                   }}
                 >
                   {bigLeft ? (
