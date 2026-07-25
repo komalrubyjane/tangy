@@ -1,4 +1,6 @@
 // mock authentication service preparing for Supabase
+import { profileService } from './profileService';
+
 const SESSION_KEY = 'tangy_mock_session';
 const OTP_MOCK = '123456';
 
@@ -26,12 +28,22 @@ export const authService = {
   verifyOtp: async (method, id, otp) => {
     await new Promise(r => setTimeout(r, 800));
     if (otp === OTP_MOCK) {
+      // Mock finding or creating a user by email/phone
+      const userId = `mock_${id.replace(/[^a-zA-Z0-9]/g, '')}`;
+      let profile = await profileService.getProfile(userId);
+      
+      if (!profile) {
+        profile = await profileService.createProfile(userId, { [method]: id });
+      }
+
       const user = {
-        id: `mock_${Date.now()}`,
+        id: userId,
         [method]: id,
-        name: method === 'email' ? id.split('@')[0] : 'Member',
-        memberSince: new Date().getFullYear(),
+        name: profile.fullName || (method === 'email' ? id.split('@')[0] : 'Member'),
+        memberSince: new Date(profile.createdAt).getFullYear(),
+        profileCompleted: profile.profileCompleted
       };
+      
       localStorage.setItem(SESSION_KEY, JSON.stringify(user));
       return { success: true, user };
     }

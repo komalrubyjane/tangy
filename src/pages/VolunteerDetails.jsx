@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import VolunteerForm from "../components/VolunteerForm";
+import { useAuth } from "../contexts/AuthContext";
+import { useModal } from "../components/ModalProvider";
 
 /* ─── GLOBAL STYLES ─────────────────────────────────────────────────────────── */
 const GlobalStyles = () => (
@@ -39,10 +41,16 @@ const GlobalStyles = () => (
     @media (max-width: 768px) {
       .vol-editorial-grid { grid-template-columns: 1fr !important; }
       .vol-panels-row { flex-direction: column !important; }
+      .vol-side-label { display: none !important; }
+      .vol-hero-content { padding: 0 4vw 48px !important; }
+      .vol-hero-btns { flex-direction: column !important; width: 100% !important; }
+      .vol-hero-btns button { width: 100% !important; padding: 14px 20px !important; text-align: center !important; }
     }
     @media (max-width: 600px) {
       .vol-nav { padding: 0 16px !important; }
-      .vol-stat-row { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+      .vol-nav-subtext { display: none !important; }
+      .vol-stat-row { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+      .vol-form-section { padding: 60px 4vw !important; }
     }
   `}</style>
 );
@@ -183,12 +191,26 @@ const Label = ({ text }) => (
 /* ─── MAIN COMPONENT ─────────────────────────────────────────────────────────── */
 export default function VolunteerDetails() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const modal = useModal();
   const { scrollYProgress } = useScroll();
   const heroY = useTransform(scrollYProgress, [0, 0.3], ["0%", "25%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0.4]);
 
   const scrollToApply = () => {
     document.getElementById("apply-section")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleApplyClick = () => {
+    if (!user) {
+      if (modal?.openAuth) {
+        modal.openAuth(() => scrollToApply());
+      } else {
+        scrollToApply();
+      }
+    } else {
+      scrollToApply();
+    }
   };
 
   const manifestoLines = [
@@ -229,7 +251,7 @@ export default function VolunteerDetails() {
           </div>
         </div>
         <button
-          onClick={scrollToApply}
+          onClick={handleApplyClick}
           style={{
             padding: "9px 22px", background: "#C8FF2B", color: "#080808", border: "none",
             cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif",
@@ -271,7 +293,7 @@ export default function VolunteerDetails() {
         </div>
 
         {/* Vertical rotated label */}
-        <div style={{
+        <div className="vol-side-label" style={{
           position: "absolute", left: 24, top: "50%",
           transform: "translateY(-50%) rotate(-90deg)",
           fontFamily: "'Space Mono', monospace", fontSize: "0.52rem",
@@ -354,10 +376,11 @@ export default function VolunteerDetails() {
           <motion.div
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
+            className="vol-hero-btns"
             style={{ display: "flex", gap: 16, flexWrap: "wrap" }}
           >
             <button
-              onClick={scrollToApply}
+              onClick={handleApplyClick}
               style={{
                 padding: "16px 44px", background: "#C8FF2B", color: "#080808", border: "none",
                 cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.25rem",
@@ -693,7 +716,7 @@ export default function VolunteerDetails() {
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 6 — APPLICATION FORM
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section id="apply-section" style={{ padding: "120px 5vw", position: "relative" }}>
+      <section id="apply-section" className="vol-form-section" style={{ padding: "120px 5vw", position: "relative" }}>
         {/* Background */}
         <div style={{
           position: "absolute", inset: 0,
@@ -703,7 +726,7 @@ export default function VolunteerDetails() {
         }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #080808, rgba(8,8,8,0.6) 40%, rgba(8,8,8,0.6) 60%, #080808)", zIndex: 0 }} />
 
-        <div style={{ maxWidth: 860, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 860, width: "100%", margin: "0 auto", position: "relative", zIndex: 1 }}>
           <motion.div
             initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} style={{ marginBottom: 56 }}
@@ -726,17 +749,53 @@ export default function VolunteerDetails() {
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.1 }}
-            style={{
-              border: "1px solid rgba(255,255,255,0.07)",
-              background: "rgba(10,10,10,0.85)",
-              backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-            }}
-          >
-            <VolunteerForm />
-          </motion.div>
+          {!user ? (
+            <motion.div
+              initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+              style={{
+                border: "1px solid #C8FF2B",
+                background: "#111",
+                padding: "clamp(28px, 6vw, 48px) clamp(20px, 5vw, 40px)",
+                textAlign: "center",
+              }}
+            >
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.7rem", color: "#C8FF2B", letterSpacing: "0.2em", marginBottom: 12 }}>
+                // AUTHENTICATION REQUIRED //
+              </div>
+              <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem, 5vw, 3.5rem)", color: "#fff", margin: "0 0 16px 0", letterSpacing: "0.05em" }}>
+                MEMBERSHIP REQUIRED TO APPLY
+              </h3>
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", lineHeight: 1.6, maxWidth: 500, margin: "0 auto 28px", fontFamily: "'DM Sans', sans-serif" }}>
+                To submit your volunteer application, track your contribution, and earn Tangy Points, you must be logged into your Tangy account.
+              </p>
+              <button
+                onClick={() => modal?.openAuth && modal.openAuth(() => scrollToApply())}
+                style={{
+                  padding: "16px 36px", background: "#C8FF2B", color: "#080808", border: "none",
+                  cursor: "pointer", fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2rem",
+                  letterSpacing: "0.15em", textTransform: "uppercase", borderRadius: 0,
+                  transition: "all 0.2s", width: "100%", maxWidth: 320,
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "#fff"}
+                onMouseLeave={e => e.currentTarget.style.background = "#C8FF2B"}
+              >
+                LOGIN / SIGN UP TO APPLY →
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.1 }}
+              style={{
+                border: "1px solid rgba(255,255,255,0.07)",
+                background: "rgba(10,10,10,0.85)",
+                backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+                width: "100%",
+              }}
+            >
+              <VolunteerForm />
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -789,7 +848,7 @@ export default function VolunteerDetails() {
           </motion.p>
 
           <motion.button
-            onClick={scrollToApply}
+            onClick={handleApplyClick}
             initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.8 }}
             style={{

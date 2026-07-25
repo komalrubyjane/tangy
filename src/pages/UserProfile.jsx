@@ -1,22 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { loyaltyService } from '../services/loyaltyService';
 import { referralService } from '../services/referralService';
 import { locationService } from '../services/locationService';
+import { profileService } from '../services/profileService';
 
 export default function UserProfile() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
+  const navigate = useNavigate();
   const [loyalty, setLoyalty] = useState({ points: 0, history: [] });
   const [referrals, setReferrals] = useState({ totalReferrals: 0 });
   const [alertsOn, setAlertsOn] = useState(false);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     if (user) {
       loyaltyService.getTangyPoints().then(setLoyalty);
       setReferrals(referralService.getReferralStats());
+      profileService.getProfile(user.id).then(prof => {
+        setProfile(prof);
+        if (prof) setAlertsOn(prof.nearbyAlerts);
+      });
     }
   }, [user]);
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#080808', color: '#C8FF2B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Mono', monospace" }}>
+        LOADING...
+      </div>
+    );
+  }
 
   if (!user) return null;
 
@@ -61,7 +77,7 @@ export default function UserProfile() {
         
         {/* Back to Home Button */}
         <div style={{ marginBottom: 32 }}>
-          <button onClick={() => window.location.href = '/'} style={{
+          <button onClick={() => navigate('/')} style={{
             background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.6)', 
             cursor: 'pointer', fontFamily: "'Space Mono', monospace", fontSize: '0.75rem', 
             letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: 8, padding: 0
@@ -72,17 +88,39 @@ export default function UserProfile() {
 
         {/* Header */}
         <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 24, marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
-          <div>
-            <div style={{ color: '#C8FF2B', fontSize: '0.7rem', letterSpacing: '0.2em' }}>TANGY MEMBER</div>
-            <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(2.5rem, 5vw, 4rem)', margin: '4px 0 8px', letterSpacing: '0.05em' }}>
-              {user.name}
-            </h1>
-            <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>Member since {user.memberSince}</div>
+          <div style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ 
+              width: 80, height: 80, borderRadius: '50%', background: '#222', 
+              border: '1px solid rgba(255,255,255,0.2)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' 
+            }}>
+              {profile?.avatarUrl ? (
+                <img src={profile.avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <span style={{ fontSize: '1.5rem', color: 'rgba(255,255,255,0.2)' }}>?</span>
+              )}
+            </div>
+            <div>
+              <div style={{ color: '#C8FF2B', fontSize: '0.7rem', letterSpacing: '0.2em' }}>TANGY MEMBER</div>
+              <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(2.5rem, 5vw, 4rem)', margin: '4px 0 0', letterSpacing: '0.05em', lineHeight: 1 }}>
+                {user.name}
+              </h1>
+              {profile?.username && <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', fontFamily: "'Space Mono', monospace", marginBottom: 4 }}>@{profile.username}</div>}
+              
+              <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>
+                {profile?.city ? `${profile.city}` : ''} • Member since {user.memberSince}
+              </div>
+            </div>
           </div>
-          <button onClick={logout} style={{
-            background: 'transparent', border: '1px solid rgba(255,46,82,0.5)', color: '#ff2e52',
-            padding: '8px 16px', cursor: 'pointer', fontFamily: "'Space Mono', monospace", fontSize: '0.7rem', letterSpacing: '0.1em'
-          }}>LOGOUT</button>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button onClick={() => navigate('/onboarding?edit=true')} style={{
+              background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#fff',
+              padding: '8px 16px', cursor: 'pointer', fontFamily: "'Space Mono', monospace", fontSize: '0.7rem', letterSpacing: '0.1em'
+            }}>EDIT PROFILE</button>
+            <button onClick={logout} style={{
+              background: 'transparent', border: '1px solid rgba(255,46,82,0.5)', color: '#ff2e52',
+              padding: '8px 16px', cursor: 'pointer', fontFamily: "'Space Mono', monospace", fontSize: '0.7rem', letterSpacing: '0.1em'
+            }}>LOGOUT</button>
+          </div>
         </div>
 
         {/* Dashboard Grid */}
@@ -170,6 +208,17 @@ export default function UserProfile() {
             </div>
           </div>
           
+          {/* Interests (If any) */}
+          {profile?.interests?.length > 0 && (
+            <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.1)', padding: 32, marginTop: 24 }}>
+              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', letterSpacing: '0.15em', marginBottom: 16 }}>MUSIC PREFERENCES</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {profile.interests.map(i => (
+                  <span key={i} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.05)', fontSize: '0.7rem', letterSpacing: '0.1em', borderRadius: 0 }}>{i}</span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

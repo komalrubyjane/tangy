@@ -21,6 +21,7 @@ import EventDetails from "./src/pages/EventDetails";
 import VolunteerDetails from "./src/pages/VolunteerDetails";
 import TVPlayer from "./src/components/RetroTV/TVPlayer.jsx";
 import UserProfile from "./src/pages/UserProfile";
+import Onboarding from "./src/pages/Onboarding";
 import AuthModal from "./src/components/AuthModal";
 import { useAuth } from "./src/contexts/AuthContext";
 
@@ -2941,6 +2942,7 @@ export default function App() {
         <Route path="/events/:slug" element={<EventDetails />} />
         <Route path="/volunteer" element={<VolunteerDetails />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/onboarding" element={<Onboarding />} />
       </Routes>
     );
   }

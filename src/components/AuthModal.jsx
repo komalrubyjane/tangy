@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function AuthModal({ isOpen, onClose, onSuccess }) {
   const { login } = useAuth();
@@ -10,6 +11,8 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,8 +34,16 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
       // Verify OTP
       const res = await login(method, identifier, otp);
       if (res.success) {
-        if (onSuccess) onSuccess(res.user);
         onClose();
+        if (res.user.profileCompleted) {
+          if (onSuccess) onSuccess(res.user);
+        } else {
+          if (!location.pathname.includes('/onboarding')) {
+            sessionStorage.setItem('tangy_onboarding_return', location.pathname);
+          }
+          navigate('/onboarding');
+        }
+        
         setTimeout(() => {
           setStep(1);
           setIdentifier('');

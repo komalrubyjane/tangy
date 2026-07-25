@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { volunteerService } from "../services/volunteerService";
+import { useAuth } from "../contexts/AuthContext";
+import { profileService } from "../services/profileService";
 
 const GlassCard = ({ children, style, className }) => (
   <div className={className} style={{ background: "transparent", ...style }}>
@@ -9,12 +11,12 @@ const GlassCard = ({ children, style, className }) => (
 );
 
 const INPUT_STYLE = {
-  width: "100%", padding: "14px 0",
+  width: "100%", padding: "12px 0",
   background: "transparent",
   border: "none", borderBottom: "1px solid rgba(255,255,255,0.15)",
-  borderRadius: 0, color: "#fff", fontSize: "0.9rem",
+  borderRadius: 0, color: "#fff", fontSize: "16px",
   outline: "none", boxSizing: "border-box", fontFamily: "inherit",
-  transition: "border-color 0.2s",
+  transition: "border-color 0.2s", minHeight: "44px",
 };
 
 const LABEL_STYLE = {
@@ -67,9 +69,25 @@ export default function VolunteerForm() {
     };
   });
 
+  const { user } = useAuth();
+
   useEffect(() => {
     localStorage.setItem("tangy_volunteer_draft", JSON.stringify(form));
   }, [form]);
+
+  useEffect(() => {
+    if (user) {
+      profileService.getProfile(user.id).then(prof => {
+        setForm(prev => ({
+          ...prev,
+          name: prev.name || prof?.fullName || user.name || "",
+          email: prev.email || prof?.email || user.email || "",
+          phone: prev.phone || prof?.phone || user.phone || "",
+          city: prev.city || prof?.city || ""
+        }));
+      });
+    }
+  }, [user]);
 
   const handleChange = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -154,7 +172,7 @@ export default function VolunteerForm() {
   }
 
   return (
-    <GlassCard className="volunteer-form-container" style={{ padding: "36px 40px" }}>
+    <GlassCard className="volunteer-form-container" style={{ padding: "clamp(24px, 5vw, 36px) clamp(16px, 5vw, 40px)", width: "100%", boxSizing: "border-box" }}>
       <style>{`
         .volunteer-form-container input:focus,
         .volunteer-form-container select:focus,
@@ -165,12 +183,17 @@ export default function VolunteerForm() {
           border: 1px solid rgba(255,255,255,0.12) !important;
           padding: 12px !important;
           resize: vertical;
+          font-size: 16px !important;
         }
         .volunteer-form-container textarea:focus {
           border-color: #C8FF2B !important;
           outline: none !important;
         }
         .volunteer-form-container select { appearance: none; cursor: pointer; }
+        .volunteer-form-container select option {
+          background-color: #111111 !important;
+          color: #ffffff !important;
+        }
         .volunteer-form-container input::placeholder,
         .volunteer-form-container textarea::placeholder { color: rgba(255,255,255,0.2); }
       `}</style>
@@ -363,7 +386,7 @@ export default function VolunteerForm() {
 
               <div>
                 <label style={LABEL_STYLE}>What Do You Hope To Gain?</label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: 16, background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 10, padding: 16, background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.08)" }}>
                   {["Event Experience", "Portfolio Building", "Community", "Learning", "Career Growth", "Contribution", "Networking", "All Of The Above", "Other"].map(opt => (
                     <label key={opt} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontSize: "0.85rem", color: "rgba(255,255,255,0.8)" }}>
                       <input type="checkbox" checked={form.hopeGain.includes(opt)} onChange={() => handleMultiSelect("hopeGain", opt)} style={{ width: 16, height: 16, accentColor: "#C8FF2B" }} />
